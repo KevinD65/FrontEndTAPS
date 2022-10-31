@@ -1,0 +1,126 @@
+:root{
+    --standard-beige: rgb(200, 173, 126);
+    --very-light-beige: rgb(244, 235, 208);
+    --light-beige: rgb(209,192,168);
+    --medium-beige: rgb(191,170,140);
+  
+    --standard-font:'Lexend';
+}
+
+.Community{
+    height: 100%;
+}
+
+.Searchbar{
+    height: 55px;
+    width: 100%;
+    margin-top: 25px;
+}
+
+#searchbar-magnifyingglass{
+    margin-left: 25%;
+    display: inline-block;
+}
+
+#searchbar-magnifyingglass:hover{
+    cursor: pointer;
+}
+
+
+#searchbarinput{
+    height: 50px;
+    width: 50%;
+    font-size: xx-large;
+    font-weight: bold;
+    display: inline-block;
+    background-color: var(--very-light-beige);
+}
+
+#community-screen-container{
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.community-screen-leftsidecontent{
+    flex-grow: 1;
+    padding-left: 2%;
+    padding-right: 5%;
+}
+
+.community-screen-rightsidecontent{
+    flex-grow: 1;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+.community-screen-middlecontent{
+    flex-grow: 2;
+    padding-right: 2%;
+}
+
+.searchFilterLabel{
+    height: 25px;
+    font-weight: bold;
+}
+
+.searchFilterItem{
+    height: 25px;
+    font-weight: bold;
+}
+
+.searchFilterItem:hover{
+    cursor: pointer;
+    background-color: var(--very-light-beige);
+}
+
+#Community-Assets-Label{
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.Asset-Description-Box{
+    margin-top: 15px;
+    background-color: lightgray;
+    padding-bottom: 10px;
+}
+
+.asset-image{
+    height: 100px;
+    width: 100%;
+}
+
+.asset-text{
+    font-size: medium;
+    font-weight: 500;
+}
+
+#Recent-Searches-Container{
+    height: 80%;
+    width: 350px;
+    background-color: var(--standard-beige);
+    overflow-wrap: break-word;
+}
+
+#Recent-Searches-Label{
+    font-size: x-large;
+    font-weight: bold;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 1%;
+}
+
+.Search-Item{
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: 1%;
+    font-size: medium;
+    font-weight: 500;
+}
+
+.Search-Item:hover{
+    cursor: pointer;
+    background-color: var(--light-beige);
+}

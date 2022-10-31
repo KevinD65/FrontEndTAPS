@@ -1,0 +1,132 @@
+:root{
+    --standard-beige: rgb(200, 173, 126);
+    --very-light-beige: rgb(244, 235, 208);
+    --light-beige: rgb(209,192,168);
+    --medium-beige: rgb(191,170,140);
+  
+    --standard-font:'Lexend';
+}
+
+.userprofile-screen-container{
+    height: 100%;
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#userprofile-bio-panel{
+    height: 100%;
+    flex-grow: 1;
+}
+
+#userprofile-asset-panel{
+    height: 100%;
+    flex-grow: 8;
+}
+
+#bio-container{
+    height: 90%;
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 10%;
+    margin-bottom: 5%;
+    margin-right: 10%;
+    background-color: var(--light-beige);
+}
+
+#my-assets-container{
+    height: 103%;
+    width: 95%;
+    margin-top: 4.5%;
+    background-color: var(--light-beige);
+}
+
+#profile-pic{
+    height: 35%;
+    width: 90%;
+    padding-left: 5%;
+    padding-top: 5%;
+}
+
+#bio-name{
+    width: 90%;
+    padding-left: 5%;
+    font-size: xx-large;
+    font-weight: bolder;
+    overflow-wrap: normal;
+}
+
+#bio-username{
+    width: 90%;
+    padding-left: 5%;
+    font-size: x-large;
+    font-weight: bolder;
+}
+
+#bio-bio{
+    width: 90%;
+    padding-left: 5%;
+    font-size: large;
+    font-weight: bolder;
+}
+
+#updateAccount-container{
+    height: 10%;
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 5%;
+    margin-right: 10%;
+    background-color: var(--light-beige);
+    display: inline-block;
+}
+
+#updateAccount-button{
+    height: 45px;
+    width: 94%;
+    margin-top: 3%;
+    margin-bottom: 5%;
+    margin-left: 3%;
+    margin-right: 3%;
+    padding-top: 4%;
+    text-align: center;
+    background-color: cornflowerblue;
+    display: inline-block;
+    font-size: large;
+    font-weight: bold;
+}
+
+#updateAccount-button:hover{
+    cursor: pointer;
+    background-color:dodgerblue;
+}
+
+#Profile-Assets{
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.updateaccount-screen-panel{
+    margin-top: 15%;
+    margin-right: 5%;
+    float: left;
+    width: 30%;
+    height: 50%;
+    position: relative;
+}
+
+.updateaccount-screen-panel.update-panel{
+    background-color: rgb(209,192,168);
+}
+
+.updateaccount-screen-bioinput{
+    height: 120px;
+    width: 95%;
+    margin-top: 2%;
+    margin-left: 2%;
+}
+
+.updateaccount-screen-bioinput::placeholder{
+    text-align: center;
+}

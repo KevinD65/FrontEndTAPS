@@ -1,0 +1,52 @@
+#pixels{
+    margin-bottom: 2rem;
+}
+
+.pixel {
+    width: 1.4rem;
+    height: 1.4rem;
+  
+   
+  }
+  #map-grid {
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+  }
+  
+  #pixels {
+    margin-bottom: 2rem;
+  }
+  .row {
+    display: flex;
+    width: fit-content;
+  }
+  
+  .map-table {
+    border-collapse: collapse;
+    margin: 2px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+.layers-table thead tr ,.map-table thead tr {
+    background-color: #4E6C50;
+    color: #ffffff;
+    text-align: left;
+}
+.layers-table th, .map-table th,
+.layers-table td, .map-table td {
+    padding: 12px 15px;
+}
+.layers-table {
+    border-collapse: collapse;
+    margin: 40px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+

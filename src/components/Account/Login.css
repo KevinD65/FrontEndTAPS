@@ -1,0 +1,101 @@
+#login-screen-container{
+    height: 100%;
+    width: 100%;
+}
+
+.login-screen-panel{
+    margin-top: 15%;
+    margin-right: 5%;
+    float: left;
+    width: 30%;
+    height: 35%;
+}
+
+.login-screen-panel.login-panel{
+    background-color: rgb(209,192,168);
+    height: fit-content;
+    padding-bottom: 2%;
+}
+
+.login-screen-panel.TAPSLogo{
+    margin-left: 15%;
+}
+
+.login-screen-input{
+    height: 40px;
+    width: 95%;
+    margin-top: 2%;
+    margin-left: 2%;
+}
+
+#login-button{
+    height: 40px;
+    width: 95%;
+    margin-top: 2%;
+    margin-left: 3%;
+    padding-top: 2%;
+    text-align: center;
+    background-color: cornflowerblue;
+    color: white;
+    font-size: large;
+}
+
+#login-button:hover{
+    cursor: pointer;
+}
+
+#cancel-button{
+    height: 40px;
+    width: 95%;
+    margin-top: 2%;
+    margin-left: 3%;
+    padding-top: 2%;
+    text-align: center;
+    background-color: red;
+    color: white;
+    font-size: large;
+}
+
+#cancel-button:hover{
+    cursor: pointer;
+}
+
+#password-reset-button{
+    color:slategray;
+    text-align: center;
+}
+
+#password-reset-button:hover{
+    cursor: pointer;
+}
+
+#account-reset-label{
+    width: auto;
+    text-align: center;
+    display: inline-block;
+    margin-top: 20px;
+    margin-left: 30%;
+}   
+
+#account-reset-button{
+    width: auto;
+    text-align: center;
+    display: inline-block;
+    margin-left: 3px;
+    color: cornflowerblue;
+}
+
+#account-reset-button:hover{
+    cursor: pointer;
+}
+
+#taps-slogan{
+    font-family: 'Lexend';
+    text-align: center;
+}
+
+#TAPS-logo-login{
+    height: 100%;
+    width: 100%;
+}
+
