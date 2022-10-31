@@ -9,10 +9,11 @@ import IconButton from '@mui/material/IconButton';
 import tapsLogo from "../static/taps-logo.svg" 
 import { Tabs,Tab } from '@mui/material';
 import { borderLeft } from '@mui/system';
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 const Navbar=()=> {
-  const [value,setvalue]=useState(0)
+  const [value,setvalue]=useState(0);
+  const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" 
@@ -43,7 +44,7 @@ const Navbar=()=> {
             <Tab label="Profile" component={Link} to={`/userProfile`} sx={{color:"#F8EDE3", fontWeight:700,marginRight:5}}/>
             
           </Tabs>
-          <Button color="inherit">Logout</Button>
+          <Button color="inherit" onClick={()=>{navigate("/")}}>Logout</Button>
         </Toolbar>
         
       </AppBar>

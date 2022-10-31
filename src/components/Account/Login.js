@@ -2,10 +2,12 @@ import { React, useState } from 'react';
 import './Login.css';
 import TAPSLogo from '../../TAPSLogo.PNG';
 import SignUpModal from './SignUpModal';
+import {Link, useNavigate} from "react-router-dom"
 
 function Login() {
 
   const[signUpModal, toggleSignUpModal] = useState(false);
+  const navigate = useNavigate();
 
   const submitLogin = () => {
     let emailOrUsername = document.getElementById("usernameEnter").value;
@@ -36,7 +38,7 @@ function Login() {
       <div className='login-screen-panel login-panel'>
         <input id='usernameEnter' className='login-screen-input' type="text" placeholder="Email or username"></input>
         <input id='passwordEnter' className='login-screen-input' type="text" placeholder="Password"></input>
-        <div id='login-button' onClick={submitLogin}>LOG IN</div>
+        <div id='login-button'  onClick={()=>{navigate("/userAsset")}}>LOG IN</div>
         <div id='password-reset-button'>Forgot Password?</div>
         <div id='account-reset-label'>Don't have an account?</div>
         <div id='account-reset-button' onClick={signUp}>Sign up</div>
