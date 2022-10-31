@@ -17,6 +17,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Login />}/>
       </Routes>
+      <Navbar/>
       <Routes>
         <Route element={<Layout/>}>
           <Route path='/userAsset' element={<UserAsset />}/>
