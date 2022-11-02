@@ -23,11 +23,21 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
 const drawerWidth = 240;
-const Sidemenu = () => {
+const Sidemenu = (props) => {
+  
+  
+
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+
+  const createMap = () => {
+    setAnchor(false);
+    props.createNewMapCallback();
+  }
+  
+
     return (
   <Drawer
     PaperProps={{
@@ -73,7 +83,7 @@ const Sidemenu = () => {
                 }}
                 
               >
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; New Map</MenuItem>
+                <MenuItem onClick={() => createMap()}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; New Map</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={()=>{setAnchor(false)}}> <GridViewOutlinedIcon/> &nbsp; New Tile</MenuItem>
                 

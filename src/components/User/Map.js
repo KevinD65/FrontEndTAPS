@@ -10,18 +10,27 @@ import {useNavigate} from "react-router-dom"
 import Checkbox from '@mui/material/Checkbox';
 import StarBorder from '@mui/icons-material/StarBorder';
 import Star from '@mui/icons-material/Star';
+import TextField from '@mui/material/TextField';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import IconButton from '@mui/material/IconButton';
 
 
+const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
+  const [changingName, toggleNameChange] = React.useState(false);
 
-const Map=({mapName})=> {
-  console.log(mapName)
   const navigate= useNavigate();
+  const doneEditingName = (name) => {
+    toggleNameChange(false);
+    console.log(name);
+    changeNameCallback(mapId, name);
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter'){
+      doneEditingName(e.target.value);
+    }
+  }
   return (
     <Card sx={{ width:250  ,ml:3, mr:3, mt:1,boxShadow: "4px 4px 4px #F0EBCE" , }}
-    
-    onDoubleClick={()=>{
-      navigate('/MapEditor');
-    }}
     >
       <CardActionArea>
         <CardMedia
@@ -29,18 +38,28 @@ const Map=({mapName})=> {
           height="200"
           image={Waterfall}
           alt="map"
+          onDoubleClick={()=>{
+            navigate('/MapEditor');
+          }}
         />
         <CardContent sx={{display:'flex',}}>
           
           
             <MapOutlinedIcon sx={{mt:1}}></MapOutlinedIcon>
             
-            <Typography gutterBotto sx={{fontSize:"1.3rem",mt:1,ml:1}}  component="div">{mapName} </Typography>
-          
+            {changingName ? 
+            <TextField sx={{fontSize:"1.3rem",mt:1,ml:1}} defaultValue={mapName} onBlur={(e) => doneEditingName(e.target.value)} 
+            onKeyDown={handleKeyDown} variant="standard" /> : 
+            <Typography gutterBotto sx={{fontSize:"1.3rem",mt:1,ml:1}}  component="div" 
+            onDoubleClick={() => toggleNameChange(true)}>{mapName} </Typography>}
             <Checkbox  aria-label='Checkbox demo'
               icon={<StarBorder />} 
               checkedIcon={<Star  sx={{color:"#AA8B56"}}/>} 
               sx={{ boxShadow: 0.5 , ml:'auto'}}/>
+            <IconButton aria-label="delete" onClick={() => deleteMapCallback(mapId)}>
+              <DeleteOutlinedIcon />
+            </IconButton>
+            
     
           
           
