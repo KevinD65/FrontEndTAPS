@@ -52,6 +52,8 @@ const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
             onKeyDown={handleKeyDown} variant="standard" /> : 
             <Typography gutterBotto sx={{fontSize:"1.3rem",mt:1,ml:1}}  component="div" 
             onDoubleClick={() => toggleNameChange(true)}>{mapName} </Typography>}
+
+            
             <Checkbox  aria-label='Checkbox demo'
               icon={<StarBorder />} 
               checkedIcon={<Star  sx={{color:"#AA8B56"}}/>} 

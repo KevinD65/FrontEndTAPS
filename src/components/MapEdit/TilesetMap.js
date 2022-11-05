@@ -12,6 +12,8 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import {Typography} from "@mui/material";
 import { fontWeight } from "@mui/system";
+import TS from "./samplets.png"
+import SelectGrid from "./SelectGrid";
 
 const Tiles=[Grass,Grass,Grass,Grass,Grass]
 const itemData = [
@@ -66,10 +68,35 @@ const itemData = [
   ];
   
 export default function TilesetMap() {
+  const [openTS, toggleOpen] = React.useState(false);
+  const [grid_points, setGridPoints] = React.useState([]);
 
+  const grid_generator = (width, height, tile_width, tile_height) => {
+    let rows = [];
+    for(let i = 0; i < height; i = i + tile_height){
+      let new_row = [];
+      for(let j = 0; j < width; j = j + tile_width){
+        let canvas_prop = {sx: j, sy: i, swidth: tile_width, sheight: tile_height, x: 0, y: 0, width: tile_width, height: tile_height};
+        new_row.push(canvas_prop); 
+      }
+      rows.push(new_row);
+    }
+    return rows;
+  }
+
+
+  const openSet = () => {
+    toggleOpen(true);
+    let gp = grid_generator(550, 200, 40, 40)
+    setGridPoints(gp);
+  }
  return (
     <>
     <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
+    <Button onClick={() => openSet()}>Open</Button>
+    {openTS && <SelectGrid gridPoints={grid_points}/>}
+    <img src={'https://tapsimages.s3.amazonaws.com/VIP+SBU+MAPS+Tileset.png'} ></img>
+    {/*
     <ImageList sx={{ width: 239, height: 220 }} cols={3} rowHeight={45}>
       {itemData.map((item) => (
         <ImageListItem key={item.img}>
@@ -82,7 +109,7 @@ export default function TilesetMap() {
         </ImageListItem>
       ))}
     </ImageList>
-    
+    */}
     </>
     
  );

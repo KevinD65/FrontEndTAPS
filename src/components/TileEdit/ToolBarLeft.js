@@ -105,6 +105,19 @@ const Sidemenu = (props) => {
     <Divider />
          {/* Map properties*/}
          <ChromePicker color={color} onChange={colorUpdate}/>
+         <Box>
+            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, marginLeft:2, marginRight:2, pr:1, pl:1, backgroundColor:"#4E6C50" }} 
+            onClick={() => {props.eraseOffCallback()}}>
+                <Typography variant="h6" component="h2">Draw</Typography>
+                
+            </Button>
+            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, marginLeft:2, marginRight:2, pr:1, pl:1, backgroundColor:"#4E6C50" }} 
+            onClick={() => {props.eraseOnCallback()}}>
+                <Typography variant="h6" component="h2">Erase</Typography>
+                
+            </Button>
+         </Box>
+          
         <Divider />
     </List>
     

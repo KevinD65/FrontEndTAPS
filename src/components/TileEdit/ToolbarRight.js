@@ -26,7 +26,7 @@ import LayersEdit  from "./LayersEdit"
 import Avatar from './Collaborators';
 
 const drawerWidth = 240;
-const Sidemenu = () => {
+const Sidemenu = (props) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -51,7 +51,9 @@ const Sidemenu = () => {
     </Box>
     
          {/* List of sidebar components */}
-         <LayersEdit/>
+         <LayersEdit changeBrushSizeCallback={props.changeBrushSizeCallback} 
+         defaultBrush={props.defaultBrush}
+         setErase={props.setErase} erase={props.erase}/>
         <Divider />
 
     </List>
