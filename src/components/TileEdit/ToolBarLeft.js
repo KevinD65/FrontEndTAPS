@@ -31,7 +31,7 @@ const Sidemenu = (props) => {
     sx={{
       width: drawerWidth,
       flexShrink: 0,
-      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', border:"0" },
+      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', },
       boxShadow:"10px 10px 10px pink"
     }}
       >
@@ -102,7 +102,7 @@ const Sidemenu = (props) => {
               
               
             </Box>
-    <Divider />
+    
          {/* Map properties*/}
          <ChromePicker color={color} onChange={colorUpdate}/>
          <Box>

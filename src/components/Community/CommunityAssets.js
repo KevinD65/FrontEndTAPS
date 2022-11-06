@@ -1,3 +1,4 @@
+import { Typography,Divider } from "@mui/material";
 import React from "react";
 import Asset from "./Asset";
 import './Community.css';
@@ -7,7 +8,9 @@ const CommunityAssets = (props) => {
 
     return (
         <div id='Community-Assets'>
-            <div id='Community-Assets-Label'>Some Popular Assets</div>
+            <Typography id='Community-Assets-Label' sx={{pl:4}}>Some Popular Assets</Typography>
+            <hr></hr>  
+            
             {
                 /* THIS WILL MAP ALL QUERIED COMMUNITY ASSETS TO THEIR OWN <Asset> COMPONENT
                 props.communityassets.map(asset => (

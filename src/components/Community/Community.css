@@ -75,6 +75,9 @@
     cursor: pointer;
     background-color: var(--very-light-beige);
 }
+#Community-Assets{
+    padding-left: 2%;
+}
 
 #Community-Assets-Label{
     font-size: x-large;
@@ -105,11 +108,11 @@
 }
 
 #Recent-Searches-Label{
-    font-size: x-large;
+    font-size: 1rem;
     font-weight: bold;
-    padding-left: 1%;
-    padding-right: 1%;
-    padding-top: 1%;
+    padding: 2%;
+    color:white;
+    text-align: center;
 }
 
 .Search-Item{
@@ -118,6 +121,7 @@
     padding-top: 1%;
     font-size: medium;
     font-weight: 500;
+    
 }
 
 .Search-Item:hover{

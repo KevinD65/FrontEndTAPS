@@ -2,6 +2,7 @@ import { React, useState } from "react";
 import CommunityAssets from "./CommunityAssets";
 import RecentSearches from "./RecentSearches";
 import Searchbar from "./Searchbar";
+import ToolBarLeft from "./ToolBarLeft";
 
 const Community = () => {
     const [recentSearches, updateRecentSearches] = useState([]);
@@ -38,7 +39,8 @@ const Community = () => {
         <div className='Community'>
             <Searchbar executeSearch={executeSearch}/>
             <div id='community-screen-container'>
-                <div className="community-screen-leftsidecontent">
+                <ToolBarLeft/>
+                {/* <div className="community-screen-leftsidecontent">
                     <div className="searchFilterLabel">Type</div>
                     <hr></hr>
                     <div className="searchFilterItem">Map</div>
@@ -53,7 +55,7 @@ const Community = () => {
                     <div className="searchFilterItem">Icons</div>
                     <div className="searchFilterItem">Background</div>
                     <div className="searchFilterItem">Sprites</div>
-                </div>
+                </div> */}
                 <div className="community-screen-middlecontent">
                     <CommunityAssets/>
                 </div>
