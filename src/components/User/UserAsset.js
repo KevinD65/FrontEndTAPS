@@ -31,7 +31,8 @@ const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"m
 {name:"My city" ,image:"something.svg", owner:"abcd1", type:"map",starred:1},
 {name:"mountain" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:0},{name:"soil" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:1}]
 
-export default function UserAsset() {
+export default function UserAsset(props) {
+
   const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_ASSET_SCREEN_MAPS, {
     variables: {input: "63563b1a8e23cf6f7a6081d4"},
   });

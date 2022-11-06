@@ -6,18 +6,17 @@ import {Link, useNavigate} from "react-router-dom";
 import {gql, useQuery, useMutation} from '@apollo/client';
 import { ADD_USER, GET_USER } from '../../graphql/queries/loginScreenUsers';
 
-function Login() {
+function Login(props) {
   let currentUser = null;
   let attemptUserSignIn = null;
   const [emailOrUsernameInput, updateEmailOrUsernameInput] = useState(null);
   let passwordInput = null;
-  //const [passwordInput, updatePasswordInput] = useState(null); //turned into a state to force refetch when password is updated
   const[signUpModal, toggleSignUpModal] = useState(false);
   const navigate = useNavigate();
 
   //GET_USER QUERY
   const { loading: get_user_loading, error: get_user_error, data: userdata, refetch } = useQuery(GET_USER, {
-    variables: {username: emailOrUsernameInput},
+    variables: {username: emailOrUsernameInput}
   });
   if(userdata){
     if(userdata.getUser[0]){
@@ -84,9 +83,9 @@ function Login() {
       }
       else if(currentUser){ //sucessful sign-in
         //CALL LOGIN RESOLVER FOR ACCESS/REFRESH TOKENS
-        //UPDATE USER INFORMATION IN PARENT (App.js) SO THAT USER INFORMATION CAN BE SENT TO OTHER ROUTE COMPONENTS (SEND AN AUTH PROP DOWN FROM App.js)
 
-        console.log("YES " + currentUser.username);
+        props.authenticateUser(currentUser);
+        //console.log("YES " + currentUser.username);
         navigate('/userAsset');
       }
     }
@@ -94,6 +93,13 @@ function Login() {
     //get the user based off username
     //generate the hash of the input password
     //compare the hashes for successful login
+  }
+
+  const passwordRecovery = () => {
+    //SHOW PASSWORD RECOVERY MODAL WHICH ASKS FOR EMAIL
+    //VALIDATE EMAIL (VALID AND IN DATABASE)
+    //SEND EMAIL WITH LINK TO TAPS PASSWORD RECOVERY SCREEN
+    //
   }
 
   const showSignUp = () => {
@@ -111,6 +117,19 @@ function Login() {
         bio: bio
       }
     });
+
+    //updateEmailOrUsernameInput(username);
+    console.log("MY USERNAME: " + username);
+    await refetch({username: username});
+    if(userdata){
+      console.log(userdata);
+      if(userdata.getUser[0]){
+        currentUser = userdata.getUser[0];
+      }
+    }
+    //console.log("SIGNING IN");
+    props.authenticateUser(currentUser);
+    navigate('/userAsset');
   }
 
   return (
@@ -124,10 +143,10 @@ function Login() {
         </div>
         {signUpModal ? <SignUpModal toggleSignUpModal = {toggleSignUpModal} submitSignUp={submitSignUp}/> :
         <div className='login-screen-panel login-panel'>
-          <input id='usernameEnter' className='login-screen-input' type="text" placeholder="Email or username" onChange={(event) => handleSignInInput("emailOrUsername", event.target.value)}></input>
-          <input id='passwordEnter' className='login-screen-input' type="text" placeholder="Password" onChange={(event) => handleSignInInput("password", event.target.value)}></input>
+          <input autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Email or username" onChange={(event) => handleSignInInput("emailOrUsername", event.target.value)}></input>
+          <input autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => handleSignInInput("password", event.target.value)}></input>
           <div id='login-button'  onClick={submitLogin}>LOG IN</div>
-          <div id='password-reset-button'>Forgot Password?</div>
+          <div id='password-reset-button' onClick={passwordRecovery}>Forgot Password?</div>
           <div id='account-reset-label'>Don't have an account?</div>
           <div id='account-reset-button' onClick={showSignUp}>Sign up</div>
         </div>}
