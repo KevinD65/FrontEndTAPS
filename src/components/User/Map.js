@@ -50,7 +50,7 @@ const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
             {changingName ? 
             <TextField sx={{fontSize:"1.3rem",mt:1,ml:1}} defaultValue={mapName} onBlur={(e) => doneEditingName(e.target.value)} 
             onKeyDown={handleKeyDown} variant="standard" /> : 
-            <Typography gutterBotto sx={{fontSize:"1.3rem",mt:1,ml:1}}  component="div" 
+            <Typography noWrap gutterBotto sx={{fontSize:"1.0rem",mt:1,ml:1}}  component="div" 
             onDoubleClick={() => toggleNameChange(true)}>{mapName} </Typography>}
 
             
