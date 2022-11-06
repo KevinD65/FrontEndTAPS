@@ -1,28 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import { Button,Grid,Popover } from '@mui/material';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
-import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
+import {Grid} from '@mui/material';
 import Map from "./Map"
 import Tileset from "./Tileset"
-import { useState } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import Sidemenu from './Sidemenu';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP} from "../../graphql/queries/assetScreenMaps";
 
 
@@ -103,15 +87,15 @@ export default function UserAsset() {
   <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}  >Tilesets <hr/></Typography>
     <Grid container   >
       {dummyData.map((data)=>{
-            if (data.type=="tiles"){
+            if (data.type==="tiles"){
                   
                 return(
                 <Grid item  md={3} >
-                <Tileset  tileName={data.name}/>
+                <Tileset  tileName={data.name} />
                 
                 </Grid>
       )}
-                      })}
+                      return null})}
   
     </Grid>
 
