@@ -13,6 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "^2.4.3",
+    "email-validator": "^2.0.4",
     "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
     "react": "^18.2.0",

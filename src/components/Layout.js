@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 
-const Layout = () => {
+const Layout = (props) => {
   return (
     <>
-      <Navbar />
+      <Navbar authenticateUser = {props.authenticateUser}/>
       <Outlet />
     </>
   );

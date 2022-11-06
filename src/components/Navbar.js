@@ -11,9 +11,16 @@ import { Tabs,Tab } from '@mui/material';
 import { borderLeft } from '@mui/system';
 import {Link, useNavigate} from "react-router-dom"
 
-const Navbar=()=> {
+const Navbar=(props)=> {
   const [value,setvalue]=useState(0);
   const navigate = useNavigate();
+
+  //USED TO SET THE AUTHENTICATED USER STATE VARIABLE TO NULL AND REDIRECT TO THE LOGIN SCREEN UPON LOGOUT
+  const handleLogout = () => {
+    props.authenticateUser(null);
+    navigate('/');
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" 
@@ -44,7 +51,7 @@ const Navbar=()=> {
             <Tab label="Profile" component={Link} to={`/userProfile`} sx={{color:"#F8EDE3", fontWeight:700,marginRight:5}}/>
             
           </Tabs>
-          <Button color="inherit" onClick={()=>{navigate("/")}}>Logout</Button>
+          <Button color="inherit" onClick={handleLogout}>Logout</Button>
         </Toolbar>
         
       </AppBar>
