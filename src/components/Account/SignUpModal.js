@@ -93,11 +93,11 @@ function SignUpModal(props) {
 
   return (
     <div className='login-screen-panel login-panel'>
-        <input id='enterName' className='login-screen-input' type="text"  placeholder="Name" onChange={(event) => storeInputValue("name", event.target.value)}></input>
-        <input id='emailEnter' className='login-screen-input' type="text" placeholder="Email" onChange={(event) => storeInputValue("email", event.target.value)}></input>
-        <input id='usernameEnter' className='login-screen-input' type="text" placeholder="Username" onChange={(event) => storeInputValue("username", event.target.value)}></input>
-        <input id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => storeInputValue("password", event.target.value)}></input>
-        <input id='passwordConfirmEnter' className='login-screen-input' type="password" placeholder="Confirm Password" onChange={(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
+        <input autocomplete="new-password" id='enterName' className='login-screen-input' type="text"  placeholder="Name" onChange={(event) => storeInputValue("name", event.target.value)}></input>
+        <input autocomplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Email" onChange={(event) => storeInputValue("email", event.target.value)}></input>
+        <input autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Username" onChange={(event) => storeInputValue("username", event.target.value)}></input>
+        <input autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => storeInputValue("password", event.target.value)}></input>
+        <input autocomplete="new-password" id='passwordConfirmEnter' className='login-screen-input' type="password" placeholder="Confirm Password" onChange={(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
         <div id='login-button' onClick={() => handleSubmitSignUp(inputName, inputUsername, inputEmail, inputPassword, inputPasswordConfirm)}>Sign Up</div>
         <div id='cancel-button' onClick={cancelSignUp}>Cancel Sign Up</div>
     </div>
