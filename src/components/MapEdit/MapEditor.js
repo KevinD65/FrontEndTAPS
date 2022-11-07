@@ -5,10 +5,12 @@ import { Toolbar,Box } from "@mui/material";
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import MapGrid from "./MapGrid";
-
+import { useState } from "react";
 
 
 const MapEditor = () => {
+    const [mapWidth, setMapWidth]=useState(32)
+    const [mapHeight, setMapHeight]=useState(32)
     return (
         <>
         
@@ -17,10 +19,10 @@ const MapEditor = () => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft ></ToolbarLeft>
+        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} ></ToolbarLeft>
         </Grid>
-        <Grid item  md={8}>
-       <MapGrid/>
+        <Grid item  md={8} >
+       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth}    />
         </Grid>
 
         <Grid item  md={2}>

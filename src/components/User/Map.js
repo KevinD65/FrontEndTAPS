@@ -19,6 +19,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
   const [changingName, toggleNameChange] = React.useState(false);
+  
 
   const navigate= useNavigate();
   const doneEditingName = (name) => {

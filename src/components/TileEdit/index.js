@@ -567,6 +567,7 @@ export default class extends PureComponent {
 
   render() {
     return (
+      <div id="tile-canvas">
       <div
         className={this.props.className}
         style={{
@@ -606,6 +607,7 @@ export default class extends PureComponent {
             />
           );
         })}
+      </div>
       </div>
     );
   }

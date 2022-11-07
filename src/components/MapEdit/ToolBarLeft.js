@@ -14,7 +14,7 @@ import {Typography} from '@mui/material';
 
 
 const drawerWidth = 240;
-const Sidemenu = () => {
+const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -98,7 +98,7 @@ const Sidemenu = () => {
             </Box>
     <Divider />
          {/* Map properties*/}
-         <MapEditNav/>
+         <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} />
         <Divider />
     </List>
     

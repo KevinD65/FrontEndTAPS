@@ -6,13 +6,13 @@ import { tableRowClasses } from "@mui/material";
 
 
 
-const MapGrid = () => {
-    const height=30;
+const MapGrid = ({mapWidth, mapHeight}) => {
+    
     
     let rows=[]
     
-    for (let i=0; i<height; i++){
-        rows.push(<Row key={i} />)
+    for (let i=0; i<mapHeight; i++){
+        rows.push(<Row mapWidth={mapWidth} key={i} />)
     }
 
     return (

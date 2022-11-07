@@ -23,14 +23,14 @@ function App() {
         <Route path='/' element={<Login authenticateUser = {authenticateUser}/>}/>}
       </Routes>
       <Routes>
-        {authenticatedUser &&
+        
         <Route element={<Layout authenticateUser = {authenticateUser}/>}>
           <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/community' element={<Community authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser}/>}/>
-        </Route>}
+        </Route>
       </Routes>
     </div>
   );
