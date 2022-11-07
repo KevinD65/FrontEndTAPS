@@ -14,8 +14,8 @@ mutation($name: String, $username: String, $email: String, $hash: String, $bio: 
 `;
 
 const GET_USER = gql`
-query($username: String){
-  getUser(username: $username){
+query($username: String, $email: String){
+  getUser(username: $username, email: $email){
     id,
     name,
     username,

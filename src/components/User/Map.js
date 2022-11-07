@@ -13,10 +13,13 @@ import Star from '@mui/icons-material/Star';
 import TextField from '@mui/material/TextField';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
 const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
   const [changingName, toggleNameChange] = React.useState(false);
+  
 
   const navigate= useNavigate();
   const doneEditingName = (name) => {
@@ -44,7 +47,6 @@ const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
         />
         <CardContent sx={{display:'flex',}}>
           
-          
             <MapOutlinedIcon sx={{mt:1}}></MapOutlinedIcon>
             
             {changingName ? 
@@ -58,6 +60,11 @@ const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
               icon={<StarBorder />} 
               checkedIcon={<Star  sx={{color:"#AA8B56"}}/>} 
               sx={{ boxShadow: 0.5 , ml:'auto'}}/>
+
+            <Checkbox  aria-label='Checkbox demo'
+              icon={<VisibilityOffIcon />} 
+              checkedIcon={<VisibilityIcon/>} />
+
             <IconButton aria-label="delete" onClick={() => deleteMapCallback(mapId)}>
               <DeleteOutlinedIcon />
             </IconButton>

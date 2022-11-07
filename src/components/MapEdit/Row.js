@@ -9,12 +9,12 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 
 
-const Row = () => {
-   const  width=42;
+const Row = ({ mapWidth}) => {
    
-   const selectedColor= "#000000"
+   
+   
    let pixels=[]
-    for (let i=0; i<width; i++){
+    for (let i=0; i<mapWidth; i++){
         pixels.push(<Pixel key={i}></Pixel>)
     }
 
