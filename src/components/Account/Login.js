@@ -10,7 +10,7 @@ function Login(props) {
   let currentUser = null;
   let attemptUserSignIn = null;
   const [emailOrUsernameInput, updateEmailOrUsernameInput] = useState(null);
-  let passwordInput = null;
+  const [passwordInput, updatePasswordInput] = useState(null);
   const[signUpModal, toggleSignUpModal] = useState(false);
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ function Login(props) {
       updateEmailOrUsernameInput(value);
     }
     else if(type === "password"){
-      passwordInput = value; //purposely not used state variable so value is not preserved upon refresh for security
+      updatePasswordInput(value);
     }
   }
 
@@ -132,6 +132,8 @@ function Login(props) {
     //console.log("SIGNING IN");
     props.authenticateUser(currentUser);
     navigate('/userAsset');
+
+    return true;
   }
 
   return (
