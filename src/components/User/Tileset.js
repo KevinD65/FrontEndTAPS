@@ -10,6 +10,10 @@ import {useNavigate} from "react-router-dom"
 import Checkbox from '@mui/material/Checkbox';
 import StarBorder from '@mui/icons-material/StarBorder';
 import Star from '@mui/icons-material/Star';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Tileset=({tileName})=> {
   console.log(tileName)
@@ -33,9 +37,16 @@ const Tileset=({tileName})=> {
           <Typography gutterBottom sx={{fontSize:"1.2rem",mt:1,ml:1}} component="div"> {tileName} </Typography>
           <Checkbox  aria-label='Checkbox demo'
               icon={<StarBorder />} 
-              checkedIcon={<Star />} 
+              checkedIcon={<Star sx={{color:"#AA8B56"}}/>} 
               sx={{ boxShadow: 0.5 , ml:'auto'}}/>
-          
+
+          <Checkbox  aria-label='Checkbox demo'
+              icon={<VisibilityOffIcon />} 
+              checkedIcon={<VisibilityIcon/>} />
+
+            <IconButton aria-label="delete">
+              <DeleteOutlinedIcon />
+            </IconButton>
         </CardContent>
       </CardActionArea>
     </Card>
