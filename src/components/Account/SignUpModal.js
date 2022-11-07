@@ -67,7 +67,7 @@ function SignUpModal(props) {
         return;
       }
 
-      //PERFORM EMAIL VERIFICATION!!!
+      //PERFORM EMAIL VERIFICATION
       if(!validator.validate(email)){
         alert("INVALID EMAIL ADDRESS");
         return;
@@ -77,14 +77,14 @@ function SignUpModal(props) {
       let hash = bcrypt.hashSync(password, saltRounds);
 
       //console.log("THIS IS MY HASH: " + hash);
-      props.submitSignUp(name, username, email, hash, "");
-
-      //RESET ALL FIELDS FOR SECURITY
-      updateInputName(null);
-      updateInputUsername(null);
-      updateInputEmail(null);
-      updateInputPassword(null);
-      updateInputPasswordConfirm(null);
+      if(props.submitSignUp(name, username, email, hash, "")){
+        //RESET ALL FIELDS FOR SECURITY
+        updateInputName(null);
+        updateInputUsername(null);
+        updateInputEmail(null);
+        updateInputPassword(null);
+        updateInputPasswordConfirm(null);
+      }
   }
 
   const cancelSignUp = () => {
