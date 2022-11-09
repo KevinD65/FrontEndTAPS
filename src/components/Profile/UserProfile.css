@@ -128,5 +128,11 @@
 }
 
 .updateaccount-screen-bioinput::placeholder{
-    text-align: center;
+    text-align: left;
+    vertical-align: top;
+}
+
+.updateaccount-screen-panel.update-panel{
+    height: fit-content;
+    padding-bottom: 2%;
 }

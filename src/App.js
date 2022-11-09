@@ -26,7 +26,7 @@ function App() {
         
         <Route element={<Layout authenticateUser = {authenticateUser}/>}>
           <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser}/>}/>
-          <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser}/>}/>
+          <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
           <Route path='/community' element={<Community authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser}/>}/>
