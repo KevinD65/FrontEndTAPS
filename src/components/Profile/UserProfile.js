@@ -4,13 +4,29 @@ import DogeLoaf from '../../dogeloaf.jpg';
 import ProfileAssets from "./ProfileAssets";
 import ProfileNavbar from "./ProfileNavbar";
 import UpdateAccountScreen from "./UpdateAccountScreen";
+import {gql, useMutation, useQuery} from '@apollo/client';
+import {UPDATE_USER_INFO, GET_USER} from '../../graphql/queries/profileScreenQM';
 
 const UserProfile = (props) => {
 
     //props contains current User object
-    let currentUser = props.currentUser;
+    let currentUser = props.authenticatedUser;
+
+    const { loading: get_user_loading, error: get_user_error, data: user_data } = useQuery(GET_USER, {
+        variables: {input: currentUser.username},
+      });
+    
+      const refetchUser = {
+        refetchQueries: [
+          {
+            query: GET_USER,
+            variables: {input: currentUser.username}
+          }
+        ]
+      }
 
     const [updateAccountScreen, toggleUpdateAccountScreen] = useState(false);
+    const [updateAccount] = useMutation(UPDATE_USER_INFO, refetchUser);
 
     const queryProfileAssets = async(assetType) => {
         if(assetType == "Map"){
@@ -21,8 +37,19 @@ const UserProfile = (props) => {
         }
     }
 
-    const handleUpdateAccount = async(updatedUserInfo) => {
-        //calls mutation (identifies user based off of ID)
+    const handleUpdateAccount = async(id, name, username, email, hash, bio) => {
+        let updatedUser = await updateAccount({
+            variables: {
+              id: id,
+              name: name,
+              username : username, 
+              email: email,
+              hash: hash, 
+              bio: bio
+            }
+          });
+        console.log(updatedUser.data.updateUser);
+        props.authenticateUser(updatedUser); //update the authenticated user
     }
 
     const showUpdateAccountScreen = async() => {
@@ -50,7 +77,7 @@ const UserProfile = (props) => {
                         <ProfileAssets/>
                     </div>
                 </div>
-            </>: <UpdateAccountScreen currentUser={currentUser} updateAccount={handleUpdateAccount} showUpdateAccountScreen={showUpdateAccountScreen}/>
+            </>: <UpdateAccountScreen currentUser={props.authenticatedUser} updateAccount={handleUpdateAccount} showUpdateAccountScreen={showUpdateAccountScreen}/>
             }
         </div>
     )
