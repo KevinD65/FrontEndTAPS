@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar"
 import TileEditor from "./components/TileEdit/TileEditor"
 import MapEditor from "./components/MapEdit/MapEditor"
 import Layout from './components/Layout';
+import PasswordResetScreen from './components/Account/PasswordResetScreen';
 
 function App() {
 
@@ -22,8 +23,7 @@ function App() {
         {!authenticatedUser &&
         <Route path='/' element={<Login authenticateUser = {authenticateUser}/>}/>}
       </Routes>
-      <Routes>
-        
+      <Routes>  
         <Route element={<Layout authenticateUser = {authenticateUser}/>}>
           <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
@@ -31,6 +31,7 @@ function App() {
           <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser}/>}/>
         </Route>
+        <Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
       </Routes>
     </div>
   );
