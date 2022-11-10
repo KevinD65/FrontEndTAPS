@@ -14,8 +14,8 @@ mutation($name: String, $username: String, $email: String, $hash: String, $bio: 
 `;
 
 const GET_USER = gql`
-query($username: String, $email: String){
-  getUser(username: $username, email: $email){
+query($id: ID, $username: String, $email: String){
+  getUser(id: $id, username: $username, email: $email){
     id,
     name,
     username,
@@ -26,4 +26,22 @@ query($username: String, $email: String){
 } 
 `;
 
-export{ADD_USER, GET_USER};
+const VALIDATE_PWRESET_TOKEN = gql`
+type Query{
+  getResetPasswordTokenValidation(id: ID!, token: String!): Boolean!
+}
+`;
+
+const SEND_RECOVERY_EMAIL = gql`
+mutation($id: ID!, $email: String, $hash: String){
+  sendRecoveryEmail(id: $id, email: $email, hash: $hash)
+} 
+`;
+
+export{ADD_USER, GET_USER, VALIDATE_PWRESET_TOKEN, SEND_RECOVERY_EMAIL};
+
+/**
+ * query($id: ID!, $token: String!){
+  getResetPasswordTokenValidation(id: $id, token: $token): Boolean!
+} 
+ */

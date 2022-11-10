@@ -19,11 +19,6 @@ function SignUpModal(props) {
   const { loading: get_user_loading, error: get_user_error, data: userdata, refetch: refetchUser } = useQuery(GET_USER, {
     variables: { username: inputUsername, email: inputEmail},
   });
-  if(userdata){
-    if(userdata.getUser[0]){
-      
-    }
-  }
 
   const storeInputValue = async(field, value) => {
     if(field == "name"){
@@ -57,8 +52,8 @@ function SignUpModal(props) {
       await refetchUser({ username: username, email: email });
       if(userdata){
         //console.log(userdata);
-        if(userdata.getUser[0]){
-          user = userdata.getUser[0];
+        if(userdata.getUser){
+          user = userdata.getUser;
         }
       }
 

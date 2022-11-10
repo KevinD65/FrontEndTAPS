@@ -24,9 +24,9 @@ function Login(props) {
     variables: {username: usernameInput, email: emailInput}
   });
   if(userdata){
-    if(userdata.getUser[0]){
+    if(userdata.getUser){
       console.log("ATTEMPTED USER SIGN IN");
-      attemptUserSignIn = userdata.getUser[0];
+      attemptUserSignIn = userdata.getUser;
     }
   }
 
@@ -58,18 +58,18 @@ function Login(props) {
 
       await refetch();
       if(userdata){
-        if(userdata.getUser[0]){
+        if(userdata.getUser){
           console.log("ATTEMPTED USER SIGN IN");
-          attemptUserSignIn = userdata.getUser[0];
+          attemptUserSignIn = userdata.getUser;
         }
       }
 
-      if(userdata.getUser[0] === undefined){ //attempted user not in database
+      if(userdata.getUser === undefined){ //attempted user not in database
         console.log("USER NOT PRESENT IN DB");
         attemptUserSignIn = null;
       }
       else{
-        if(bcrypt.compareSync(passwordInput, userdata.getUser[0].hash)){ //successful hash match
+        if(bcrypt.compareSync(passwordInput, userdata.getUser.hash)){ //successful hash match
           currentUser = attemptUserSignIn;
           console.log("SUCCESSFUL HASH MATCH");
         }
