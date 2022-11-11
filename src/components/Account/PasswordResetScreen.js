@@ -1,12 +1,14 @@
 import { React, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {gql, useQuery} from '@apollo/client';
-import { GET_USER, VALIDATE_PWRESET_TOKEN } from '../../graphql/queries/loginScreenUsers';
+import { VALIDATE_PWRESET_TOKEN } from '../../graphql/queries/loginScreenUsers';
 import './Login.css';
+import {Link, useNavigate} from "react-router-dom";
 
 
 function PasswordResetScreen(props) {
-    //const [tokenValidated, setTokenValidated] = useState(false);
+    const [tokenValidated, validateToken] = useState(false);
+    const navigate = useNavigate();
 
     //EXTRACT ID AND TOKEN FROM URL
     
@@ -20,61 +22,30 @@ function PasswordResetScreen(props) {
         //--> THE DECRYPTED TOKEN SHOULD PRODUCE THE CORRECT ID AND EMAIL; OTHERWISE, TOKEN IS INVALID
         //--> IF THE DECRYPTED TOKEN MATCHES, WE HAVE TO 1.) GENERATE A NEW PASSWORD HASH
 
-    
-    const { loading: get_user_loading, error: get_user_error, data: userdata, refetch: getUserForValidation } = useQuery(GET_USER, {
-        variables: {id: id}
-    });
-
-    /*
-    const { loading: get_validatePWResetToken_loading, error: get_validatePWResetToken_error, data: validatePWResetTokenData, refetch } = useQuery(VALIDATE_PWRESET_TOKEN, {
+    const { loading: get_validatePWResetToken_loading, error: get_validatePWResetToken_error, data: validatePWResetTokenData } = useQuery(VALIDATE_PWRESET_TOKEN, {
         variables: {id: id, token: token}
-    });*/
-
-    const validateToken = async() => {
-
-        console.log("Validating token on the front-end...");
-        console.log(id);
-
-        let userInDB;
-        await getUserForValidation({id: id});
-        if(userdata){ //the first time this page renders, this is undefined. The second time, it has data
-            if(userdata.getUser){
-              userInDB = userdata.getUser;
-            }
-            console.log("FOUND DATA");
-
-        }
-        else{
-            console.log("FOUND NOTHING " + userdata);
-        }
-
-
-        /*
-        else{
-            alert("Invalid access. Returning to home page.");
-        }*/
-
-        //attempt to decode the URL token using the found user's pwResetHash
-        //refetch();
-
-        return true;
+    });
+    if(get_validatePWResetToken_loading){
+        console.log("Verifying token validity...")
     }
-
-    /*
-    useEffect(() => {
-        setTokenValidated(validateToken());
-        //console.log(isTokenValidated);
-    }, []);*/
+    if(get_validatePWResetToken_error){
+        alert("Invalid token. Redirecting to TAPS login page.");
+    }
+    if(validatePWResetTokenData){
+        console.log(validatePWResetTokenData);
+        console.log("Token is valid!");
+        validateToken(true);
+    }
 
   return (
     <>
-    { validateToken() ? 
+    { tokenValidated ? 
     <div className='login-screen-panel login-panel'>
         <input autoComplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Please enter the email address associated with your account"></input>
         <div id='login-button'>Send Recovery Email</div>
         <div id='cancel-button'>Cancel Password Recovery</div>
     </div>
-  : <div>REUSED TOKEN</div>}</>
+  : navigate('/')}</>
   )
 }
 

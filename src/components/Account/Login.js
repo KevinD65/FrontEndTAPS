@@ -105,6 +105,7 @@ function Login(props) {
 
   //USED TO REGISTER A NEW USER WITH THE DATABASE (ALL PASSWORD ENCRYPTION, EMAIL VERIFICATION, NON-DUPLICATE USERNAME VERIFICATION DONE IN SignUpModal.js)
   const submitSignUp = async(name, username, email, hash, bio) => {
+    console.log("ERROR HERE");
     let newUser = await addUser({
       variables: {
         name: name,
@@ -115,7 +116,7 @@ function Login(props) {
       }
     });
 
-    console.log(newUser.data.createUser);
+    //console.log(newUser.data.createUser);
     currentUser = newUser.data.createUser.username
     props.authenticateUser(currentUser);
     navigate('/userAsset');

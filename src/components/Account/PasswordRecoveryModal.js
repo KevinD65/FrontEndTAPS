@@ -21,9 +21,19 @@ function PasswordRecoveryModal(props) {
         if(userdata){
             if(userdata.getUser){ //found user with the email address entered
                 //send password recovery email with one time use link
-                console.log(userdata.getUser);
+                console.log(userdata.getUser.id);
+                console.log(email);
+                console.log(userdata.getUser.hash);
 
-                await sendPasswordRecoveryEmail(userdata.getUser.id, email, userdata.getUser.hash);
+
+                await sendPasswordRecoveryEmail({ //WHY IS THIS CAUSING A 400 ERROR?
+                    variables: {
+                        id: userdata.getUser.id, 
+                        email: email, 
+                        hash: userdata.getUser.hash
+                    }
+                });
+                
                 console.log("Finished Sending");
       
                 return;
