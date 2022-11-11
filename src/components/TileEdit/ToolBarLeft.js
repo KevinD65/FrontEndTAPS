@@ -31,7 +31,7 @@ const Sidemenu = (props) => {
     sx={{
       width: drawerWidth,
       flexShrink: 0,
-      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', },
+      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', border:"0" },
       boxShadow:"10px 10px 10px pink"
     }}
       >
