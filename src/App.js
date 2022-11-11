@@ -31,7 +31,7 @@ function App() {
           <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser}/>}/>
         </Route>
-        <Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
+        //<Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
       </Routes>
     </div>
   );
