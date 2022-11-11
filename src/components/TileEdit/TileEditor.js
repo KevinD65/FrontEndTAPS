@@ -7,6 +7,7 @@ import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import CanvasDraw from "./index";
 import { useRef } from "react";
+import Canvas from "./Canvas";
 
 
 const TileEditor = () => {
@@ -14,7 +15,7 @@ const TileEditor = () => {
     const[base64,setBase64]=useState("")
     const [drawing, setDrawing] = useState();
     const [brushColor, changeColor] = useState('#932525');
-    const [brushSize, changeBrushSize] = useState(12);
+    const [brushSize, changeBrushSize] = useState(10);
     const [erase, toggleErase] = useState(false);
     const updateBrushColor = (color) =>{
         changeColor(color.hex);
@@ -39,19 +40,11 @@ const TileEditor = () => {
                 eraseOffCallback={() => toggleErase(false)}/>
             </Grid>
             
-            <Grid item  md={8}>
-            <button
-        type="button"
-        style={{ backgroundColor: "#0A71F1", color: "white" }}
-        onClick={handleExport}
-      >
-        Save
-      </button>
-
-      {drawing && <a href={drawing} download>Download link </a>}
+            <Grid item  md={8} sx={{p:10}}>
+     
                 
-                <CanvasDraw ref={canvasRef} canvasWidth={1000} canvasHeight={800} brushRadius={brushSize} 
-                brushColor={brushColor} erase={erase}/>
+                <Canvas  
+                brushColor={brushColor} />
                 
             </Grid>
         <Grid item  md={2}>
