@@ -14,13 +14,13 @@ const client = new ApolloClient({
 });
 
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <ApolloProvider client={client}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
     </ApolloProvider>
-  </React.StrictMode>
+  //</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
