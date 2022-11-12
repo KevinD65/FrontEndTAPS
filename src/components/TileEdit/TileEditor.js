@@ -7,15 +7,19 @@ import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import CanvasDraw from "./index";
 import { useRef } from "react";
+import Canvas from "./Canvas";
 
 
 const TileEditor = () => {
+    const[tileList, setTileList]=useState([])
     const canvasRef = useRef(null);
     const[base64,setBase64]=useState("")
     const [drawing, setDrawing] = useState();
     const [brushColor, changeColor] = useState('#932525');
-    const [brushSize, changeBrushSize] = useState(12);
+    const [brushSize, changeBrushSize] = useState(10);
     const [erase, toggleErase] = useState(false);
+    const[canvasWidth, setCanvasWidth]=useState(600)
+    const[canvasHeight, setCanvasHeight]=useState(600)
     const updateBrushColor = (color) =>{
         changeColor(color.hex);
     }
@@ -36,27 +40,22 @@ const TileEditor = () => {
                 <Grid item  md={2}>
                 <ToolbarLeft updateBrushColorCallback={updateBrushColor} 
                 eraseOnCallback={() => toggleErase(true)} 
-                eraseOffCallback={() => toggleErase(false)}/>
+                eraseOffCallback={() => toggleErase(false)}
+                canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight}
+                />
             </Grid>
             
-            <Grid item  md={8}>
-            <button
-        type="button"
-        style={{ backgroundColor: "#0A71F1", color: "white" }}
-        onClick={handleExport}
-      >
-        Save
-      </button>
-
-      {drawing && <a href={drawing} download>Download link </a>}
+            <Grid item  md={8} sx={{p:10}} >
+     
                 
-                <CanvasDraw ref={canvasRef} canvasWidth={1000} canvasHeight={800} brushRadius={brushSize} 
-                brushColor={brushColor} erase={erase}/>
+                <Canvas  
+                brushColor={brushColor} tileList={tileList} setTileList={setTileList} canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight} 
+                brushRadius={brushSize}/>
                 
             </Grid>
         <Grid item  md={2}>
             <ToolbarRight changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize}
-            setErase={(arg) => {toggleErase(arg)}} erase={erase}/>
+            setErase={(arg) => {toggleErase(arg)}} erase={erase} tileList={tileList} setTileList={setTileList}/>
         </Grid>
         </Grid>
         </Box>

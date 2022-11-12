@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Button } from '@mui/material';
 import {Typography} from '@mui/material';
 import { ChromePicker } from 'react-color';
+import TileEditNav from './TileEditNav';
 
 
 const drawerWidth = 240;
@@ -31,7 +32,7 @@ const Sidemenu = (props) => {
     sx={{
       width: drawerWidth,
       flexShrink: 0,
-      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', },
+      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', border:"0" },
       boxShadow:"10px 10px 10px pink"
     }}
       >
@@ -121,7 +122,11 @@ const Sidemenu = (props) => {
         <Divider />
     </List>
     
+    <TileEditNav
     
+    canvasWidth={props.canvasWidth} setCanvasWidth={props.setCanvasWidth} canvasHeight={props.canvasHeight} setCanvasHeight={props.setCanvasHeight}
+    
+    />
     
     </Box>
       </Drawer>

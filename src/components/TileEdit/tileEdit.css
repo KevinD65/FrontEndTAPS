@@ -53,3 +53,18 @@
 #tile-canvas{
 
 }
+.canvas-main{
+  
+  border: 1px solid black; 
+  
+
+}
+
+.map-table {
+  border-collapse: collapse;
+  margin: 2px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 100%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
