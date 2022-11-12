@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 //import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
+import {Card,CardContent,Grid} from '@mui/material';
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
@@ -57,7 +58,33 @@ const Sidemenu = (props) => {
         <Divider />
 
     </List>
+    <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tiles</Typography>
+
+    <Grid container 
+            direction='row'
+            >
     
+
+    {props.tileList &&  props.tileList.map((data)=>{
+            
+                
+            return(
+            <Grid  item md={3} >
+            <Card sx={{width:50 ,height:50 ,mb:1}}>
+            <CardContent>
+      <img src={data} width="40" 
+     height="40" ></img>
+    </CardContent>
+    </Card>
+            </Grid>
+        )
+              })}
+
+
+
+
+    
+    </Grid>
     
     
   </Box>
