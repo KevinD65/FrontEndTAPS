@@ -37,6 +37,10 @@ const Sidemenu = (props) => {
     props.createNewMapCallback();
   }
   
+  const createTileset = () => {
+    setAnchor(false);
+    props.createNewTilesetCallback();
+  }
 
     return (
   <Drawer
@@ -85,7 +89,7 @@ const Sidemenu = (props) => {
               >
                 <MenuItem onClick={() => createMap()}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; New Map</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <GridViewOutlinedIcon/> &nbsp; New Tile</MenuItem>
+                <MenuItem onClick={() => createTileset()}> <GridViewOutlinedIcon/> &nbsp; New Tile</MenuItem>
                 
               </Menu>
     </Box>

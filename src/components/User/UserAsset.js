@@ -8,7 +8,7 @@ import Tileset from "./Tileset"
 import Sidemenu from './Sidemenu';
 import { useQuery, useMutation } from '@apollo/client';
 import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP} from "../../graphql/queries/assetScreenMaps";
-
+import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET } from '../../graphql/queries/assetTilesetMaps';
 
 const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"map",starred:0},
 {name:"Mario " ,image:"something.svg", owner:"abcd", type:"map",starred:0},
@@ -21,6 +21,10 @@ export default function UserAsset(props) {
     variables: {input: "63563b1a8e23cf6f7a6081d4"},
   });
 
+  const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_ASSET_SCREEN_TILESETS, {
+    variables: {input: "63563b1a8e23cf6f7a6081d4"},
+  });
+
   const refetchMaps = {
     refetchQueries: [
       {
@@ -29,12 +33,23 @@ export default function UserAsset(props) {
       }
     ]
   }
+
+  const refetchTilesets = {
+    refetchQueries: [
+      {
+        query: GET_ASSET_SCREEN_TILESETS,
+        variables: {input: "63563b1a8e23cf6f7a6081d4"}
+      }
+    ]
+  }
   
   const [createMap] = useMutation(CREATE_ASSET_SCREEN_MAP, refetchMaps);
-
   const [changeAssetMapName] = useMutation(CHANGE_MAP_NAME, refetchMaps);
+  const [deleteMap] = useMutation(DELETE_MAP, refetchMaps);
 
-  const [deleteMap] = useMutation(DELETE_MAP, refetchMaps)
+  const [createTileset] = useMutation(CREATE_ASSET_SCREEN_TILESET, refetchTilesets);
+  const [changeAssetTilesetName] = useMutation(CHANGE_TILESET_NAME, refetchTilesets);
+  const [deleteTileset] = useMutation(DELETE_TILESET, refetchTilesets);
 
   const createNewMap= async ()=>{
       createMap({
@@ -62,10 +77,36 @@ export default function UserAsset(props) {
     });
   }
 
+  const createNewTileset = async ()=>{
+    createTileset({
+      variables: {
+        input: { name: "New Tileset" , image :"something.svg", starred:false, ownerID: "63563b1a8e23cf6f7a6081d4"}
+      }
+    });
+
+}
+
+const changeTilesetName = async(id, new_name) =>{
+  changeAssetTilesetName({
+    variables: {
+      name: new_name,
+      id : id
+    }
+  });
+}
+
+const deleteAssetTileset = async(arg_id) => {
+  deleteTileset({
+    variables: {
+      id : arg_id
+    }
+  });
+}
+
   return (
 <Box sx={{ display: 'flex' ,backgroundColor:"F0EBE3"}}>
       <CssBaseline />
-      <Sidemenu createNewMapCallback={createNewMap}/> 
+      <Sidemenu createNewMapCallback={createNewMap} createNewTilesetCallback={createNewTileset}/> 
          
 <Grid container direction="row">
 
@@ -87,16 +128,21 @@ export default function UserAsset(props) {
 
   <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}  >Tilesets <hr/></Typography>
     <Grid container   >
-      {dummyData.map((data)=>{
-            if (data.type==="tiles"){
-                  
-                return(
-                <Grid item  md={3} >
-                <Tileset  tileName={data.name} />
+    {!get_tilesets_loading && !get_tilesets_error && tilesetdata.getOwnerTilesets.map((data)=>{
+            
                 
-                </Grid>
-      )}
-                      return null})}
+            return(
+            <Grid  item md={3} >
+            <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}/>
+            </Grid>
+        )
+              })}
+  
+    </Grid>
+
+    <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}>Folders <hr/></Typography>
+    <Grid container   >
+    {}
   
     </Grid>
 

@@ -14,16 +14,24 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import TextField from '@mui/material/TextField';
 
-const Tileset=({tileName})=> {
-  console.log(tileName)
+const Tileset=({tilesetName, changeNameCallback, deleteCallback, tilesetId})=> {
+  const [changingName, toggleNameChange] = React.useState(false);
   const navigate= useNavigate();
-  
+  const doneEditingName = (name) => {
+    toggleNameChange(false);
+    console.log(name);
+    changeNameCallback(tilesetId, name);
+  }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter'){
+      doneEditingName(e.target.value);
+    }
+  }
+
   return (
     <Card sx={{ minWidth: 230  ,ml:3, mr:3, }}
-    onDoubleClick={()=>{
-      navigate('/TileEditor');
-    }}
     >
       <CardActionArea>
         <CardMedia
@@ -31,10 +39,19 @@ const Tileset=({tileName})=> {
           height="200"
           image={Waterfall}
           alt="map"
+          onDoubleClick={()=>{
+            navigate('/TileEditor');
+          }}
         />
         <CardContent sx={{display:'flex' }}>
         <GridViewOutlined sx={{mt:1}}></GridViewOutlined>
-          <Typography gutterBottom sx={{fontSize:"1.2rem",mt:1,ml:1}} component="div"> {tileName} </Typography>
+
+          {changingName ? 
+            <TextField sx={{fontSize:"1.3rem",mt:1,ml:1}} defaultValue={tilesetName} onBlur={(e) => doneEditingName(e.target.value)} 
+            onKeyDown={handleKeyDown} variant="standard" /> : 
+            <Typography noWrap gutterBotto sx={{fontSize:"1.0rem",mt:1,ml:1}}  component="div" 
+            onDoubleClick={() => toggleNameChange(true)}>{tilesetName} </Typography>}
+
           <Checkbox  aria-label='Checkbox demo'
               icon={<StarBorder />} 
               checkedIcon={<Star sx={{color:"#AA8B56"}}/>} 
@@ -44,7 +61,7 @@ const Tileset=({tileName})=> {
               icon={<VisibilityOffIcon />} 
               checkedIcon={<VisibilityIcon/>} />
 
-            <IconButton aria-label="delete">
+            <IconButton aria-label="delete" onClick={() => deleteCallback(tilesetId)}>
               <DeleteOutlinedIcon />
             </IconButton>
         </CardContent>
