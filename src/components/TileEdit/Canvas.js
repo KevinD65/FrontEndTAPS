@@ -2,7 +2,7 @@ import * as React from 'react';
 import "./tileEdit.css" 
 import { useRef,useEffect,useState } from 'react';
 import { Button,TextField } from '@mui/material';
-
+import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
 const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius}) => {
   
@@ -18,10 +18,24 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
   
 
   // const context= canvas.getContext("2d")
-  useEffect(()=>{
-    console.log("canvaswidth hehe", canvasWidth)
 
-  },[canvasWidth,canvasHeight])
+
+  const handleImageSelected = (image) => {
+    console.log("New File Selected");
+        const formData = new FormData();
+        const unsignedUploadPreset = 'ngrdnw4p'
+        formData.append('file', image);
+        formData.append('upload_preset', unsignedUploadPreset);
+
+        console.log("Cloudinary upload");
+        uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+            //console.log("Upload success");
+            console.dir(response.secure_url);
+            
+        });
+    
+}
+
 
  useEffect(()=>{
   const canvas=canvasRef.current;
@@ -34,11 +48,9 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
   contextRef.current=context;
   
 
-  },[])
+  },[canvasHeight,canvasWidth, brushRadius, brushColor])
 
-  useEffect(() => {
-    // currentUser changed
-  }, [canvasWidth,canvasHeight])
+ 
   const startDrawing=({nativeEvent})=>{
     const{offsetX, offsetY}=nativeEvent;
     contextRef.current.beginPath();
@@ -84,6 +96,16 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
    
 };
 
+
+
+const saveImageToCloud = (event) => {
+  let link = event.currentTarget;
+  link.setAttribute('download', 'canvas.png');
+  let image = canvasRef.current.toDataURL('image/png');
+
+  handleImageSelected(image)
+ 
+};
   
   return (
     <>
@@ -100,6 +122,7 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
     <Button onClick={setToErase}>Erase</Button>
     <Button onClick={setToDraw}>Draw</Button>
     <Button  onClick={saveImageToLocal}>Save</Button>
+    <Button onClick={saveImageToCloud}>Save to cloud</Button>
    </div>
    </>
   );

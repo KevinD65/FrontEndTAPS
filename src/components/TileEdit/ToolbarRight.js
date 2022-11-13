@@ -18,16 +18,29 @@ import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
 import Map from "../User/Map"
 import Tileset from "../User/Tileset"
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 //import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
 import {Card,CardContent,Grid} from '@mui/material';
+import mergeImages from 'merge-base64'
+
+
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
+// const [finalImg, setFinalImg]=useState("")
+//   useEffect(() => {
+//     mergeImages(props.tileList).then(b64 => {
+//       setFinalImg(b64)
+//    });
+    
+//   },[props.tileList]);
+  
+  
+  // const mergedImage =()=>{ await mergeImages(props.tileList);}
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -87,6 +100,7 @@ const Sidemenu = (props) => {
     </Grid>
     
     
+    
   </Box>
       </Drawer>
             
@@ -97,5 +111,7 @@ const Sidemenu = (props) => {
 }
 
 export default Sidemenu
+
+
 
 

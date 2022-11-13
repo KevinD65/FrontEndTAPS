@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid} from "@mui/material";
 import GrassIcon from '@mui/icons-material/Grass';
 import "./mapEdit.css"
@@ -70,6 +70,7 @@ const itemData = [
 export default function TilesetMap() {
   const [openTS, toggleOpen] = React.useState(false);
   const [grid_points, setGridPoints] = React.useState([]);
+  const [imageData, setImageData]= useState("");
 
   const grid_generator = (width, height, tile_width, tile_height) => {
     let rows = [];
@@ -88,6 +89,7 @@ export default function TilesetMap() {
   const openSet = () => {
     toggleOpen(true);
     let gp = grid_generator(550, 200, 40, 40)
+    
     setGridPoints(gp);
   }
  return (
