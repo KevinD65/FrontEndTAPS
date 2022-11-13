@@ -36,23 +36,27 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
     
 }
 
-
+  
  useEffect(()=>{
   const canvas=canvasRef.current;
   canvas.width=canvasWidth;
   canvas.height=canvasHeight;
   const context= canvas.getContext("2d")
   context.lineCap="round"
-  context.strokeStyle=String(brushColor)
+  context.strokeStyle=brushColor
   context.lineWidth=brushRadius;
   contextRef.current=context;
-  
+  canvasRef.current=canvas;
 
-  },[canvasHeight,canvasWidth, brushRadius, brushColor])
+  },[canvasWidth,canvasHeight])
 
  
   const startDrawing=({nativeEvent})=>{
+    canvasRef.width=canvasWidth;
+    canvasRef.height=canvasHeight;
     const{offsetX, offsetY}=nativeEvent;
+    contextRef.current.strokeStyle=brushColor
+    contextRef.current.lineWidth=brushRadius
     contextRef.current.beginPath();
     contextRef.current.moveTo(offsetX, offsetY);
     contextRef.current.lineTo(offsetX, offsetY);
