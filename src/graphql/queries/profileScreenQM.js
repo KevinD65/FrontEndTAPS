@@ -3,6 +3,7 @@ import {gql} from '@apollo/client';
 const UPDATE_USER_INFO = gql`
 mutation($id: ID!, $name: String, $username: String, $email: String, $hash: String, $bio: String){
   updateUser(id: $id, name: $name, username: $username, email: $email, hash: $hash, bio: $bio){
+    id,
     name,
     username,
     email,
@@ -13,8 +14,8 @@ mutation($id: ID!, $name: String, $username: String, $email: String, $hash: Stri
 `;
 
 const GET_USER = gql`
-query($username: String, $email: String){
-  getUser(username: $username, email: $email){
+query($id: ID, $username: String, $email: String){
+  getUser(id: $id, username: $username, email: $email){
     id,
     name,
     username,
