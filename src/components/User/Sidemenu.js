@@ -16,6 +16,7 @@ import { Button,} from '@mui/material';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
+import { FolderOpen } from '@mui/icons-material';
 import Map from "./Map"
 import Tileset from "./Tileset"
 import { useState } from 'react';
@@ -41,7 +42,10 @@ const Sidemenu = (props) => {
     setAnchor(false);
     props.createNewTilesetCallback();
   }
-
+  const createFolder = () => {
+    setAnchor(false);
+    props.createNewFolderCallback();
+  }
     return (
   <Drawer
     PaperProps={{
@@ -90,6 +94,8 @@ const Sidemenu = (props) => {
                 <MenuItem onClick={() => createMap()}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; New Map</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={() => createTileset()}> <GridViewOutlinedIcon/> &nbsp; New Tile</MenuItem>
+                <Divider></Divider>
+                <MenuItem onClick={() => createFolder()}> <FolderOpen/> &nbsp; New Folder</MenuItem>
                 
               </Menu>
     </Box>

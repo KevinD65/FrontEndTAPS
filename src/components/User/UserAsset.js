@@ -2,20 +2,30 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import {Grid} from '@mui/material';
+import {Button, Grid} from '@mui/material';
 import Map from "./Map"
 import Tileset from "./Tileset"
 import Sidemenu from './Sidemenu';
-import { useQuery, useMutation } from '@apollo/client';
+
+import { useQuery, useMutation,  useLazyQuery } from '@apollo/client';
 import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP} from "../../graphql/queries/assetScreenMaps";
 import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET } from '../../graphql/queries/assetTilesetMaps';
-
+import { GET_ASSET_SCREEN_FOLDERS, CREATE_ASSET_SCREEN_FOLDER, CHANGE_FOLDER_NAME, DELETE_FOLDER} from '../../graphql/queries/assetScreenFolders';
+import { Update } from '@mui/icons-material';
+import FolderDisplay from './FolderDisplay';
 const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"map",starred:0},
 {name:"Mario " ,image:"something.svg", owner:"abcd", type:"map",starred:0},
 {name:"My city" ,image:"something.svg", owner:"abcd1", type:"map",starred:1},
 {name:"mountain" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:0},{name:"soil" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:1}]
 
 export default function UserAsset(props) {
+
+  const [currentfolderPath, changePath] = React.useState([{id: "x", name: "y"}]);
+  const [currentFolder, changeFolder] = React.useState({id: "x", name: "y"});
+  const seeend = () => {
+    console.log(currentfolderPath.at(-1).id);
+    changePath(oldArray => [...oldArray, {id: null, name: null}]);
+  }
 
   const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_ASSET_SCREEN_MAPS, {
     variables: {input: "63563b1a8e23cf6f7a6081d4"},
@@ -24,6 +34,7 @@ export default function UserAsset(props) {
   const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_ASSET_SCREEN_TILESETS, {
     variables: {input: "63563b1a8e23cf6f7a6081d4"},
   });
+
 
   const refetchMaps = {
     refetchQueries: [
@@ -42,6 +53,15 @@ export default function UserAsset(props) {
       }
     ]
   }
+
+  const refetchFolders = {
+    refetchQueries: [
+      {
+        query: GET_ASSET_SCREEN_FOLDERS,
+        variables: {ownerID: "63563b1a8e23cf6f7a6081d4", folderId: currentfolderPath.at(-1).id},
+      }
+    ]
+  }
   
   const [createMap] = useMutation(CREATE_ASSET_SCREEN_MAP, refetchMaps);
   const [changeAssetMapName] = useMutation(CHANGE_MAP_NAME, refetchMaps);
@@ -50,6 +70,17 @@ export default function UserAsset(props) {
   const [createTileset] = useMutation(CREATE_ASSET_SCREEN_TILESET, refetchTilesets);
   const [changeAssetTilesetName] = useMutation(CHANGE_TILESET_NAME, refetchTilesets);
   const [deleteTileset] = useMutation(DELETE_TILESET, refetchTilesets);
+
+  const [createFolder] = useMutation(CREATE_ASSET_SCREEN_FOLDER, refetchFolders);
+  
+  const createNewFolder = async() => {
+    createFolder({
+      variables: {
+        ownerID: "63563b1a8e23cf6f7a6081d4", name: "New Folder", folderId: currentfolderPath.at(-1).id
+      }
+    });
+  }
+
 
   const createNewMap= async ()=>{
       createMap({
@@ -106,7 +137,8 @@ const deleteAssetTileset = async(arg_id) => {
   return (
 <Box sx={{ display: 'flex' ,backgroundColor:"F0EBE3"}}>
       <CssBaseline />
-      <Sidemenu createNewMapCallback={createNewMap} createNewTilesetCallback={createNewTileset}/> 
+      <Sidemenu createNewMapCallback={createNewMap} createNewTilesetCallback={createNewTileset} 
+      createNewFolderCallback={createNewFolder}/> 
          
 <Grid container direction="row">
 
@@ -142,10 +174,9 @@ const deleteAssetTileset = async(arg_id) => {
 
     <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}>Folders <hr/></Typography>
     <Grid container   >
-    {}
-  
     </Grid>
-
+    <Button onClick={seeend}>Test</Button>
+    <FolderDisplay currentfolder={currentfolderPath.at(-1)} refetchFolders={refetchFolders}/>
   </Grid>
       
 </Box>

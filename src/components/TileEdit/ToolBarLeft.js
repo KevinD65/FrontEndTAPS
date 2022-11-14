@@ -23,6 +23,11 @@ const Sidemenu = (props) => {
     props.updateBrushColorCallback(color);
     changeColor(color);
   }
+  const saveJSON = () => {
+    setAnchor(false);
+    props.turnOnJSONMod();
+  }
+
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
@@ -94,7 +99,7 @@ const Sidemenu = (props) => {
               >
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Save as Png</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
+                <MenuItem onClick={saveJSON}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As JSON</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
