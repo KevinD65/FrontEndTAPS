@@ -10,6 +10,7 @@ export default function LayersEdit(props) {
     const setErase = (event, newState) => {
         toggleErase(newState);
         props.setErase(newState);
+        console.log(newState)
     }
     const setBrushSize = (event) => {
         props.changeBrushSizeCallback(event.target.value);
@@ -20,6 +21,10 @@ export default function LayersEdit(props) {
           setBrushSize(e);
         }
       }
+    let brushEraseLabel=()=>{
+        if(erase==true) return "Eraser size"
+        else return "Brush size"
+    }
  return (
     <>
     
@@ -37,13 +42,14 @@ export default function LayersEdit(props) {
                 value={erase}
                 exclusive
                 onChange={setErase}
+                color="success"
             >
                 <ToggleButton value={false}>Draw</ToggleButton>
                 <ToggleButton value={true}>Erase</ToggleButton>
             </ToggleButtonGroup>
             </ListItem>
             <ListItem>
-                <TextField label="Brush Size" variant="outlined" defaultValue={props.defaultBrush} 
+                <TextField label={brushEraseLabel()} variant="outlined"  size="small" defaultValue={props.defaultBrush} 
                 onKeyDown={handleKeyDown} onBlur={setBrushSize}/>
             </ListItem>
         </List>
