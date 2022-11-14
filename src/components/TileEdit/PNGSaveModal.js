@@ -67,7 +67,8 @@ export default function JSONSaveModal(props) {
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
 >
-  <Box sx={style}>
+  <Box sx={style} >
+  <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}> Export PNG</Typography>
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
@@ -82,9 +83,14 @@ export default function JSONSaveModal(props) {
                 onKeyDown={handleKeyDown('height')}/>
             </ListItem>
         </List>
-        <Button onClick={makeJSON}>Preview</Button>
+        {/* <Button onClick={makeJSON}>Preview</Button>
         <canvas ref={canvasRef}/>
-        {<a href={download} download={name + ".png"}>Download</a>}
+        {<a href={download} download={name + ".png"}>Download</a>} */}
+
+        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
+        <canvas ref={canvasRef}/>
+        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".png"}>Download</a>}</Button>
+  
   </Box>
 </Modal>
   )
