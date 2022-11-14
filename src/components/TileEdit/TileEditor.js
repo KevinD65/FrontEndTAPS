@@ -9,7 +9,7 @@ import CanvasDraw from "./index";
 import { useRef } from "react";
 import Canvas from "./Canvas";
 import JSONSaveModal from "./JSONSaveModal";
-
+import PNGSaveModal from "./PNGSaveModal";
 
 const TileEditor = () => {
     const[tileList, setTileList]=useState([])
@@ -22,6 +22,7 @@ const TileEditor = () => {
     const[canvasWidth, setCanvasWidth]=useState(600)
     const[canvasHeight, setCanvasHeight]=useState(600)
     const [saveJSON, toggleJSON] =useState(false);
+    const [savePNG, togglePNG] = useState(false);
 
     const updateBrushColor = (color) =>{
         changeColor(color.hex);
@@ -45,7 +46,8 @@ const TileEditor = () => {
                 eraseOnCallback={() => toggleErase(true)} 
                 eraseOffCallback={() => toggleErase(false)}
                 canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight}
-                turnOnJSONMod={() => toggleJSON(true)}/>
+                turnOnJSONMod={() => toggleJSON(true)}
+                turnOnPNGMod={() => togglePNG(true)}/>
             </Grid>
             
             <Grid item  md={8} sx={{p:10}} >
@@ -63,6 +65,7 @@ const TileEditor = () => {
         </Grid>
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} tileList={tileList} />
+        <PNGSaveModal open={savePNG} onClose={() => togglePNG(false)} tileList={tileList} />
         </>
     )
 }
