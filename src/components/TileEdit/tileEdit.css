@@ -55,7 +55,9 @@
 }
 .canvas-main{
   
-  border: 1px solid black; 
+  border-collapse: collapse;
+  cursor:crosshair;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   
 
 }
@@ -68,3 +70,5 @@
   min-width: 100%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
+
+

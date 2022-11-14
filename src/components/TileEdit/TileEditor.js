@@ -15,11 +15,17 @@ const TileEditor = () => {
     const canvasRef = useRef(null);
     const[base64,setBase64]=useState("")
     const [drawing, setDrawing] = useState();
-    const [brushColor, changeColor] = useState('#932525');
-    const [brushSize, changeBrushSize] = useState(10);
+    const [brushColor, changeColor] = useState('#4E6C50');
+    const [brushSize, changeBrushSize] = useState(5);
     const [erase, toggleErase] = useState(false);
-    const[canvasWidth, setCanvasWidth]=useState(600)
-    const[canvasHeight, setCanvasHeight]=useState(600)
+    const[canvasWidth, setCanvasWidth]=useState(800)
+    const[canvasHeight, setCanvasHeight]=useState(650)
+    
+    
+    
+
+
+
     const updateBrushColor = (color) =>{
         changeColor(color.hex);
     }
@@ -50,7 +56,7 @@ const TileEditor = () => {
                 
                 <Canvas  
                 brushColor={brushColor} tileList={tileList} setTileList={setTileList} canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight} 
-                brushRadius={brushSize}/>
+                brushRadius={brushSize} erase={erase}/>
                 
             </Grid>
         <Grid item  md={2}>

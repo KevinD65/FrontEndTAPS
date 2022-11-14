@@ -4,7 +4,7 @@ import { useRef,useEffect,useState } from 'react';
 import { Button,TextField } from '@mui/material';
 import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
-const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius}) => {
+const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius,erase}) => {
   
   const canvasRef=useRef(null);
   const contextRef=useRef(null);
@@ -36,6 +36,12 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
     
 }
 
+useEffect(()=>{
+ if (erase==true){setToErase();}
+ else setToDraw()
+
+ 
+},[erase])
   
  useEffect(()=>{
   const canvas=canvasRef.current;
@@ -81,13 +87,15 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
 
   }
   const setToDraw=()=>{
+    if(contextRef.current!=null)
     contextRef.current.globalCompositeOperation="source-over"
   }
   const setToErase=()=>{
+    if(contextRef.current!=null)
     contextRef.current.globalCompositeOperation="destination-out"
   }
   const clearCanvas=()=>{
-    contextRef.clearRect(0, 0, canvasWidth, canvasHeight);
+    // contextRef.clearRect(0, 0, canvasWidth, canvasHeight);
   }
   const saveImageToLocal = (event) => {
     let link = event.currentTarget;
