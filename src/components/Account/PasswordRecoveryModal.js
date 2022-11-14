@@ -25,15 +25,15 @@ function PasswordRecoveryModal(props) {
                 console.log(email);
                 console.log(userdata.getUser.hash);
 
-
-                await sendPasswordRecoveryEmail({ //WHY IS THIS CAUSING A 400 ERROR?
+                
+                await sendPasswordRecoveryEmail({
                     variables: {
                         id: userdata.getUser.id, 
                         email: email, 
                         hash: userdata.getUser.hash
                     }
                 });
-                
+
                 console.log("Finished Sending");
       
                 return;

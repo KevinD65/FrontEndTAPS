@@ -12,8 +12,12 @@ import MenuItem from '@mui/material/MenuItem';
 import { Button } from '@mui/material';
 import {Typography} from '@mui/material';
 import { ChromePicker } from 'react-color';
+import TileEditNav from './TileEditNav';
 
-
+const styles = {
+  'default': {
+    picker: { background: 'inherit', boxShadow: 'none',  border:"none" ,paddingLeft:"5px"}, 
+  }}
 const drawerWidth = 240;
 const Sidemenu = (props) => {
   const [anchor,setAnchor]=useState(null);
@@ -22,6 +26,16 @@ const Sidemenu = (props) => {
     props.updateBrushColorCallback(color);
     changeColor(color);
   }
+  const saveJSON = () => {
+    setAnchor(false);
+    props.turnOnJSONMod();
+  }
+
+  const savePNG = () => {
+    setAnchor(false);
+    props.turnOnPNGMod();
+  }
+
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
@@ -31,7 +45,7 @@ const Sidemenu = (props) => {
     sx={{
       width: drawerWidth,
       flexShrink: 0,
-      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', border:"0" },
+      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', },
       boxShadow:"10px 10px 10px pink"
     }}
       >
@@ -69,8 +83,8 @@ const Sidemenu = (props) => {
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; New Map</MenuItem>
                 
               </Menu>
-              <Button variant='contained' sx={{marginTop:2, marginBottom:2, pr:5.5, pl:5.5, backgroundColor:"#4E6C50" }} onClick={openPopover}>
-                <Typography variant="h6" component="h2">Save</Typography>
+              <Button variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={openPopover}>
+                <Typography variant="h6" component="h2">Export</Typography>
                 
             </Button>
               <Menu
@@ -91,9 +105,9 @@ const Sidemenu = (props) => {
                 }}
                 
               >
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Save as Png</MenuItem>
+                <MenuItem onClick={savePNG}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Save as PNG</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
+                <MenuItem onClick={saveJSON}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As JSON</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
@@ -104,8 +118,9 @@ const Sidemenu = (props) => {
             </Box>
     
          {/* Map properties*/}
-         <ChromePicker color={color} onChange={colorUpdate}/>
-         <Box>
+         <ChromePicker color={color} onChange={colorUpdate} styles={styles} />
+         
+         {/* <Box>
             <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, marginLeft:2, marginRight:2, pr:1, pl:1, backgroundColor:"#4E6C50" }} 
             onClick={() => {props.eraseOffCallback()}}>
                 <Typography variant="h6" component="h2">Draw</Typography>
@@ -116,12 +131,16 @@ const Sidemenu = (props) => {
                 <Typography variant="h6" component="h2">Erase</Typography>
                 
             </Button>
-         </Box>
+         </Box> */}
           
         <Divider />
     </List>
     
+    <TileEditNav
     
+    canvasWidth={props.canvasWidth} setCanvasWidth={props.setCanvasWidth} canvasHeight={props.canvasHeight} setCanvasHeight={props.setCanvasHeight}
+    
+    />
     
     </Box>
       </Drawer>

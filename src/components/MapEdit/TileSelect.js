@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React from 'react'
 import ts from './samplets.png'
 
@@ -23,8 +24,9 @@ export default function TileSelect(props) {
         //let c = React.findDOMNode(`canvas ${sx} ${sy}`);
         let ctx = canvas.current.getContext("2d");
         let img = new Image; 
-        img.src = 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e';
-        //img.setAttribute('crossOrigin', 'anonymous');
+        img.setAttribute('crossOrigin', 'anonymous');
+        img.src = 'https://res.cloudinary.com/abhishekgaire/image/upload/v1654574671/nl8xptfmavbgytlnaaws.jpg';
+        
         ctx.drawImage(img, sx, sy, swidth, sheight, x, y, tile_width, tile_height);
         
     
@@ -32,6 +34,7 @@ export default function TileSelect(props) {
       });
 
   return (
-        <canvas ref={canvas} key={`canvas ${sx} ${sy}`} width={tile_width} height={tile_height} onClick={getImage}/> 
+    <Box sx={{ border: 5}}><canvas ref={canvas} key={`canvas ${sx} ${sy}`} width={tile_width} height={tile_height} onClick={getImage} sx={{ border: 5}}/> </Box>
+        
   )
 }
