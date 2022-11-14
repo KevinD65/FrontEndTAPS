@@ -99,3 +99,21 @@
     width: 100%;
 }
 
+#successfully-sent-email{
+    text-align: center;
+    color: green;
+}
+
+.on-screen-message-positive{
+    text-align: center;
+    color: green
+}
+
+.on-screen-message-negative{
+    text-align: center;
+    color: red
+}
+
+#updatePassword-error{
+    border-color: red;
+}

@@ -63,9 +63,9 @@ const UserProfile = (props) => {
                 <div id='userprofile-bio-panel'>
                     <div id='bio-container'>
                         <img id='profile-pic' src={DogeLoaf}></img>
-                        <div id='bio-name'>Kevin Duong</div>
-                        <div id='bio-username'>ContainerGamer52</div>
-                        <div id='bio-bio'>Yeah that's right, this is my biography and here are all my assets.</div>
+                        <div id='bio-name'>{currentUser.name}</div>
+                        <div id='bio-username'>{currentUser.username}</div>
+                        <div id='bio-bio'>{currentUser.bio}</div>
                     </div>
                     <div id='updateAccount-container'>
                         <div id='updateAccount-button' onClick={showUpdateAccountScreen}>Update Account Information</div>
