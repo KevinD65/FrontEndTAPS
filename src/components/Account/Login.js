@@ -64,7 +64,9 @@ function Login(props) {
         }
       }
 
-      if(userdata.getUser === undefined){ //attempted user not in database
+      console.log(userdata);
+
+      if(userdata.getUser === undefined || userdata.getUser === null){ //attempted user not in database
         console.log("USER NOT PRESENT IN DB");
         attemptUserSignIn = null;
       }

@@ -1,13 +1,17 @@
 import { React, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
+import TAPSLogo from '../../TAPSLogo.PNG';
 import { VALIDATE_PWRESET_TOKEN, UPDATE_USER_INFO } from '../../graphql/queries/loginScreenUsers';
 import './Login.css';
 
 function PasswordResetScreen(props) {
-    const [tokenValidated, validateToken] = useState(false); //causes infinite rerenders
+    //const [tokenValidated, validateToken] = useState(false); //causes infinite rerenders
+    let tokenValidated = false;
     const [newPasswordInput, changeNewPasswordInput] = useState(null);
     const [newPasswordConfirmInput, changeNewPasswordConfirmInput] = useState(null);
+    const [matchingPasswords, setMatchingPasswords] = useState(true);
+    const [successfulPasswordChange, setSuccessfulPasswordChange] = useState(false);
     const navigate = useNavigate();
     const bcrypt = require('bcryptjs');
     const saltRounds = bcrypt.genSaltSync(12);
@@ -35,11 +39,13 @@ function PasswordResetScreen(props) {
         console.log("Verifying token validity...")
     }
     if(get_validatePWResetToken_error){
-        validateToken(false);
+        //validateToken(false);
+        tokenValidated = false;
         alert("Invalid token. Redirecting to TAPS login page.");
     }
     if(validatePWResetTokenData && !tokenValidated){ //validate the token if 
-        validateToken(true);
+        //validateToken(true);
+        tokenValidated = true;
     }
 
     /**
@@ -49,12 +55,19 @@ function PasswordResetScreen(props) {
      * @param {*string} value the input value
      */
     const handleNewPasswordInput = (type, value) => {
+        setMatchingPasswords(true);
         if(type == "password"){
             changeNewPasswordInput(value);
         }
         else if(type == "passwordConfirm"){
             changeNewPasswordConfirmInput(value);
         }
+    }
+
+    const postSubmissionCleanUp = () => {
+        navigate('/');
+        setSuccessfulPasswordChange(false);
+        setMatchingPasswords(true);
     }
 
     /**
@@ -70,22 +83,33 @@ function PasswordResetScreen(props) {
                     pwResetHash: ""
                 }
             });
+            setSuccessfulPasswordChange(true);
+            setTimeout(postSubmissionCleanUp, 3000);
         }
         else{
-            //error handling
+            setMatchingPasswords(false);
         }
     }
 
   return (
-    <>
+    <div id='login-screen-container'>
+    <div className='login-screen-panel TAPSLogo'>
+          <img alt="TAPS Logo" id='TAPS-logo-login' src={TAPSLogo}/>
+          <div id='taps-slogan'>
+            A One Stop Solution To All Your Map Needs
+          </div>
+    </div>
     { tokenValidated ? 
     <div className='login-screen-panel login-panel'>
         <input autoComplete="new-password" className='login-screen-input' type="text" placeholder="New password" onChange={(event) => handleNewPasswordInput("password", event.target.value)}></input>
         <input autoComplete="new-password" className='login-screen-input' type="text" placeholder="Confirm new password" onChange={(event) => handleNewPasswordInput("passwordConfirm", event.target.value)}></input>
         <div id='login-button' onClick = {submitPasswordChange}>Change Password</div>
-        <div id='cancel-button'>Cancel Change Password</div>
+        <div id='cancel-button' onClick = {() => navigate('/')}>Cancel Change Password</div>
+        {!matchingPasswords ? <div className="on-screen-message-negative">Passwords do not match</div>: <></>}
+        {successfulPasswordChange ? <div className="on-screen-message-positive">Password successfully changed. Returning to TAPS login screen.</div> : <></>}
     </div>
-  : navigate('/')}</>
+    :navigate('/')} 
+  </div>
   )
 }
 

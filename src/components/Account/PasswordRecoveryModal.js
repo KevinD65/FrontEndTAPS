@@ -5,6 +5,7 @@ import { GET_USER, SEND_RECOVERY_EMAIL } from '../../graphql/queries/loginScreen
 
 function PasswordRecoveryModal(props) {
   let validator = require("email-validator");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [inputEmail, updateInputEmail] = useState(null);
   const [userWithThisEmail, updateUserWithThisEmail] = useState(null);
 
@@ -34,7 +35,10 @@ function PasswordRecoveryModal(props) {
                     }
                 });
 
-                console.log("Finished Sending");
+                setShowSuccessMessage(true);
+                console.log(showSuccessMessage);
+
+                //console.log("Finished Sending");
       
                 return;
             }
@@ -48,11 +52,14 @@ function PasswordRecoveryModal(props) {
   }
 
   return (
+  <div id='login-screen-container'>
     <div className='login-screen-panel login-panel'>
         <input autocomplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Please enter the email address associated with your account" onChange={(event) => updateInputEmail(event.target.value)}></input>
         <div id='login-button' onClick={() => handleSubmitPasswordRecovery(inputEmail)}>Send Recovery Email</div>
         <div id='cancel-button' onClick={cancelPasswordRecovery}>Cancel Password Recovery</div>
+        {showSuccessMessage ? <div id="successfully-sent-email">Successfully sent email. Please check your inbox</div> : <></>}
     </div>
+  </div>
   )
 }
 
