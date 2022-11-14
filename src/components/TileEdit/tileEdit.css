@@ -72,3 +72,10 @@
 }
 
 
+#file-upload{
+  display: none;
+}
+#download-link{
+  text-decoration: none;
+  color:"black"
+}

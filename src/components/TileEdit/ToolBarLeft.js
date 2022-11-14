@@ -13,10 +13,12 @@ import { Button } from '@mui/material';
 import {Typography} from '@mui/material';
 import { ChromePicker } from 'react-color';
 import TileEditNav from './TileEditNav';
+import "./tileEdit.css"
 
 const styles = {
   'default': {
     picker: { background: 'inherit', boxShadow: 'none',  border:"none" ,paddingLeft:"5px"}, 
+  
   }}
 const drawerWidth = 240;
 const Sidemenu = (props) => {
@@ -26,6 +28,20 @@ const Sidemenu = (props) => {
     props.updateBrushColorCallback(color);
     changeColor(color);
   }
+
+
+  const handleImportJSON=(event)=> {
+    var reader = new FileReader();
+    reader.onload = onReaderLoad;
+    reader.readAsText(event.target.files[0]);
+}
+
+const onReaderLoad=(event)=>{
+    console.log(event.target.result);
+    var obj = JSON.parse(event.target.result);
+    console.log(obj)
+}
+
   const saveJSON = () => {
     setAnchor(false);
     props.turnOnJSONMod();
@@ -60,11 +76,13 @@ const Sidemenu = (props) => {
       <List>
           <Box textAlign='center'>
             {/* Button for the  add menu */}
-            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={openPopover}>
-                <Typography variant="h6" component="h2">Import</Typography>
+            <Box>
+            <label htmlFor="file-upload" id="label-import" aria-label ="import-button"variant='contained'  >
+                <Typography variant="h6" component="h2" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50", m:2, color:"white" }}>Import</Typography>
+                <input  id="file-upload" type="file" onChange={handleImportJSON}/>
                 
-            </Button>
-            
+            </label>
+            </Box>
             <Menu
                 id="basic-menu"
                 open={Boolean(anchor)}
