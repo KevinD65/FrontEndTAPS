@@ -126,7 +126,8 @@ const saveImageToCloud = (event) => {
     onMouseDown={startDrawing}
     onMouseMove={draw}
     onMouseUp={stopDrawing}
-    onMouseLeave={stopDrawing}    
+    onMouseLeave={stopDrawing} 
+       
     >
    </canvas>
    <div>

@@ -27,21 +27,31 @@ query($id: ID, $username: String, $email: String){
 `;
 
 const VALIDATE_PWRESET_TOKEN = gql`
-type Query{
-  getResetPasswordTokenValidation(id: ID!, token: String!): Boolean!
-}
+query($id: ID!, $token: String!){
+    validateResetPWToken(id: $id, token: $token){
+        name
+    }
+} 
 `;
 
 const SEND_RECOVERY_EMAIL = gql`
 mutation($id: ID!, $email: String, $hash: String){
-  sendRecoveryEmail(id: $id, email: $email, hash: $hash)
+  sendRecoveryEmail(id: $id, email: $email, hash: $hash){
+    name
+  }
 } 
 `;
 
-export{ADD_USER, GET_USER, VALIDATE_PWRESET_TOKEN, SEND_RECOVERY_EMAIL};
-
-/**
- * query($id: ID!, $token: String!){
-  getResetPasswordTokenValidation(id: $id, token: $token): Boolean!
+const UPDATE_USER_INFO = gql`
+mutation($id: ID!, $name: String, $username: String, $email: String, $hash: String, $bio: String){
+  updateUser(id: $id, name: $name, username: $username, email: $email, hash: $hash, bio: $bio){
+    name,
+    username,
+    email,
+    hash,
+    bio
+  }
 } 
- */
+`;
+
+export{ADD_USER, GET_USER, VALIDATE_PWRESET_TOKEN, SEND_RECOVERY_EMAIL, UPDATE_USER_INFO};

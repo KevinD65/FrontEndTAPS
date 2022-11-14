@@ -39,19 +39,16 @@ function SignUpModal(props) {
   }
 
   const handleSubmitSignUp = async(name, username, email, password, passwordConfirm) => {
-
       //ENSURE PASSWORDS MATCH
       if(password != passwordConfirm){
         alert("PASSWORDS DO NOT MATCH!");
         return;
       }
-      console.log(password);
 
       //CHECK FOR DUPLICATE USERNAME/EMAIL
       let user;
-      await refetchUser({ username: username, email: email });
+      await refetchUser();
       if(userdata){
-        //console.log(userdata);
         if(userdata.getUser){
           user = userdata.getUser;
         }
@@ -71,7 +68,6 @@ function SignUpModal(props) {
       //HASH PASSWORD
       let hash = bcrypt.hashSync(password, saltRounds);
 
-      //console.log("THIS IS MY HASH: " + hash);
       if(props.submitSignUp(name, username, email, hash, "")){
         //RESET ALL FIELDS FOR SECURITY
         updateInputName(null);

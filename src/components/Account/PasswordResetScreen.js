@@ -1,15 +1,18 @@
-import { React, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import {gql, useQuery} from '@apollo/client';
-import { GET_USER, VALIDATE_PWRESET_TOKEN } from '../../graphql/queries/loginScreenUsers';
+import { React, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation } from '@apollo/client';
+import { VALIDATE_PWRESET_TOKEN, UPDATE_USER_INFO } from '../../graphql/queries/loginScreenUsers';
 import './Login.css';
 
-
 function PasswordResetScreen(props) {
-    //const [tokenValidated, setTokenValidated] = useState(false);
+    const [tokenValidated, validateToken] = useState(false); //causes infinite rerenders
+    const [newPasswordInput, changeNewPasswordInput] = useState(null);
+    const [newPasswordConfirmInput, changeNewPasswordConfirmInput] = useState(null);
+    const navigate = useNavigate();
+    const bcrypt = require('bcryptjs');
+    const saltRounds = bcrypt.genSaltSync(12);
 
     //EXTRACT ID AND TOKEN FROM URL
-    
     const URLParams = useParams();
     const id = URLParams.id;
     const token = URLParams.token;
@@ -20,61 +23,69 @@ function PasswordResetScreen(props) {
         //--> THE DECRYPTED TOKEN SHOULD PRODUCE THE CORRECT ID AND EMAIL; OTHERWISE, TOKEN IS INVALID
         //--> IF THE DECRYPTED TOKEN MATCHES, WE HAVE TO 1.) GENERATE A NEW PASSWORD HASH
 
-    
-    const { loading: get_user_loading, error: get_user_error, data: userdata, refetch: getUserForValidation } = useQuery(GET_USER, {
-        variables: {id: id}
-    });
+    const [setNewPassword] = useMutation(UPDATE_USER_INFO);
 
-    /*
-    const { loading: get_validatePWResetToken_loading, error: get_validatePWResetToken_error, data: validatePWResetTokenData, refetch } = useQuery(VALIDATE_PWRESET_TOKEN, {
+    /**
+     * Query used to validate token using URL parameters. Returns User object if successful; throws an error otherwise
+     */
+    const { loading: get_validatePWResetToken_loading, error: get_validatePWResetToken_error, data: validatePWResetTokenData } = useQuery(VALIDATE_PWRESET_TOKEN, {
         variables: {id: id, token: token}
-    });*/
-
-    const validateToken = async() => {
-
-        console.log("Validating token on the front-end...");
-        console.log(id);
-
-        let userInDB;
-        await getUserForValidation({id: id});
-        if(userdata){ //the first time this page renders, this is undefined. The second time, it has data
-            if(userdata.getUser){
-              userInDB = userdata.getUser;
-            }
-            console.log("FOUND DATA");
-
-        }
-        else{
-            console.log("FOUND NOTHING " + userdata);
-        }
-
-
-        /*
-        else{
-            alert("Invalid access. Returning to home page.");
-        }*/
-
-        //attempt to decode the URL token using the found user's pwResetHash
-        //refetch();
-
-        return true;
+    });
+    if(get_validatePWResetToken_loading){
+        console.log("Verifying token validity...")
+    }
+    if(get_validatePWResetToken_error){
+        validateToken(false);
+        alert("Invalid token. Redirecting to TAPS login page.");
+    }
+    if(validatePWResetTokenData && !tokenValidated){ //validate the token if 
+        validateToken(true);
     }
 
-    /*
-    useEffect(() => {
-        setTokenValidated(validateToken());
-        //console.log(isTokenValidated);
-    }, []);*/
+    /**
+     * Handles changes to the input boxes
+     * 
+     * @param {*string} type the field type of this value (either password or passwordConfirm)
+     * @param {*string} value the input value
+     */
+    const handleNewPasswordInput = (type, value) => {
+        if(type == "password"){
+            changeNewPasswordInput(value);
+        }
+        else if(type == "passwordConfirm"){
+            changeNewPasswordConfirmInput(value);
+        }
+    }
+
+    /**
+     * Async function used to submit a password change. Checks if passwordConfirm is equivalent to the password, hashes the password, and stores it in the User object in the DB
+     */
+    const submitPasswordChange = async() => {
+        if(newPasswordInput == newPasswordConfirmInput){
+            let hash = bcrypt.hashSync(newPasswordInput, saltRounds);
+            await setNewPassword({
+                variables: {
+                    id: id,
+                    hash: hash, 
+                    pwResetHash: ""
+                }
+            });
+        }
+        else{
+            //error handling
+        }
+    }
 
   return (
     <>
-    { validateToken() ? 
+    { tokenValidated ? 
     <div className='login-screen-panel login-panel'>
-        <input autoComplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Please enter the email address associated with your account"></input>
-        <div id='login-button'>Send Recovery Email</div>
-        <div id='cancel-button'>Cancel Password Recovery</div>
+        <input autoComplete="new-password" className='login-screen-input' type="text" placeholder="New password" onChange={(event) => handleNewPasswordInput("password", event.target.value)}></input>
+        <input autoComplete="new-password" className='login-screen-input' type="text" placeholder="Confirm new password" onChange={(event) => handleNewPasswordInput("passwordConfirm", event.target.value)}></input>
+        <div id='login-button' onClick = {submitPasswordChange}>Change Password</div>
+        <div id='cancel-button'>Cancel Change Password</div>
     </div>
-  : <div>REUSED TOKEN</div>}</>
+  : navigate('/')}</>
   )
 }
 

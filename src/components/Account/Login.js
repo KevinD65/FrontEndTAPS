@@ -115,7 +115,7 @@ function Login(props) {
       }
     });
 
-    console.log(newUser.data.createUser);
+    //console.log(newUser.data.createUser);
     currentUser = newUser.data.createUser.username
     props.authenticateUser(currentUser);
     navigate('/userAsset');
