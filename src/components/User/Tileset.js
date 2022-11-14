@@ -16,7 +16,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import TextField from '@mui/material/TextField';
 
-const Tileset=({tilesetName, changeNameCallback, deleteCallback, tilesetId})=> {
+const Tileset=({editTile, tilesetName, changeNameCallback, deleteCallback, tilesetId})=> {
   const [changingName, toggleNameChange] = React.useState(false);
   const navigate= useNavigate();
   const doneEditingName = (name) => {
@@ -40,6 +40,7 @@ const Tileset=({tilesetName, changeNameCallback, deleteCallback, tilesetId})=> {
           image={Waterfall}
           alt="map"
           onDoubleClick={()=>{
+            editTile(tilesetId);
             navigate('/TileEditor');
           }}
         />

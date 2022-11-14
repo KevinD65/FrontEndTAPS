@@ -16,6 +16,7 @@ function App() {
   //state variable which keeps track of the authenticated user (decides whether to load user data or go to login screen). Not preserved on refresh (need JSON web tokens).
   //if manually navigate to page without authenticatedUser being set, nothing will render. Same result vice versa.
   const [authenticatedUser, authenticateUser] = useState(null); 
+  const [tileset, editTile] = useState("");
 
   return (
     <div id='screen'>
@@ -25,10 +26,10 @@ function App() {
       </Routes>
       <Routes>  
         <Route element={<Layout authenticateUser = {authenticateUser}/>}>
-          <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser}/>}/>
+          <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser} editTile = {editTile}/>}/>
           <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
           <Route path='/community' element={<Community authenticatedUser = {authenticatedUser}/>}/>
-          <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser}/>}/>
+          <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser} tileset={tileset}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser}/>}/>
         </Route>
         //<Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>

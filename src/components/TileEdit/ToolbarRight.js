@@ -79,7 +79,7 @@ const Sidemenu = (props) => {
     
 
     {props.tileList &&  props.tileList.map((data)=>{
-            
+            console.log("Data", data);
                 
             return(
             <Grid  item md={3} >

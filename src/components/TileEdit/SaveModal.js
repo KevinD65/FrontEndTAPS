@@ -3,12 +3,15 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
 import {uploadImageToCloudinaryAPIMethod} from "../../client"
+import { SAVE_TILESET, GET_TILESET } from "../../graphql/queries/TileEditorQueries";
+import { useMutation, useQuery } from '@apollo/client';
 
-export default function JSONSaveModal(props) {
+export default function SaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
     const [tileWidth, changeWidth] = React.useState(50);
     const [tileHeight, changeHeight] = React.useState(50);
-    const [download, setDownload] = React.useState("");
+    const [download, setDownload] = React.useState({});
+    const [saveTileset] = useMutation(SAVE_TILESET);
 
     const handleKeyDown = (e, field) => {
         if (e.key === 'Enter'){
@@ -51,13 +54,13 @@ export default function JSONSaveModal(props) {
         props.tileList.forEach((tile) => {
             let img = new Image;
             img.src = tile;
-            ctx.drawImage(img, row, col, 40, 40);
+            ctx.drawImage(img, row, col, tileWidth, tileHeight);
             if(row === 160){
                 row = 0;
-                col = col + 40;
+                col = col + tileWidth;
             }
             else{
-                row = row + 40;
+                row = row + tileHeight;
             }
         });
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
@@ -69,7 +72,8 @@ export default function JSONSaveModal(props) {
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
-        let rows = props.tileList.length / 5 + 1;
+        let rows = Math.floor(props.tileList.length / 5) + 1;
+        console.log("rows", rows);
         let cols = tileCount < 5 ? tileCount : 5;
         let object = {
             name: name,
@@ -77,14 +81,26 @@ export default function JSONSaveModal(props) {
             tilewidth: tileWidth,
             tileheight: tileHeight,
             columns: cols,
-            imageheight: rows * 50,
-            imagewidth: rows * 50,
+            imageheight: rows * tileHeight,
+            imagewidth: cols * tileWidth,
             tilecount: tileCount,
+            dataURLs: props.tileList,
             type: 'tileset'
         };
         console.log(object);
-        let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
-        setDownload(data);
+        return object;
+        
+    }
+
+    const saveTile = async () => {
+        let object = await makeJSON();
+        let res = await saveTileset({
+            variables: {
+                id: props.tilesetId,
+                input: object,
+            }
+        });
+        console.log(res);
     }
     const style = {
         position: 'absolute',
@@ -121,7 +137,7 @@ export default function JSONSaveModal(props) {
         </List>
         <Button onClick={makeJSON}>Preview</Button>
         <canvas ref={canvasRef}/>
-        {<a href={download} download={name + ".json"}>Download</a>}
+        <Button onClick={saveTile}>Save</Button>
   </Box>
 </Modal>
   )

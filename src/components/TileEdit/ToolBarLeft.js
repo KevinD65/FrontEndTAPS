@@ -33,6 +33,11 @@ const Sidemenu = (props) => {
     props.turnOnPNGMod();
   }
 
+  const savetoDB = () => {
+    setAnchor(false);
+    props.turnOnSaveMod();
+  }
+
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
@@ -106,7 +111,7 @@ const Sidemenu = (props) => {
                 <Divider></Divider>
                 <MenuItem onClick={saveJSON}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As JSON</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
+                <MenuItem onClick={savetoDB}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
               </Menu>
       
