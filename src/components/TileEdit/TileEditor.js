@@ -10,8 +10,12 @@ import { useRef } from "react";
 import Canvas from "./Canvas";
 import JSONSaveModal from "./JSONSaveModal";
 import PNGSaveModal from "./PNGSaveModal";
+import SaveModal from "./SaveModal";
+import { SAVE_TILESET, GET_TILESET } from "../../graphql/queries/TileEditorQueries";
+import { useMutation, useQuery } from '@apollo/client';
 
-const TileEditor = () => {
+const TileEditor = (props) => {
+    console.log("From Top", props.tileset)
     const[tileList, setTileList]=useState([])
     const canvasRef = useRef(null);
     const[base64,setBase64]=useState("")
@@ -24,6 +28,20 @@ const TileEditor = () => {
     const[canvasHeight, setCanvasHeight]=useState(600)
     const [saveJSON, toggleJSON] =useState(false);
     const [savePNG, togglePNG] = useState(false);
+    const [save, toggleSave] = useState(false);
+
+    const { data, loading, error } = useQuery(GET_TILESET, {
+        variables: {
+          id: props.tileset,
+        }
+      });
+
+      React.useEffect(() => {
+        if(data) {
+            console.log(data.getTileset.dataURLs);
+          setTileList(oldArray => [... data.getTileset.dataURLs]);
+        }
+    }, [data])
 
 
     const updateBrushColor = (color) =>{
@@ -49,7 +67,9 @@ const TileEditor = () => {
                 eraseOffCallback={() => toggleErase(false)}
                 canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight}
                 turnOnJSONMod={() => toggleJSON(true)}
-                turnOnPNGMod={() => togglePNG(true)}/>
+                turnOnPNGMod={() => togglePNG(true)}
+                turnOnSaveMod={() => toggleSave(true)}
+                />
             </Grid>
             
             <Grid item  md={8} sx={{p:10}} >
@@ -68,6 +88,7 @@ const TileEditor = () => {
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} tileList={tileList} />
         <PNGSaveModal open={savePNG} onClose={() => togglePNG(false)} tileList={tileList} />
+        <SaveModal open={save} onClose={() => toggleSave(false)} tileList={tileList} tilesetId={props.tileset}/>
         </>
     )
 }

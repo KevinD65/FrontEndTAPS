@@ -165,7 +165,8 @@ const deleteAssetTileset = async(arg_id) => {
                 
             return(
             <Grid  item md={3} >
-            <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}/>
+            <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}
+            editTile={props.editTile}/>
             </Grid>
         )
               })}
@@ -175,7 +176,6 @@ const deleteAssetTileset = async(arg_id) => {
     <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}>Folders <hr/></Typography>
     <Grid container   >
     </Grid>
-    <Button onClick={seeend}>Test</Button>
     <FolderDisplay currentfolder={currentfolderPath.at(-1)} refetchFolders={refetchFolders}/>
   </Grid>
       

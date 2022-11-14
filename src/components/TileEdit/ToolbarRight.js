@@ -81,7 +81,7 @@ const Sidemenu = (props) => {
     
     {props.tileList.length<=0 && <Typography sx={{color:"black"  ,fontWeight:400, pl:2 ,pt:1,pb:1}}>Save tiles to add...</Typography>}
     {props.tileList &&  props.tileList.map((data)=>{
-            
+            console.log("Data", data);
                 
             return(
             <Grid id={counter} item md={3} >
