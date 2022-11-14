@@ -20,8 +20,8 @@ const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"m
 
 export default function UserAsset(props) {
 
-  const [currentfolderPath, changePath] = React.useState([{id: "x", name: "y"}]);
-  const [currentFolder, changeFolder] = React.useState({id: "x", name: "y"});
+  const [currentfolderPath, changePath] = React.useState([{id: null, name: null}]);
+  const [currentFolder, changeFolder] = React.useState({id: null, name: null});
   const seeend = () => {
     console.log(currentfolderPath.at(-1).id);
     changePath(oldArray => [...oldArray, {id: null, name: null}]);

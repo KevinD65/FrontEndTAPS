@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
-import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
 export default function JSONSaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
@@ -24,23 +23,6 @@ export default function JSONSaveModal(props) {
         }
       }
 
-    const handleImageSelected = async (image) => {
-        console.log("New File Selected");
-            const formData = new FormData();
-            const unsignedUploadPreset = 'ngrdnw4p'
-            formData.append('file', image);
-            formData.append('upload_preset', unsignedUploadPreset);
-    
-            console.log("Cloudinary upload");
-            let url = await uploadImageToCloudinaryAPIMethod(formData).then((response) => {
-                //console.log("Upload success");
-                return response.secure_url;
-                
-            });
-            console.log("URL", url);
-        
-    }
-
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
@@ -60,27 +42,12 @@ export default function JSONSaveModal(props) {
                 row = row + 40;
             }
         });
-        let uri = await handleImageSelected(canvasRef.current.toDataURL());
+        let uri = canvasRef.current.toDataURL();
         return uri;
     }
     const makeJSON = async() => {
         let uri = await makeOnePNG();
-        let tileCount = props.tileList.length;
-        let rows = props.tileList.length / 5 + 1;
-        let cols = tileCount < 5 ? tileCount : 5;
-        let object = {
-            name: name,
-            image: uri,
-            tilewidth: tileWidth,
-            tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * 50,
-            imagewidth: rows * 50,
-            tilecount: tileCount,
-            type: 'tileset'
-        };
-        let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
-        setDownload(data);
+        setDownload(uri);
     }
     const style = {
         position: 'absolute',
@@ -117,7 +84,7 @@ export default function JSONSaveModal(props) {
         </List>
         <Button onClick={makeJSON}>Preview</Button>
         <canvas ref={canvasRef}/>
-        {<a href={download} download={name + ".json"}>Download</a>}
+        {<a href={download} download={name + ".png"}>Download</a>}
   </Box>
 </Modal>
   )
