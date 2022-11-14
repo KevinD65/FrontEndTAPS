@@ -68,6 +68,7 @@ function PasswordResetScreen(props) {
         navigate('/');
         setSuccessfulPasswordChange(false);
         setMatchingPasswords(true);
+        window.location.reload();
     }
 
     /**
