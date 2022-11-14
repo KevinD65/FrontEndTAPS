@@ -24,23 +24,25 @@ import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 //import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
-import {Card,CardContent,Grid} from '@mui/material';
+import {Card,CardContent,Grid,Badge} from '@mui/material';
 import mergeImages from 'merge-base64'
 
 
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
-// const [finalImg, setFinalImg]=useState("")
-//   useEffect(() => {
-//     mergeImages(props.tileList).then(b64 => {
-//       setFinalImg(b64)
-//    });
+  const removeSelected=(e)=>{
+    let i=e.target.id
+    console.log(e.target.id)
     
-//   },[props.tileList]);
-  
-  
-  // const mergedImage =()=>{ await mergeImages(props.tileList);}
+  }
+
+
+  useEffect(()=>{
+
+  },[props.tileList])
+
+  let counter=0;
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -77,18 +79,23 @@ const Sidemenu = (props) => {
             direction='row'
             >
     
-
+    {props.tileList.length<=0 && <Typography sx={{color:"black"  ,fontWeight:400, pl:2 ,pt:1,pb:1}}>Save tiles to add...</Typography>}
     {props.tileList &&  props.tileList.map((data)=>{
             console.log("Data", data);
                 
             return(
-            <Grid  item md={3} >
+            <Grid id={counter} item md={3} >
+              {counter+=1}
+              <Badge  cursor="pointer"  badgeContent="x" color="error" onClick={removeSelected} sx={{pl:6}}></Badge>
+              
             <Card sx={{width:50 ,height:50 ,mb:1}}>
+            
             <CardContent>
       <img src={data} width="40" 
      height="40" ></img>
     </CardContent>
     </Card>
+    
             </Grid>
         )
               })}

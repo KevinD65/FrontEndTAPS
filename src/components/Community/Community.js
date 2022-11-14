@@ -3,9 +3,53 @@ import CommunityAssets from "./CommunityAssets";
 import RecentSearches from "./RecentSearches";
 import Searchbar from "./Searchbar";
 import ToolBarLeft from "./ToolBarLeft";
+import {GET_COMMUNITY_SCREEN_MAPS} from "../../graphql/queries/communityScreenMaps";
+import {GET_COMMUNITY_SCREEN_TILESETS} from "../../graphql/queries/communityScreenTilesets";
+import {GET_COMMUNITY_SCREEN_FOLDERS} from "../../graphql/queries/communityScreenFolders";
+
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_ASSET_SCREEN_MAPS } from "../../graphql/queries/assetScreenMaps";
+
 
 const Community = () => {
-    const [recentSearches, updateRecentSearches] = useState([]);
+    const [recentSearches, updateRecentSearches] = useState(["map"]);
+    const [tagFilter, updateTagFilter] = useState("Maps");
+console.log(tagFilter);
+    
+
+//set the initial fetching of maps to look for maps of a tag
+    const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_COMMUNITY_SCREEN_MAPS, {
+        variables: {tag: tagFilter,
+                    search: recentSearches[0]},
+      });
+
+    console.log(mapdata)
+
+// refetching of maps if any changes need to occur
+      const refetchMaps = {
+        refetchQueries: [
+          {
+            query: GET_COMMUNITY_SCREEN_MAPS,
+            variables:{tag: tagFilter,
+                    search: recentSearches[0]}
+          }
+        ]
+      }
+
+      //set the initial fetching of maps to look for tilesets of a tag
+    const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_COMMUNITY_SCREEN_TILESETS, {
+        variables: {tag: tagFilter,
+                    search: recentSearches[0]},
+      });
+
+    console.log(tilesetdata)
+
+    const { loading: get_folders_loading, error: get_folders_error, data:folderdata } = useQuery(GET_COMMUNITY_SCREEN_FOLDERS, {
+        variables: {tag: tagFilter,
+                    search: recentSearches[0]},
+      });
+
+    console.log(folderdata)
 
     //query DB for community assets so we can pass it down to <CommunityAssets/> as a prop
 
@@ -35,11 +79,15 @@ const Community = () => {
         //execute query
     }
 
+    function handleTagFilterChange(input) {
+        updateTagFilter(input);
+      }
+
     return (
         <div className='Community'>
             <Searchbar executeSearch={executeSearch}/>
             <div id='community-screen-container'>
-                <ToolBarLeft/>
+                <ToolBarLeft tagFilter={tagFilter} onTagFilterChange = {handleTagFilterChange} />
                 {/* <div className="community-screen-leftsidecontent">
                     <div className="searchFilterLabel">Type</div>
                     <hr></hr>
@@ -57,7 +105,8 @@ const Community = () => {
                     <div className="searchFilterItem">Sprites</div>
                 </div> */}
                 <div className="community-screen-middlecontent">
-                    <CommunityAssets/>
+                    
+                    {!get_maps_loading && !get_maps_error && !get_tilesets_loading && !get_tilesets_error && !get_folders_loading && !get_folders_error &&<CommunityAssets mapdata = {mapdata} tilesetdata ={tilesetdata} folderdata ={folderdata}/>}
                 </div>
                 <div className="community-screen-rightsidecontent">
                     <RecentSearches recentSearches={recentSearches} executeSearch={executeSearch}/>

@@ -19,6 +19,8 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
+import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
+import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
 
 
 const Asset = (props) => {
@@ -32,8 +34,10 @@ const Asset = (props) => {
       setAnchor(e.currentTarget)
     }
     //props will contain the community asset object which will contain information regarding the asset such as name, type, description, and image
-    //let asset = props.asset; UNCOMMENT THIS AFTER BUILD #2
-
+    let asset = props.asset; 
+    //******* FOR NOW ASSET TYPE IS SENT IN SEPARATE
+    let assetType = props.assetType
+    console.log(asset)
     return (
         <div id='Asset'>
 
@@ -47,7 +51,9 @@ const Asset = (props) => {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            <MapOutlinedIcon sx={{}}></MapOutlinedIcon> &nbsp; Ruins Adventure Map
+            {assetType === "Map" && <MapOutlinedIcon sx={{}}></MapOutlinedIcon>}
+            {assetType === "Tile" && <GridViewOutlinedIcon sx={{}}></GridViewOutlinedIcon>}
+            {assetType === "Folder" && <FolderSharedOutlinedIcon sx={{}}></FolderSharedOutlinedIcon>} &nbsp; {asset.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
            Map design for a 2D fantasy game that takes place in an ancient ruin. Explore and hunt for treasures thought to be lost to time  a 2D fantasy game that takes place in an ancient ruin. Explore and hunt for treasures thought to be lost to time  

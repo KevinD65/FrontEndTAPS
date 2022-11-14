@@ -19,6 +19,7 @@ const Navbar=(props)=> {
   const handleLogout = () => {
     props.authenticateUser(null);
     navigate('/');
+    window.location.reload(); //force top level page reload
   }
 
   return (

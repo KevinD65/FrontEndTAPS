@@ -13,14 +13,14 @@ const UserProfile = (props) => {
     let currentUser = props.authenticatedUser;
 
     const { loading: get_user_loading, error: get_user_error, data: user_data } = useQuery(GET_USER, {
-        variables: {input: currentUser.username},
+        variables: {id: currentUser.id},
       });
     
       const refetchUser = {
         refetchQueries: [
           {
             query: GET_USER,
-            variables: {input: currentUser.username}
+            variables: {id: currentUser.id}
           }
         ]
       }
@@ -48,8 +48,8 @@ const UserProfile = (props) => {
               bio: bio
             }
           });
-        console.log(updatedUser.data.updateUser);
-        props.authenticateUser(updatedUser); //update the authenticated user
+        console.log(updatedUser.data.updateUser.id);
+        props.authenticateUser(updatedUser.data.updateUser); //update the authenticated user
     }
 
     const showUpdateAccountScreen = async() => {
@@ -61,12 +61,12 @@ const UserProfile = (props) => {
             { !updateAccountScreen ?
             <>
                 <div id='userprofile-bio-panel'>
-                    <div id='bio-container'>
+                    {!get_user_loading && !get_user_error && <div id='bio-container'>
                         <img id='profile-pic' src={DogeLoaf}></img>
-                        <div id='bio-name'>Kevin Duong</div>
-                        <div id='bio-username'>ContainerGamer52</div>
-                        <div id='bio-bio'>Yeah that's right, this is my biography and here are all my assets.</div>
-                    </div>
+                        <div id='bio-name'>{user_data.getUser.name}</div>
+                        <div id='bio-username'>{user_data.getUser.username}</div>
+                        <div id='bio-bio'>{user_data.getUser.bio}</div>
+                    </div>}
                     <div id='updateAccount-container'>
                         <div id='updateAccount-button' onClick={showUpdateAccountScreen}>Update Account Information</div>
                     </div>
@@ -74,7 +74,7 @@ const UserProfile = (props) => {
                 <div id='userprofile-asset-panel'>
                     <div id='my-assets-container'>
                         <ProfileNavbar queryProfileAssets = {queryProfileAssets}/>
-                        <ProfileAssets/>
+                        {/*<ProfileAssets/>*/}
                     </div>
                 </div>
             </>: <UpdateAccountScreen currentUser={props.authenticatedUser} updateAccount={handleUpdateAccount} showUpdateAccountScreen={showUpdateAccountScreen}/>

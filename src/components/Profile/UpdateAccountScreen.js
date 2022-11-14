@@ -4,7 +4,7 @@ import '../Account/Login.css';
 import './UserProfile.css';
 
 function UpdateAccountScreen(props) {
-    let currentUser = props.currentUser;
+    const [currentUser, changeCurrentUser] = useState(props.currentUser);
     const [name, updateInputName] = useState(currentUser.name);
     const [username, updateInputUsername] = useState(currentUser.username);
     const [email, updateInputEmail] = useState(currentUser.email);
@@ -12,27 +12,47 @@ function UpdateAccountScreen(props) {
     const [passwordConfirm, updateInputPasswordConfirm] = useState(null);
     const [bio, updateInputBio] = useState(currentUser.bio);
     const [showError, toggleShowError] = useState(false);
+    const [showSuccess, toggleShowSuccess] = useState(false);
 
     const bcrypt = require('bcryptjs');
     const saltRounds = bcrypt.genSaltSync(12);
 
     const storeInputValue = async(field, value) => {
+      toggleShowError(false);
       if(field == "name"){
+        if(value == ""){
+          updateInputName(currentUser.name)
+        }
         updateInputName(value);
       }
       else if(field == "email"){
+        if(value == ""){
+          updateInputEmail(currentUser.name)
+        }
         updateInputEmail(value);
       }
       else if(field == "username"){
+        if(value == ""){
+          updateInputUsername(currentUser.name)
+        }
         updateInputUsername(value);
       }
       else if(field == "password"){
+        if(value == ""){
+          updateInputPassword(currentUser.name)
+        }
         updateInputPassword(value);
       }
       else if(field == "passwordConfirm"){
+        if(value == ""){
+          updateInputPasswordConfirm(currentUser.name)
+        }
         updateInputPasswordConfirm(value);
       }
       else if(field == "bio"){
+        if(value == ""){
+          updateInputBio(currentUser.name)
+        }
         updateInputBio(value);
       }
     }
@@ -59,14 +79,19 @@ function UpdateAccountScreen(props) {
           hash = currentUser.hash;
         }
 
-        props.updateAccount(currentUser.id, name, username, email, hash, bio);
+        await props.updateAccount(currentUser.id, name, username, email, hash, bio);
+        toggleShowSuccess(true);
 
+        /*
         updateInputName(name);
         updateInputEmail(username);
         updateInputUsername(email);
         updateInputPassword(null);
         updateInputPasswordConfirm(null);
-        updateInputBio(bio);
+        updateInputBio(bio);*/
+      }
+      else{
+        toggleShowError(true);
       }
     }
 
@@ -80,22 +105,23 @@ function UpdateAccountScreen(props) {
         </div>
       </div>
       <div className='updateaccount-screen-panel update-panel'>
-        <input autocomplete="new-password" id='updateName' className='login-screen-input' type="text" placeholder={currentUser.name} onChange = {(event) => storeInputValue("name", event.target.value)}></input>
-        <input autocomplete="new-password" id='updateUsername' className='login-screen-input' type="text" placeholder={currentUser.username} onChange = {(event) => storeInputValue("username", event.target.value)}></input>
-        <input autocomplete="new-password" id='updateEmail' className='login-screen-input' type="text" placeholder={currentUser.email} onChange = {(event) => storeInputValue("email", event.target.value)}></input>
-        { !toggleShowError ?
+        <input autocomplete="new-password" id='updateName' className='login-screen-input' type="text" placeholder={"Name: " + currentUser.name} onChange = {(event) => storeInputValue("name", event.target.value)}></input>
+        <input autocomplete="new-password" id='updateUsername' className='login-screen-input' type="text" placeholder={"Username: " + currentUser.username} onChange = {(event) => storeInputValue("username", event.target.value)}></input>
+        <input autocomplete="new-password" id='updateEmail' className='login-screen-input' type="text" placeholder={"Email: " + currentUser.email} onChange = {(event) => storeInputValue("email", event.target.value)}></input>
+        { !showError ?
         <>
         <input autocomplete="new-password" id='updatePassword' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}></input>
         <input autocomplete="new-password" id='confirmUpdatePassword' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
         </>
         : 
         <>
-        <input autocomplete="new-password" id='updatePassword' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}></input>
-        <input autocomplete="new-password" id='confirmUpdatePassword' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
+        <input autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}></input>
+        <input autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
         </>
         }
-        <textarea autocomplete="new-password" id='updateBio' className='updateaccount-screen-bioinput' type="text" placeholder={currentUser.bio} onChange = {(event) => storeInputValue("bio", event.target.value)}></textarea>
-        <div id="updateAccount-error" visibility="hidden">Error</div>
+        <textarea autocomplete="new-password" id='updateBio' className='updateaccount-screen-bioinput' type="text" placeholder={"Biography: " + currentUser.bio} onChange = {(event) => storeInputValue("bio", event.target.value)}></textarea>
+        { showError ? <div className="on-screen-message-negative">Please make sure the following fields are filled out and match</div>: <></>}
+        { showSuccess ? <div className="on-screen-message-positive">Account successfully updated!</div>: <></>}
         <div id='login-button' onClick={submitAccountChange}>Update Account Information</div>
         <div id='cancel-button' onClick={() => props.showUpdateAccountScreen()}>Back</div>
       </div>
