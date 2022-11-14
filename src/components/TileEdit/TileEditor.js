@@ -8,6 +8,7 @@ import ToolbarRight from "./ToolbarRight"
 import CanvasDraw from "./index";
 import { useRef } from "react";
 import Canvas from "./Canvas";
+import JSONSaveModal from "./JSONSaveModal";
 
 
 const TileEditor = () => {
@@ -20,6 +21,8 @@ const TileEditor = () => {
     const [erase, toggleErase] = useState(false);
     const[canvasWidth, setCanvasWidth]=useState(600)
     const[canvasHeight, setCanvasHeight]=useState(600)
+    const [saveJSON, toggleJSON] =useState(false);
+
     const updateBrushColor = (color) =>{
         changeColor(color.hex);
     }
@@ -42,7 +45,7 @@ const TileEditor = () => {
                 eraseOnCallback={() => toggleErase(true)} 
                 eraseOffCallback={() => toggleErase(false)}
                 canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight}
-                />
+                turnOnJSONMod={() => toggleJSON(true)}/>
             </Grid>
             
             <Grid item  md={8} sx={{p:10}} >
@@ -59,6 +62,7 @@ const TileEditor = () => {
         </Grid>
         </Grid>
         </Box>
+        <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} tileList={tileList} />
         </>
     )
 }
