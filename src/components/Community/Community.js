@@ -5,6 +5,8 @@ import Searchbar from "./Searchbar";
 import ToolBarLeft from "./ToolBarLeft";
 import {GET_COMMUNITY_SCREEN_MAPS} from "../../graphql/queries/communityScreenMaps";
 import {GET_COMMUNITY_SCREEN_TILESETS} from "../../graphql/queries/communityScreenTilesets";
+import {GET_COMMUNITY_SCREEN_FOLDERS} from "../../graphql/queries/communityScreenFolders";
+
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ASSET_SCREEN_MAPS } from "../../graphql/queries/assetScreenMaps";
 
@@ -35,12 +37,19 @@ console.log(tagFilter);
       }
 
       //set the initial fetching of maps to look for tilesets of a tag
-    /*const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_COMMUNITY_SCREEN_TILESETS, {
+    const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_COMMUNITY_SCREEN_TILESETS, {
         variables: {tag: tagFilter,
                     search: recentSearches[0]},
       });
 
-    console.log(tilesetdata)*/
+    console.log(tilesetdata)
+
+    const { loading: get_folders_loading, error: get_folders_error, data:folderdata } = useQuery(GET_COMMUNITY_SCREEN_FOLDERS, {
+        variables: {tag: tagFilter,
+                    search: recentSearches[0]},
+      });
+
+    console.log(folderdata)
 
     //query DB for community assets so we can pass it down to <CommunityAssets/> as a prop
 
@@ -97,7 +106,7 @@ console.log(tagFilter);
                 </div> */}
                 <div className="community-screen-middlecontent">
                     
-                    {!get_maps_loading && !get_maps_error &&  <CommunityAssets mapdata = {mapdata}/>}
+                    {!get_maps_loading && !get_maps_error && !get_tilesets_loading && !get_tilesets_error && !get_folders_loading && !get_folders_error &&<CommunityAssets mapdata = {mapdata} tilesetdata ={tilesetdata} folderdata ={folderdata}/>}
                 </div>
                 <div className="community-screen-rightsidecontent">
                     <RecentSearches recentSearches={recentSearches} executeSearch={executeSearch}/>
