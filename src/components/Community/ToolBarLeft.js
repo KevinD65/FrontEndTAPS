@@ -32,7 +32,10 @@ const ToolBarLeft = (props) => {
     setAnchor(e.currentTarget)
   }
 
-
+  //changes the filter text to the tag's name
+  function handleTagFilterChange(input) {
+    props.onTagFilterChange(input);
+  }
 
     return (
   <Drawer
@@ -63,7 +66,7 @@ const ToolBarLeft = (props) => {
          {/* List of sidebar components */}
     {[{name:'All', icon:<InboxIcon/>}, {name:'Maps', icon:<MapOutlinedIcon/>}, {name:'Tiles', icon:<GridViewOutlinedIcon/>}, {name:'Folders', icon:<FolderOpenIcon/>}, ].map((text, index) => (
         <ListItem key={text.name} disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => handleTagFilterChange(text.name)}>
             <ListItemIcon>
               {text.icon}
             </ListItemIcon>
@@ -80,12 +83,12 @@ const ToolBarLeft = (props) => {
 
 <Divider />
 
-{[{name:'Chracters', icon:<InboxIcon/>}, {name:'Texture', icon:<MapOutlinedIcon/>}, {name:'UI', icon:<GridViewOutlinedIcon/>}, {name:'Icons', icon:<StarBorderIcon/>}, {name:'Background', icon:<FolderSharedOutlinedIcon/>},{name:'Sprites', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
-        <ListItem key={text.name} disablePadding>
-          <ListItemButton>
+{[{name:'Characters', icon:<InboxIcon/>}, {name:'Texture', icon:<MapOutlinedIcon/>}, {name:'UI', icon:<GridViewOutlinedIcon/>}, {name:'Icons', icon:<StarBorderIcon/>}, {name:'Background', icon:<FolderSharedOutlinedIcon/>},{name:'Sprites', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
+        <ListItem key={text.name} disablePadding >
+          <ListItemButton onClick={() => handleTagFilterChange(text.name)}>
             <ListItemIcon>
               {text.icon}
-            </ListItemIcon>
+            </ListItemIcon> 
             <ListItemText primary={text.name} />
             
             

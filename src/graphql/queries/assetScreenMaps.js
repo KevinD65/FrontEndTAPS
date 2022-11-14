@@ -21,6 +21,18 @@ mutation($input: MapInput){
   }
 }
 `
+
+const GET_COMMUNITY_SCREEN_MAPS = gql`
+query($input: String){
+  getMapsWithTag(tag: $input){
+    id,
+    name,
+    image,
+    starred
+  }
+} 
+`;
+
 const CHANGE_MAP_NAME = gql`
 mutation($name: String, $id: ID!){
   changeMapName(id: $id, name: $name){
