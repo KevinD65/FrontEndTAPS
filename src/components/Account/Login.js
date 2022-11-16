@@ -129,7 +129,10 @@ function Login(props) {
   return (
     <>
       <Box id='login-screen-container'>
-      <Grid  spacing={2}>
+      <Grid  spacing={2} direction="column"
+  alignItems="center"
+  justifyContent="center"
+  style={{ minHeight: '100vh' }}>
 
       <Grid item  md={6}>
     

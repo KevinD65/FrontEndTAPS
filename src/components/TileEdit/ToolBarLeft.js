@@ -33,7 +33,7 @@ const Sidemenu = (props) => {
   const handleImportJSON=(event)=> {
     var reader = new FileReader();
     reader.onload = onReaderLoad;
-    reader.readAsText(event.target.files[0]);
+    reader.readAsText(event.target.files[0]) 
 }
 
 const onReaderLoad=(event)=>{

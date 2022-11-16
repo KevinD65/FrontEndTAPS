@@ -11,6 +11,9 @@ import { useState } from "react";
 const MapEditor = () => {
     const [mapWidth, setMapWidth]=useState(32)
     const [mapHeight, setMapHeight]=useState(32)
+    const[currentTile,setCurrentTile]=useState("")
+    const [tileWidth, setTileWidth]=useState(32)
+    const [tileHeight, setTileHeight]=useState(32)
     return (
         <>
         
@@ -19,14 +22,14 @@ const MapEditor = () => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} ></ToolbarLeft>
+        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} >
-       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth}    />
+       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  />
         </Grid>
 
         <Grid item  md={2}>
-        <ToolbarRight></ToolbarRight>
+        <ToolbarRight currentTile={currentTile} setCurrentTile={setCurrentTile}  ></ToolbarRight>
         </Grid>
         </Grid>
         </Box>
