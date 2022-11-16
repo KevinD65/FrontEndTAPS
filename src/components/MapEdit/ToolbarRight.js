@@ -26,7 +26,7 @@ import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
 
 const drawerWidth = 240;
-const Sidemenu = () => {
+const Sidemenu = ({ currentTile ,setCurrentTile}) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -54,7 +54,7 @@ const Sidemenu = () => {
          <LayersEdit/>
         <Divider />
 
-        <TilesetMap/>
+        <TilesetMap  currentTile={currentTile} setCurrentTile={setCurrentTile}/>
     </List>
     
     

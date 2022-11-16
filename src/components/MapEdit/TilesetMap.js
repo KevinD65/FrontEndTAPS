@@ -67,7 +67,7 @@ const itemData = [
     },
   ];
   
-export default function TilesetMap() {
+export default function TilesetMap({ currentTile, setCurrentTile}) {
   const [openTS, toggleOpen] = React.useState(false);
   const [grid_points, setGridPoints] = React.useState([]);
   const [imageData, setImageData]= useState("");
@@ -96,7 +96,7 @@ export default function TilesetMap() {
     <>
     <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
     <Button onClick={() => openSet()}>Open</Button>
-    {openTS && <SelectGrid gridPoints={grid_points}/>}
+    {openTS && <SelectGrid gridPoints={grid_points}  currentTile={currentTile} setCurrentTile={setCurrentTile}/>}
     <img src={'https://tapsimages.s3.amazonaws.com/VIP+SBU+MAPS+Tileset.png'} ></img>
     {/*
     <ImageList sx={{ width: 239, height: 220 }} cols={3} rowHeight={45}>

@@ -14,7 +14,7 @@ import {Typography} from '@mui/material';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth }) => {
+const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -25,7 +25,7 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth }) => {
     sx={{
       width: drawerWidth,
       flexShrink: 0,
-      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', border:"0" },
+      [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box',  },
       boxShadow:"10px 10px 10px pink"
     }}
       >
@@ -98,7 +98,7 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth }) => {
             </Box>
     <Divider />
          {/* Map properties*/}
-         <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} />
+         <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  />
         <Divider />
     </List>
     
