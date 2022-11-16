@@ -12,7 +12,7 @@
 }
 
 .Searchbar{
-    height: 55px;
+    
     width: 100%;
     margin-top: 25px;
 }
@@ -28,12 +28,12 @@
 
 
 #searchbarinput{
-    height: 50px;
-    width: 50%;
-    font-size: xx-large;
+   
+    width: 100%;
+    font-size: large;
     font-weight: bold;
     display: inline-block;
-    background-color: var(--very-light-beige);
+    
 }
 
 #community-screen-container{

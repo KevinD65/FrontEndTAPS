@@ -1,55 +1,65 @@
 #login-screen-container{
     height: 100%;
     width: 100%;
+    background: rgb(78,108,80);
+    background: linear-gradient(90deg, rgba(78,108,80,1) 0%, rgba(248,237,227,1) 72%);
 }
-
 .login-screen-panel{
     margin-top: 15%;
     margin-right: 5%;
     float: left;
     width: 30%;
-    height: 35%;
+    height: 100vh;
+   
+   
+}
+#login-left-side{
+    
+
 }
 
 .login-screen-panel.login-panel{
-    background-color: rgb(209,192,168);
+    background-color: "#395144";
     height: fit-content;
-    padding-bottom: 2%;
+    padding: 2%;
 }
 
 .login-screen-panel.TAPSLogo{
     margin-left: 15%;
+    
 }
 
 .login-screen-input{
-    height: 40px;
-    width: 95%;
-    margin-top: 2%;
+    
+    width: 100%;
+    margin-top: 5%;
     margin-left: 2%;
+    
 }
 
 #login-button{
-    height: 40px;
-    width: 95%;
+    /* height: 40px; */
+    width: 100%;
     margin-top: 2%;
-    margin-left: 3%;
-    padding-top: 2%;
+   
+    /* padding-top: 2%; */
     text-align: center;
-    background-color: cornflowerblue;
+    background-color:#4E6C50;
     color: white;
     font-size: large;
 }
+
 
 #login-button:hover{
     cursor: pointer;
 }
 
 #cancel-button{
-    height: 40px;
-    width: 95%;
+    
+   
     margin-top: 2%;
-    margin-left: 3%;
-    padding-top: 2%;
+    
+    width: 100%;
     text-align: center;
     background-color: red;
     color: white;
@@ -61,8 +71,10 @@
 }
 
 #password-reset-button{
-    color:slategray;
+    margin-top: 3%;
+    color: #4E6C50;
     text-align: center;
+    margin-bottom: 3%;
 }
 
 #password-reset-button:hover{
@@ -74,7 +86,7 @@
     text-align: center;
     display: inline-block;
     margin-top: 20px;
-    margin-left: 30%;
+   margin-left: 20%;
 }   
 
 #account-reset-button{
@@ -82,7 +94,7 @@
     text-align: center;
     display: inline-block;
     margin-left: 3px;
-    color: cornflowerblue;
+    color:  #4E6C50;
 }
 
 #account-reset-button:hover{
@@ -90,8 +102,11 @@
 }
 
 #taps-slogan{
-    font-family: 'Lexend';
+    
     text-align: center;
+    font-size: 1.3rem;
+    /* color:white; */
+    font-weight: 600;
 }
 
 #TAPS-logo-login{
@@ -101,12 +116,12 @@
 
 #successfully-sent-email{
     text-align: center;
-    color: green;
+    color: #4E6C50;
 }
 
 .on-screen-message-positive{
     text-align: center;
-    color: green
+    color: #4E6C50
 }
 
 .on-screen-message-negative{
@@ -116,4 +131,8 @@
 
 #updatePassword-error{
     border-color: red;
+}
+
+#TAPS-logo-login{
+    height: 20%;
 }

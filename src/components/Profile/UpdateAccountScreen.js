@@ -1,7 +1,9 @@
 import { React, useState } from 'react';
-import TAPSLogo from '../../TAPSLogo.PNG';
+import TAPSLogo from '../../TAPSLogo.png';
 import '../Account/Login.css';
 import './UserProfile.css';
+import {Card,Box, Button,  TextField,Typography} from "@mui/material"
+
 
 function UpdateAccountScreen(props) {
     const [currentUser, changeCurrentUser] = useState(props.currentUser);
@@ -97,35 +99,35 @@ function UpdateAccountScreen(props) {
 
 
   return (
-    <div id='login-screen-container'>
-      <div className='login-screen-panel TAPSLogo'>
+    <Box id='login-screen-container'>
+      <Box className='login-screen-panel TAPSLogo'>
         <img alt="TAPS Logo" id='TAPS-logo-login' src={TAPSLogo}/>
         <div id='taps-slogan'>
           A One Stop Solution To All Your Map Needs
         </div>
-      </div>
-      <div className='updateaccount-screen-panel update-panel'>
-        <input autocomplete="new-password" id='updateName' className='login-screen-input' type="text" placeholder={"Name: " + currentUser.name} onChange = {(event) => storeInputValue("name", event.target.value)}></input>
-        <input autocomplete="new-password" id='updateUsername' className='login-screen-input' type="text" placeholder={"Username: " + currentUser.username} onChange = {(event) => storeInputValue("username", event.target.value)}></input>
-        <input autocomplete="new-password" id='updateEmail' className='login-screen-input' type="text" placeholder={"Email: " + currentUser.email} onChange = {(event) => storeInputValue("email", event.target.value)}></input>
+      </Box>
+      <Card sx={{p:3}}className='updateaccount-screen-panel update-panel'>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updateName' className='login-screen-input' type="text" placeholder={"Name: " + currentUser.name} onChange = {(event) => storeInputValue("name", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updateUsername' className='login-screen-input' type="text" placeholder={"Username: " + currentUser.username} onChange = {(event) => storeInputValue("username", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updateEmail' className='login-screen-input' type="text" placeholder={"Email: " + currentUser.email} onChange = {(event) => storeInputValue("email", event.target.value)}/>
         { !showError ?
         <>
-        <input autocomplete="new-password" id='updatePassword' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}></input>
-        <input autocomplete="new-password" id='confirmUpdatePassword' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updatePassword' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='confirmUpdatePassword' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}/>
         </>
         : 
         <>
-        <input autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}></input>
-        <input autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="New or Current Password" onChange = {(event) => storeInputValue("password", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updatePassword-error' className='login-screen-input' type="password" placeholder="Confirm New or Current Password" onChange = {(event) => storeInputValue("passwordConfirm", event.target.value)}/>
         </>
         }
-        <textarea autocomplete="new-password" id='updateBio' className='updateaccount-screen-bioinput' type="text" placeholder={"Biography: " + currentUser.bio} onChange = {(event) => storeInputValue("bio", event.target.value)}></textarea>
+        <TextField  multiline  minRows={3} sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='updateBio' className='updateaccount-screen-bioinput' type="text" placeholder={"Biography: " + currentUser.bio} onChange = {(event) => storeInputValue("bio", event.target.value)}/>
         { showError ? <div className="on-screen-message-negative">Please make sure the following fields are filled out and match</div>: <></>}
         { showSuccess ? <div className="on-screen-message-positive">Account successfully updated!</div>: <></>}
-        <div id='login-button' onClick={submitAccountChange}>Update Account Information</div>
-        <div id='cancel-button' onClick={() => props.showUpdateAccountScreen()}>Back</div>
-      </div>
-    </div>
+        <Button id='login-button' onClick={submitAccountChange}>Update Account Information</Button>
+        <Button id='cancel-button' onClick={() => props.showUpdateAccountScreen()}>Back</Button>
+      </Card>
+    </Box>
   )
 }
 

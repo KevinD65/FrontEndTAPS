@@ -117,12 +117,12 @@
 }
 
 .updateaccount-screen-panel.update-panel{
-    background-color: rgb(209,192,168);
+    /* background-color: rgb(209,192,168); */
 }
 
 .updateaccount-screen-bioinput{
-    height: 120px;
-    width: 95%;
+   
+    width: 100%;
     margin-top: 2%;
     margin-left: 2%;
 }

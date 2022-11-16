@@ -69,7 +69,9 @@ const Sidemenu = (props) => {
          {/* List of sidebar components */}
          <LayersEdit changeBrushSizeCallback={props.changeBrushSizeCallback} 
          defaultBrush={props.defaultBrush}
-         setErase={props.setErase} erase={props.erase}/>
+         setErase={props.setErase} erase={props.erase}
+         
+         />
         <Divider />
 
     </List>
