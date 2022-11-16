@@ -1,15 +1,15 @@
 import * as React from 'react';
 import "./tileEdit.css" 
 import { useRef,useEffect,useState } from 'react';
-import { Button,TextField } from '@mui/material';
+import { Button,TextField,Box } from '@mui/material';
 import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
-const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius,erase}) => {
+const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius,erase, saveCurrent, setSaveCurrent}) => {
   
   const canvasRef=useRef(null);
   const contextRef=useRef(null);
   const [isDrawing, setIsDrawing]= useState(false)
-  
+  const [clearCanvas, setClearCanvas]=useState(false)
   
   
   // const canvas=canvasRef.current;
@@ -36,6 +36,12 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
     
 }
 
+
+ 
+  
+
+
+
 useEffect(()=>{
  if (erase==true){setToErase();}
  else setToDraw()
@@ -54,7 +60,7 @@ useEffect(()=>{
   contextRef.current=context;
   canvasRef.current=canvas;
 
-  },[canvasWidth,canvasHeight])
+  },[canvasWidth,canvasHeight,clearCanvas])
 
  
   const startDrawing=({nativeEvent})=>{
@@ -94,17 +100,19 @@ useEffect(()=>{
     if(contextRef.current!=null)
     contextRef.current.globalCompositeOperation="destination-out"
   }
-  const clearCanvas=()=>{
-    // contextRef.clearRect(0, 0, canvasWidth, canvasHeight);
-  }
+  // const clearCanvas=()=>{
+  //   console.log("here")
+  //   contextRef.clearRect(0, 0, canvasWidth, canvasHeight);
+  // }
   const saveImageToLocal = (event) => {
+    console.log(event.currentTarget)
     let link = event.currentTarget;
     link.setAttribute('download', 'canvas.png');
     let image = canvasRef.current.toDataURL('image/png');
     link.setAttribute('href', image);
     setTileList([image, ...tileList])
     console.log(tileList)
-    clearCanvas()
+    // clearCanvas()
    
 };
 
@@ -121,6 +129,14 @@ const saveImageToCloud = (event) => {
   
   return (
     <>
+    <Box>
+   
+   {/* <Button onClick={setToErase}>Erase</Button>
+   <Button onClick={setToDraw}>Draw</Button> */}
+   <Button variant="contained" sx={{marginRight:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}onClick={saveImageToLocal}>Save Current Tile</Button>
+   <Button variant="contained" sx={{marginRight:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={()=>{setClearCanvas(!clearCanvas)}}>Clear Canvas</Button>
+   {/* <Button onClick={saveImageToCloud}>Save to cloud</Button> */}
+  </Box>
    <canvas className='canvas-main'
     ref={canvasRef}
     onMouseDown={startDrawing}
@@ -130,13 +146,7 @@ const saveImageToCloud = (event) => {
        
     >
    </canvas>
-   <div>
    
-    <Button onClick={setToErase}>Erase</Button>
-    <Button onClick={setToDraw}>Draw</Button>
-    <Button  onClick={saveImageToLocal}>Save</Button>
-    <Button onClick={saveImageToCloud}>Save to cloud</Button>
-   </div>
    </>
   );
 };

@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import './Login.css';
 import {gql, useQuery} from '@apollo/client';
 import { GET_USER } from '../../graphql/queries/loginScreenUsers';
+import {Card, Button,  TextField,Typography} from "@mui/material"
 
 function SignUpModal(props) {
   const bcrypt = require('bcryptjs');
@@ -83,15 +84,16 @@ function SignUpModal(props) {
   }
 
   return (
-    <div className='login-screen-panel login-panel'>
-        <input autocomplete="new-password" id='enterName' className='login-screen-input' type="text"  placeholder="Name" onChange={(event) => storeInputValue("name", event.target.value)}></input>
-        <input autocomplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Email" onChange={(event) => storeInputValue("email", event.target.value)}></input>
-        <input autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Username" onChange={(event) => storeInputValue("username", event.target.value)}></input>
-        <input autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => storeInputValue("password", event.target.value)}></input>
-        <input autocomplete="new-password" id='passwordConfirmEnter' className='login-screen-input' type="password" placeholder="Confirm Password" onChange={(event) => storeInputValue("passwordConfirm", event.target.value)}></input>
-        <div id='login-button' onClick={() => handleSubmitSignUp(inputName, inputUsername, inputEmail, inputPassword, inputPasswordConfirm)}>Sign Up</div>
-        <div id='cancel-button' onClick={cancelSignUp}>Cancel Sign Up</div>
-    </div>
+    <Card className='login-screen-panel login-panel'>
+      {/* <Typography> Sign Up</Typography> */}
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='enterName' className='login-screen-input' type="text"  placeholder="Name" onChange={(event) => storeInputValue("name", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='emailEnter' className='login-screen-input' type="text" placeholder="Email" onChange={(event) => storeInputValue("email", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Username" onChange={(event) => storeInputValue("username", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => storeInputValue("password", event.target.value)}/>
+        <TextField sx={{backgroundColor:"white" ,mb:1}}autocomplete="new-password" id='passwordConfirmEnter' className='login-screen-input' type="password" placeholder="Confirm Password" onChange={(event) => storeInputValue("passwordConfirm", event.target.value)}/>
+        <Button id='login-button' onClick={() => handleSubmitSignUp(inputName, inputUsername, inputEmail, inputPassword, inputPasswordConfirm)}>Sign Up</Button>
+        <Button id='cancel-button' onClick={cancelSignUp}>Cancel Sign Up</Button>
+    </Card>
   )
 }
 //autocomplete="new-password"

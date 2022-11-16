@@ -1,7 +1,7 @@
 import React from "react";
 import SearchItem from "./SearchItem";
 import './Community.css';
-import { Drawer, Toolbar, Typography } from "@mui/material";
+import { Drawer, Toolbar, Typography,Card } from "@mui/material";
 const drawerWidth = 240;
 const RecentSearches = (props) => {
     //props will contain list of recent searches
@@ -38,7 +38,9 @@ const RecentSearches = (props) => {
             
             {
                 recentSearches.map(searchItem => (
+                  <Card sx={{p:1, fontSize:3, mt:1}}>
                     <SearchItem searchItem={searchItem} executeSearch={props.executeSearch}/>
+                    </Card>
                 ))
             }
         </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
+import { Box,Button, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
 
 import "./tileEdit.css"
 
@@ -25,6 +25,7 @@ export default function LayersEdit(props) {
         if(erase==true) return "Eraser size"
         else return "Brush size"
     }
+    
  return (
     <>
     
@@ -46,6 +47,7 @@ export default function LayersEdit(props) {
             >
                 <ToggleButton value={false}>Draw</ToggleButton>
                 <ToggleButton value={true}>Erase</ToggleButton>
+                
             </ToggleButtonGroup>
             </ListItem>
             <ListItem>
@@ -53,6 +55,7 @@ export default function LayersEdit(props) {
                 onKeyDown={handleKeyDown} onBlur={setBrushSize}/>
             </ListItem>
         </List>
+        
     </Box>
     
         
