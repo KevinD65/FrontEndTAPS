@@ -32,6 +32,7 @@ const MapEditor = () => {
 
     const [dataMap, editMap] = useState(createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
+    const [layerOrder, editOrder] = useState(["Mountain"]);
 
     const grid_generator = (width, height, tile_width, tile_height) => {
         let rows = [];
@@ -93,7 +94,7 @@ const MapEditor = () => {
         getTable();
         
 
-    }, [])
+    }, [GIDTable.length == 0])
 
 
     return (
@@ -106,13 +107,14 @@ const MapEditor = () => {
         <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} >
-       <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  selectedTile ={selectedTile}/>
+       <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} 
+       setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  
+       selectedTile ={selectedTile} layerOrder={layerOrder}/>
         </Grid>
 
         <Grid item  md={2}>
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
-            console.log("here", tile);
             changeSelect(prev => (tile));
         }}></ToolbarRight>
 

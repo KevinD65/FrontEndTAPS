@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./mapEdit.css"
 import Grass from "../../static/grass.jpeg"
 
@@ -8,23 +8,52 @@ import { Box } from "@mui/system";
 
 
 
-const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile}) => {
+const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) => {
    let a=10
    let b =10
-   const [pixelColor, setPixelColor]= useState("Gray")
+   const [pixelColor, setPixelColor]= useState("Gray");
+   const [layers, editLayer] = useState([]);
+   const canvas = React.createRef();
+
    let pixels=[]
    let changeColor=()=>{
     setPixelColor(
         `url(${currentTile})`
     )
-    console.log("entered")
 
    }
-   
+   const drawOnCanvas = () => {
+    let last_layer = layerOrder[layerOrder.length - 1];
+    if(selectedTile.gid != -1){
+        editLayer(old_array => {
+            old_array[last_layer] = selectedTile;
+            return old_array;
+        });
+        doDrawing();
+    }
+   }
+
+   const doDrawing = () => {
+    let ctx = canvas.current.getContext("2d"); 
+    for(let i = 0; i < layerOrder.length; i++){
+        if(layers[layerOrder[i]]){
+            let img = new Image;
+            img.src = layers[layerOrder[i]].data;
+            ctx.drawImage(img, 0, 0);
+        }
+        else{
+        }
+        
+    }
+   }
+   useEffect(() => {
+    doDrawing();
+   });
+
 
     return(
-        <Box  className="pixel"  sx={{ border: 1}} onClick={changeColor} height={tileHeight} width={tileWidth}>
-            <canvas height={tileHeight} width={tileWidth} ></canvas>
+        <Box  className="pixel"  sx={{ border: 1}} onClick={drawOnCanvas} backgroundColor={pixelColor} height={tileHeight} width={tileWidth}>
+            <canvas ref={canvas} height={tileHeight} width={tileWidth} ></canvas>
         </Box>
     )
 }
