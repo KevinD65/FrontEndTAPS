@@ -1,0 +1,14 @@
+{ "columns":13,
+ "image":"VIP SBU MAPS Tileset (2).png",
+ "imageheight":200,
+ "imagewidth":550,
+ "margin":0,
+ "name":"transparent",
+ "spacing":0,
+ "tilecount":65,
+ "tiledversion":"1.9.2",
+ "tileheight":40,
+ "tilewidth":40,
+ "type":"tileset",
+ "version":"1.9"
+}
