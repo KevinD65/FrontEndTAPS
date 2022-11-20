@@ -55,7 +55,7 @@ const Sidemenu = (props) => {
          <LayersEdit/>
         <Divider />
 
-        <TilesetMap tiles={props.tiles}/>
+        <TilesetMap select = {props.select} tiles={props.tiles}/>
     </List>
     
     

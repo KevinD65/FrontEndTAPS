@@ -16,10 +16,8 @@ export default function TileSelect(props) {
     */
     const canvas = React.createRef();
 
-    const getImage = async () => {
-        let dataURL =  await canvas.current.toDataURL("image/png")
-        props.setCurrentTile(dataURL)
-        console.log(dataURL)
+    const setTile = async () => {
+        props.select(props.tile);
     }
 
     React.useEffect(() => {
@@ -38,7 +36,7 @@ export default function TileSelect(props) {
       });
 
   return (
-    <Box sx={{ border: 5}}><canvas ref={canvas}  width={160} height={40} onClick={getImage} sx={{ border: 5}}/> </Box>
+    <Box sx={{ border: 5}}><canvas ref={canvas}  width={160} height={40} onClick={setTile} sx={{ border: 5}}/> </Box>
         
   )
 }

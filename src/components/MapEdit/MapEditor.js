@@ -11,8 +11,27 @@ import { useState } from "react";
 
 const MapEditor = () => {
     const [mapWidth, setMapWidth]=useState(5)
-    const [mapHeight, setMapHeight]=useState(5);
+    const [mapHeight, setMapHeight]=useState(5)
+    const[currentTile,setCurrentTile]=useState("")
+    const [tileWidth, setTileWidth]=useState(40)
+    const [tileHeight, setTileHeight]=useState(40)
     const [GIDTable, setTable] = useState([]);
+
+    const createDataMap = () => {
+        let datamap = [];
+        for(let i = 0; i < mapHeight; i++){
+            let row = []
+            for(let j = 0; j < mapWidth; j++){
+                let grid_obj = {layers: []};
+                row.push(grid_obj);
+            }
+            datamap.push(row);
+        }
+        return datamap;
+    }
+
+    const [dataMap, editMap] = useState(createDataMap());
+    const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
 
     const grid_generator = (width, height, tile_width, tile_height) => {
         let rows = [];
@@ -30,21 +49,6 @@ const MapEditor = () => {
     const createGIDTableElement = (grid_prop, img) => {
         let c = document.createElement('canvas');
         let ctx = c.getContext("2d");
-        /*
-        let img = new Image; 
-        
-        //img.src = '/sampletspub.png';
-
-        //let a = document.createElement('canvas');
-        //let ctxa = c.getContext("2d");
-        //ctxa.drawImage(img, 0, 0);
-        //console.log("image", a.toDataURL("image/png"))
-        img.onload = function() {
-            console.log("is called");
-            
-        }
-        img.src = 'https://res.cloudinary.com/dle4whfjo/image/upload/v1668890339/VIP_SBU_MAPS_Tileset_2_zuvpi1.png'
-        */
         ctx.drawImage(img, grid_prop.sx, grid_prop.sy, 
             grid_prop.swidth, grid_prop.sheight, grid_prop.x, grid_prop.y, grid_prop.width, grid_prop.height);
         let dataURL =  c.toDataURL();
@@ -52,7 +56,7 @@ const MapEditor = () => {
     }
 
     const loadTS = (start, img) => {
-        let grid_props = grid_generator(550, 200, 40, 40);
+        let grid_props = grid_generator(550, 200, 40, 40); //todo: hardcoded, make dynamic
         let GIDTable = [];
         let gid = start;
         for(let grid_row = 0; grid_row < grid_props.length; grid_row = grid_row + 1){
@@ -86,10 +90,8 @@ const MapEditor = () => {
             setTable((oldarray => [... table]));
         }
         console.log("before");
-        if(GIDTable.length == 0){
-            console.log("after");
-            getTable();
-        }
+        getTable();
+        
 
     }, [])
 
@@ -104,12 +106,15 @@ const MapEditor = () => {
         <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} >
-       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  />
+       <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  selectedTile ={selectedTile}/>
         </Grid>
 
         <Grid item  md={2}>
-            
-        <ToolbarRight tiles = {GIDTable}></ToolbarRight>
+
+        <ToolbarRight tiles = {GIDTable} select ={(tile) => {
+            console.log("here", tile);
+            changeSelect(prev => (tile));
+        }}></ToolbarRight>
 
         </Grid>
         </Grid>

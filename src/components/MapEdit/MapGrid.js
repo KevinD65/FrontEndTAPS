@@ -6,7 +6,7 @@ import { Box, tableRowClasses } from "@mui/material";
 
 
 
-const MapGrid = ({mapWidth, mapHeight,currentTile,tileHeight, tileWidth,}) => {
+const MapGrid = ({dataMap, mapWidth, mapHeight,currentTile,tileHeight, tileWidth, selectedTile}) => {
     
     
     let rows=[]
@@ -17,7 +17,14 @@ const MapGrid = ({mapWidth, mapHeight,currentTile,tileHeight, tileWidth,}) => {
 
     return (
        <Box id="map-grid" sx={{ overflow: 'auto' }}>
-        <div id="pixels" > {rows}</div>
+        <div id="pixels" > {
+            
+            dataMap.map((row, index) => {
+                return <Row rowData = {row} mapWidth={mapWidth} key={index} 
+                currentTile={currentTile} tileHeight={tileHeight} tileWidth={tileWidth} 
+                selectedTile={selectedTile}/>
+            })
+        }</div>
        </Box>
     )
 }
