@@ -8,7 +8,7 @@ import { Box } from "@mui/system";
 
 
 
-const Pixel = ({ currentTile,tileHeight, tileWidth,}) => {
+const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile}) => {
    let a=10
    let b =10
    const [pixelColor, setPixelColor]= useState("Gray")
@@ -23,7 +23,9 @@ const Pixel = ({ currentTile,tileHeight, tileWidth,}) => {
    
 
     return(
-        <Box  className="pixel"  onClick={changeColor}  style={{backgroundColor:"#4E6C50"  ,  backgroundImage:pixelColor,}} height={tileHeight} width={tileWidth}></Box>
+        <Box  className="pixel"  sx={{ border: 1}} onClick={changeColor} height={tileHeight} width={tileWidth}>
+            <canvas height={tileHeight} width={tileWidth} ></canvas>
+        </Box>
     )
 }
 

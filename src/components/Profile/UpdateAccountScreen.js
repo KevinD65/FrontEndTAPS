@@ -1,5 +1,5 @@
 import { React, useState } from 'react';
-import TAPSLogo from '../../TAPSLogo.png';
+import TAPSLogo from '../../TAPSLogo.PNG';
 import '../Account/Login.css';
 import './UserProfile.css';
 import {Card,Box, Button,  TextField,Typography} from "@mui/material"

@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
 
-import TAPSLogo from '../../TAPSLogo.png';
+import TAPSLogo from '../../TAPSLogo.PNG';
 import SignUpModal from './SignUpModal';
 import {Link, useNavigate} from "react-router-dom";
 import {gql, useQuery, useMutation} from '@apollo/client';

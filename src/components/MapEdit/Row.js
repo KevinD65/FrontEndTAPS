@@ -9,9 +9,7 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 
 
 
-const Row = ({ mapWidth,currentTile,tileHeight, tileWidth,}) => {
-   
-   
+const Row = ({ rowData, key, mapWidth,currentTile,tileHeight, tileWidth, selectedTile}) => {
    
    let pixels=[]
     for (let i=0; i<mapWidth; i++){
@@ -19,7 +17,12 @@ const Row = ({ mapWidth,currentTile,tileHeight, tileWidth,}) => {
     }
 
     return(
-        <div className="row">{pixels}</div>
+        <div className="row">{
+            rowData.map((tile, index) =>{
+                return <Pixel key={key + ' ' + index}  tileData = {tile} currentTile={currentTile} 
+                tileHeight={tileHeight} tileWidth={tileWidth} selectedTile={selectedTile}></Pixel>
+            })
+        }</div>
     )
 }
 
