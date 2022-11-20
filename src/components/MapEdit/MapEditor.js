@@ -93,6 +93,7 @@ const MapEditor = () => {
 
     }, [])
 
+
     return (
         <>
         <Box sx={{ display: 'flex' }}>
@@ -100,14 +101,16 @@ const MapEditor = () => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} ></ToolbarLeft>
+        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} >
-       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth}    />
+       <MapGrid mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  />
         </Grid>
 
         <Grid item  md={2}>
+            
         <ToolbarRight tiles = {GIDTable}></ToolbarRight>
+
         </Grid>
         </Grid>
         </Box>

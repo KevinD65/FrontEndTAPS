@@ -1,18 +1,11 @@
-#pixels{
-    margin-bottom: 2rem;
-}
 
-.pixel {
-    width: 1.4rem;
-    height: 1.4rem;
-  
-   
-  }
   #map-grid {
-   
+   margin-left: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    overflow-y: "scroll";
     
   }
   

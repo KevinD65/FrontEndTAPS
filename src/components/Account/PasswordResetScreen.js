@@ -1,7 +1,7 @@
 import { React, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import TAPSLogo from '../../TAPSLogo.PNG';
+import TAPSLogo from '../../TAPSLogo.png';
 import { VALIDATE_PWRESET_TOKEN, UPDATE_USER_INFO } from '../../graphql/queries/loginScreenUsers';
 import './Login.css';
 

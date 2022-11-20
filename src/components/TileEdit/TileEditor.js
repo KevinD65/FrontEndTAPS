@@ -29,6 +29,7 @@ const TileEditor = (props) => {
     const [saveJSON, toggleJSON] =useState(false);
     const [savePNG, togglePNG] = useState(false);
     const [save, toggleSave] = useState(false);
+    
 
     const { data, loading, error } = useQuery(GET_TILESET, {
         variables: {
@@ -72,7 +73,7 @@ const TileEditor = (props) => {
                 />
             </Grid>
             
-            <Grid item  md={8} sx={{p:10}} >
+            <Grid item  md={8} sx={{pt:4, pl:10}} >
      
                 
                 <Canvas  

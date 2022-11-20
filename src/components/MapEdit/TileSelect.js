@@ -18,6 +18,7 @@ export default function TileSelect(props) {
 
     const getImage = async () => {
         let dataURL =  await canvas.current.toDataURL("image/png")
+        props.setCurrentTile(dataURL)
         console.log(dataURL)
     }
 

@@ -1,11 +1,12 @@
 import { React, useState } from 'react';
-import './Login.css';
-import TAPSLogo from '../../TAPSLogo.PNG';
+
+import TAPSLogo from '../../TAPSLogo.png';
 import SignUpModal from './SignUpModal';
 import {Link, useNavigate} from "react-router-dom";
 import {gql, useQuery, useMutation} from '@apollo/client';
 import { ADD_USER, GET_USER } from '../../graphql/queries/loginScreenUsers';
 import PasswordRecoveryModal from './PasswordRecoveryModal';
+import {Card,FormControl,Input,InputLabel,Grid, Button, Box,Container, TextField,Divider,Typography} from "@mui/material"
 
 function Login(props) {
   let currentUser = null;
@@ -127,26 +128,50 @@ function Login(props) {
 
   return (
     <>
-      <div id='login-screen-container'>
-        <div className='login-screen-panel TAPSLogo'>
-          <img alt="TAPS Logo" id='TAPS-logo-login' src={TAPSLogo}/>
-          <div id='taps-slogan'>
-            A One Stop Solution To All Your Map Needs
-          </div>
-        </div>
+      <Box id='login-screen-container'>
+      <Grid  spacing={2} direction="column"
+  alignItems="center"
+  justifyContent="center"
+  style={{ minHeight: '100vh' }}>
+
+      <Grid item  md={6}>
+    
+  
+        <Box   className='login-screen-panel TAPSLogo'>
+          <img alt="TAPS Logo" id='TAPS-logo-login' src={TAPSLogo} />
+          <Typography id='taps-slogan' variant="body1">
+            A one stop solution to all your Map needs
+          </Typography>
+        </Box>
+        </Grid>
+        <Grid item  md={6} >
         {signUpModal ? <SignUpModal toggleSignUpModal = {toggleSignUpModal} submitSignUp={submitSignUp} authenticateUser={props.authenticateUser}/> :
         passwordRecoveryModal ? <PasswordRecoveryModal togglePasswordRecoveryModal={togglePasswordRecoveryModal} sendPasswordRecoveryEmail={sendPasswordRecoveryEmail}/> : 
-        <div className='login-screen-panel login-panel'>
-          <input autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Email or username" onChange={(event) => handleSignInInput("emailOrUsername", event.target.value)}></input>
-          <input autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => handleSignInInput("password", event.target.value)}></input>
-          <div id='login-button'  onClick={submitLogin}>LOG IN</div>
-          <div id='password-reset-button' onClick={() => togglePasswordRecoveryModal(true)}>Forgot Password?</div>
-          <div id='account-reset-label'>Don't have an account?</div>
-          <div id='account-reset-button' onClick={showSignUp}>Sign up</div>
-        </div>}
-      </div>
+        <Card className='login-screen-panel login-panel'>
+
+{/* <FormControl>
+  <InputLabel htmlFor="my-input">Email address</InputLabel>
+  <Input id="my-input" aria-describedby="my-helper-text" />
+  <FormHelperText id="my-helper-text">We'll never share your email.</FormHelperText>
+</FormControl> */}
+          {/* <InputLabel htmlFor="usernameEnter">Email address</InputLabel> */}
+          {/* <TextField id="outlined-basic" label="Outlined"  /> */}
+          <TextField sx={{backgroundColor:"white" ,mb:3}} variant="outlined" autocomplete="new-password" id='usernameEnter' className='login-screen-input' type="text" placeholder="Email or username" onChange={(event) => handleSignInInput("emailOrUsername", event.target.value)}/>
+          {/* <InputLabel htmlFor="passwordEnter">Password</InputLabel> */}
+          <TextField sx={{backgroundColor:"white" ,mb:3}} variant="outlined" autocomplete="new-password" id='passwordEnter' className='login-screen-input' type="password" placeholder="Password" onChange={(event) => handleSignInInput("password", event.target.value)}/>
+          <Button id='login-button' size="large" onClick={submitLogin}>LOG IN</Button>
+          <Box id='password-reset-button' onClick={() => togglePasswordRecoveryModal(true)}>Forgot Password?</Box>
+          <Divider/>
+          <Box id='account-reset-label'>Don't have an account?</Box>
+          
+          <Box id='account-reset-button' onClick={showSignUp}>Sign up</Box>
+        </Card>}
+        </Grid>
+       </Grid>
+      </Box>
     </>
   )
 }
 
 export default Login;
+
