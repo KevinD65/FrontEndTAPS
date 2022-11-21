@@ -1,51 +1,48 @@
-import React from "react";
-import { Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography} from "@mui/material";
+import React, { useState } from "react";
+import { Box,List, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, ListItem, ToggleButton, ToggleButtonGroup} from "@mui/material";
 
 import "./mapEdit.css"
 
   
-export default function LayersEdit() {
+export default function LayersEdit(props) {
+    const [erase, toggleErase] = useState(false);
+    const setErase = (event, newState) => {
+        toggleErase(newState);
+        props.setErase(newState);
+    }
  return (
     <>
     
     <table class="layers-table">
-    
     <thead>
         <tr>
-            <th>Layers</th>
+            <th>Tools</th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        <tr>
-            <td>Mountain</td>
-            <td><Checkbox defaultChecked /></td>
-        </tr>
-        <tr class="active-row">
-        <td>Grass</td>
-            <td><Checkbox  defaultChecked /></td>
-            
-    
-        </tr>
-        <tr>
-            <td>Water</td>
-            
-            <td><Checkbox  defaultChecked /></td>
-            
-        </tr>
-
-                {/*temporary UI for adding and removing layers (required feature)*/}
-                <tr>
-            <th>Layer Functions</th>          
-        </tr>
-
-        <tr>
-            <td><button> add </button> <button> remove </button></td>
-        </tr>
+    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        <List>
+            <ListItem>
+            <ToggleButtonGroup
+                value={erase}
+                exclusive
+                onChange={setErase}
+                color="success"
+            >
+                <ToggleButton value={false}>Draw</ToggleButton>
+                <ToggleButton value={true}>Erase</ToggleButton>
+                
+            </ToggleButtonGroup>
+            </ListItem>
+        </List>
         
-    </tbody>
-</table>
+    </Box>
     
+        
+
+    
+</table>
+
     </>
     
  );

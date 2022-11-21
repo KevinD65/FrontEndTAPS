@@ -33,6 +33,16 @@ const MapEditor = () => {
     const [dataMap, editMap] = useState(createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState(["Mountain"]);
+    
+    const setErase = (newState) => {
+        if(newState){
+            console.log("Changing to empty");
+            changeSelect({gid: 0, dataURL: ""});
+        }
+        else{
+            changeSelect({gid: -1, dataURL: ""});
+        }
+    } 
 
     const grid_generator = (width, height, tile_width, tile_height) => {
         let rows = [];
@@ -116,7 +126,7 @@ const MapEditor = () => {
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
             changeSelect(prev => (tile));
-        }}></ToolbarRight>
+        }} setErase={setErase}></ToolbarRight>
 
         </Grid>
         </Grid>

@@ -10,7 +10,7 @@ import { Box } from "@mui/material";
 
 
 
-const Row = ({ rowData, key, mapWidth,currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) => {
+const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) => {
    
    let pixels=[]
     for (let i=0; i<mapWidth; i++){
@@ -18,10 +18,11 @@ const Row = ({ rowData, key, mapWidth,currentTile,tileHeight, tileWidth, selecte
     }
 
     return(
-        <Box className="row">
-            
-            {rowData.map((tile, index) =>{
-                return <Pixel key={key + ' ' + index}  tileData = {tile} currentTile={currentTile} 
+
+        <div className="row">{
+            rowData.map((tile, index) =>{
+                //console.log("id", key, index);
+                return <Pixel key={key + ' ' + index}  tileData = {tile} currentTile={currentTile} row={row} column={index} 
                 tileHeight={tileHeight} tileWidth={tileWidth} selectedTile={selectedTile}
                 layerOrder={layerOrder}></Pixel>
             })
