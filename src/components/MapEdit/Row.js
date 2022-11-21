@@ -29,7 +29,7 @@ const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, s
             
         }
        
-        </Box>
+        </div>
     )
 }
 
