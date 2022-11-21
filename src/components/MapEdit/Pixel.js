@@ -13,7 +13,7 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
    let a=10
    let b =10
    const [pixelColor, setPixelColor]= useState("Gray");
-   const [layers, editLayer] = useState(tileData.layers);
+   const [layers, editLayer] = useState([]);
    const canvas = React.createRef();
 
    let pixels=[]
@@ -25,10 +25,11 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
    }
    const drawOnCanvas = () => {
     let last_layer = layerOrder[layerOrder.length - 1];
+    console.log("last layer", last_layer);
     if(selectedTile.gid != -1){
 
         const new_arr = [... layers];
-        new_arr[last_layer] = selectedTile;
+        new_arr[last_layer.id] = selectedTile;
         editLayer(new_arr);
         //doDrawing();
 
@@ -38,10 +39,17 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
    const doDrawing = () => {
     let ctx = canvas.current.getContext("2d"); 
     ctx.clearRect(0, 0, canvas.current.width, canvas.current.height);
+    let count = 0;
+    if(row == 0, column == 0){
+        console.log("Layer", layers);
+        console.log("Order", layerOrder);
+    }
+    
     for(let i = 0; i < layerOrder.length; i++){
-        if(layers[layerOrder[i]]){
+        if(layers[layerOrder[i].id]){
+            count = count + 1;
             let img = new Image;
-            img.src = layers[layerOrder[i]].data;
+            img.src = layers[layerOrder[i].id].data;
             ctx.drawImage(img, 0, 0);
         }
         else{

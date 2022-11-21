@@ -53,7 +53,7 @@ const Sidemenu = (props) => {
     </Box>
     
          {/* List of sidebar components */}
-         <LayersEdit setErase={props.setErase} />
+         <LayersEdit setErase={props.setErase} layerOrder={props.layerOrder} setOrderCallback={props.setOrderCallback}/>
         <Divider />
         <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
         <Grid  container 

@@ -6,6 +6,7 @@ import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import MapGrid from "./MapGrid";
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 //import TS from "/sampletspub.png"
 
 
@@ -30,9 +31,13 @@ const MapEditor = () => {
         return datamap;
     }
 
-    const [dataMap, editMap] = useState(createDataMap());
+    const [dataMap, editMap] = useState(() => createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
-    const [layerOrder, editOrder] = useState(["Mountain"]);
+    const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
+
+    const setOrder = (new_arr) => {
+        editOrder(new_arr);
+    }
     
     const setErase = (newState) => {
         if(newState){
@@ -126,7 +131,7 @@ const MapEditor = () => {
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
             changeSelect(prev => (tile));
-        }} setErase={setErase}></ToolbarRight>
+        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
         </Grid>
         </Grid>
