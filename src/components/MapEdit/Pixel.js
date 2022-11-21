@@ -26,10 +26,12 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
    const drawOnCanvas = () => {
     let last_layer = layerOrder[layerOrder.length - 1];
     if(selectedTile.gid != -1){
+
         const new_arr = [... layers];
         new_arr[last_layer] = selectedTile;
         editLayer(new_arr);
         //doDrawing();
+
     }
    }
 
@@ -53,9 +55,12 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
 
 
     return(
+        
         <Box  className="pixel"  sx={{ border: 1}} onClick={drawOnCanvas} backgroundColor={pixelColor} height={tileHeight} width={tileWidth}>
             <canvas ref={canvas} height={tileHeight} width={tileWidth} ></canvas>
         </Box>
+        
+        
     )
 }
 
