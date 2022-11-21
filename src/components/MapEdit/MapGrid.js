@@ -6,7 +6,7 @@ import { Box, tableRowClasses } from "@mui/material";
 
 
 
-const MapGrid = ({dataMap, mapWidth, mapHeight,currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) => {
+const MapGrid = ({dataMap, mapWidth, mapHeight,currentTile,tileHeight, tileWidth, selectedTile, layerOrder, transactionStack, editDataMap}) => {
     
     
     let rows=[]
@@ -22,7 +22,8 @@ const MapGrid = ({dataMap, mapWidth, mapHeight,currentTile,tileHeight, tileWidth
             dataMap.map((row, index) => {
                 return <Row rowData = {row} mapWidth={mapWidth} key={index} 
                 currentTile={currentTile} tileHeight={tileHeight} tileWidth={tileWidth} 
-                selectedTile={selectedTile} layerOrder={layerOrder}/>
+                selectedTile={selectedTile} layerOrder={layerOrder} transactionStack = {transactionStack}
+                editDataMap = {editDataMap}/>
             })
         }</div>
        </Box>

@@ -2,13 +2,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "./mapEdit.css"
 import Grass from "../../static/grass.jpeg"
-
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Box } from "@mui/system";
 
 
 
-const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) => {
+const Pixel = ({ key, currentTile,tileHeight, tileWidth, selectedTile, layerOrder, transactionStack, editDataMap}) => {
    let a=10
    let b =10
    const [pixelColor, setPixelColor]= useState("Gray");
@@ -30,7 +29,31 @@ const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) =
             return old_array;
         });
         doDrawing();
+        //console.log("HOW MANY TIMES IS THIS EXECUTING?");
+
+        //handlePixelEdit(updatedPixelState, previousPixelState, drawOnCanvas/*,erase from canvas */);
     }
+   }
+
+   /**
+    * This function creates a MapPixel Edit Transaction which invokes the drawOnCanvas() function
+    */
+   const handlePixelEdit = async() => {  
+    let previousPixelState = {
+        rowCol: key,
+        layers: layers
+    }
+
+    drawOnCanvas();
+
+    let updatedPixelState = {
+        rowCol: key,
+        layers: layers
+    }
+
+    console.log(key);
+
+    editDataMap(previousPixelState, updatedPixelState);
    }
 
    const doDrawing = () => {
@@ -52,7 +75,7 @@ const Pixel = ({ currentTile,tileHeight, tileWidth, selectedTile, layerOrder}) =
 
 
     return(
-        <Box  className="pixel"  sx={{ border: 1}} onClick={drawOnCanvas} backgroundColor={pixelColor} height={tileHeight} width={tileWidth}>
+        <Box  className="pixel"  sx={{ border: 1}} onClick={handlePixelEdit/*drawOnCanvas*/} backgroundColor={pixelColor} height={tileHeight} width={tileWidth}>
             <canvas ref={canvas} height={tileHeight} width={tileWidth} ></canvas>
         </Box>
     )

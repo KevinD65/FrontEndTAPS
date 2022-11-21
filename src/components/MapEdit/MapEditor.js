@@ -6,10 +6,11 @@ import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import MapGrid from "./MapGrid";
 import { useState } from "react";
+import { EditMap_Transaction } from "../../static/Transaction";
 //import TS from "/sampletspub.png"
 
 
-const MapEditor = () => {
+const MapEditor = (props) => {
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
     const[currentTile,setCurrentTile]=useState("")
@@ -72,6 +73,20 @@ const MapEditor = () => {
         return GIDTable;
     }
 
+    const editDataMap = (previousPixelState, updatedPixelState) => {
+        let rowCol = previousPixelState.rowCol.split(" ");
+        let targetRow = rowCol[0];
+        let targetCol = rowCol[1];
+
+        let previousDataMap = dataMap;
+        let clonedDataMap = JSON.parse(JSON.stringify(dataMap)); //create deep copy of dataMap
+        clonedDataMap[targetRow][targetCol] = updatedPixelState.layers; //update the copy with the new pixel data
+
+        let newMapEditTransaction = new EditMap_Transaction(previousDataMap, clonedDataMap, editMap);
+        props.transactionStack.addTransaction(newMapEditTransaction);
+        console.log("Added map edit transaction to TPS");
+    }
+
     //let GIDTable = loadTS(1);
 
     React.useEffect(() => {
@@ -104,12 +119,12 @@ const MapEditor = () => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} >
        <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} 
        setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  
-       selectedTile ={selectedTile} layerOrder={layerOrder}/>
+       selectedTile ={selectedTile} layerOrder={layerOrder} transactionStack = {props.transactionStack} editDataMap = {editDataMap}/>
         </Grid>
 
         <Grid item  md={2}>

@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import { Undo, Redo } from '@mui/icons-material';
 import { useState } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,11 +15,25 @@ import {Typography} from '@mui/material';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth }) => {
+const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+
+  const handleUndoRedo = async(type) => {
+    if(type == "undo"){
+      if(transactionStack.hasTransactionToUndo()){
+        transactionStack.undoTransaction();
+      }
+    }
+    else{
+      if(transactionStack.hasTransactionToRedo()){
+        transactionStack.redoTransaction();
+      }
+    }
+  }
+
     return (
   <Drawer
     variant="permanent"
@@ -101,6 +116,11 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
          <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  />
         <Divider />
     </List>
+
+    <Divider>
+      <Undo onClick = {() => handleUndoRedo("undo")}/>
+      <Redo onClick = {() => handleUndoRedo("redo")}/>
+    </Divider>
     
     
     
