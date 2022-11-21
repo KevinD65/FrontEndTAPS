@@ -10,7 +10,6 @@ export default function LayersEdit(props) {
     const setErase = (event, newState) => {
         toggleErase(newState);
         props.setErase(newState);
-        console.log(newState)
     }
     const setBrushSize = (event) => {
         props.changeBrushSizeCallback(event.target.value);
