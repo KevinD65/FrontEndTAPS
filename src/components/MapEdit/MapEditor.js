@@ -34,6 +34,16 @@ const MapEditor = (props) => {
     const [dataMap, editMap] = useState(createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState(["Mountain"]);
+    
+    const setErase = (newState) => {
+        if(newState){
+            console.log("Changing to empty");
+            changeSelect({gid: 0, dataURL: ""});
+        }
+        else{
+            changeSelect({gid: -1, dataURL: ""});
+        }
+    } 
 
     const grid_generator = (width, height, tile_width, tile_height) => {
         let rows = [];
@@ -73,17 +83,24 @@ const MapEditor = (props) => {
         return GIDTable;
     }
 
+    /**
+     * Used for creating a map edit transaction
+     */
     const editDataMap = (previousPixelState, updatedPixelState) => {
-        let rowCol = previousPixelState.rowCol.split(" ");
-        let targetRow = rowCol[0];
-        let targetCol = rowCol[1];
+        let targetRow = previousPixelState.row;
+        let targetCol = previousPixelState.col;
+        console.log("ROW: " + targetRow);
+        console.log("COLUMN: " + targetCol);
 
         let previousDataMap = dataMap;
+        console.log("PREV: ", previousDataMap);
         let clonedDataMap = JSON.parse(JSON.stringify(dataMap)); //create deep copy of dataMap
+        console.log("NEW: ", clonedDataMap);
         clonedDataMap[targetRow][targetCol] = updatedPixelState.layers; //update the copy with the new pixel data
 
         let newMapEditTransaction = new EditMap_Transaction(previousDataMap, clonedDataMap, editMap);
         props.transactionStack.addTransaction(newMapEditTransaction);
+
         console.log("Added map edit transaction to TPS");
     }
 
@@ -130,8 +147,8 @@ const MapEditor = (props) => {
         <Grid item  md={2}>
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
-            changeSelect(prev => (tile));
-        }}></ToolbarRight>
+            changeSelect(tile);
+        }} setErase={setErase}></ToolbarRight>
 
         </Grid>
         </Grid>

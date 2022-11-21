@@ -52,7 +52,7 @@ const Sidemenu = (props) => {
     </Box>
     
          {/* List of sidebar components */}
-         <LayersEdit/>
+         <LayersEdit setErase={props.setErase} />
         <Divider />
 
         <TilesetMap select = {props.select} tiles={props.tiles}/>

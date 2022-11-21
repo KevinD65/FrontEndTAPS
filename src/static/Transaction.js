@@ -32,13 +32,15 @@ export class EditMap_Transaction extends TPS_Transaction {
         this.updateFunction = callback;
     }
     async doTransaction() {
-        console.log("IM DOING A MAP EDIT");
-		//const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }});
-		//return data;
+        console.log("REDOING A TRANSACTION");
+        console.log(this.updatedMap);
+		await this.updateFunction(this.updatedMap);
     }
     async undoTransaction() {
-        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }});
-		return data;
+        console.log("UNDOING TRANSACTION")
+        console.log(this.previousMap);
+        await this.updateFunction(this.previousMap);
+		//return data;
     }
 }
 

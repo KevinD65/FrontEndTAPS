@@ -17,6 +17,7 @@ export default function TileSelect(props) {
     const canvas = React.createRef();
 
     const setTile = async () => {
+        console.log("SELECT TILE: ", props.tile);
         props.select(props.tile);
     }
 

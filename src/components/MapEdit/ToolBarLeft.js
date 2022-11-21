@@ -24,12 +24,12 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
   const handleUndoRedo = async(type) => {
     if(type == "undo"){
       if(transactionStack.hasTransactionToUndo()){
-        transactionStack.undoTransaction();
+        await transactionStack.undoTransaction();
       }
     }
     else{
       if(transactionStack.hasTransactionToRedo()){
-        transactionStack.redoTransaction();
+        await transactionStack.doTransaction();
       }
     }
   }

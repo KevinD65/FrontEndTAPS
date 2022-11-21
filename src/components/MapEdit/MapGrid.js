@@ -20,7 +20,7 @@ const MapGrid = ({dataMap, mapWidth, mapHeight,currentTile,tileHeight, tileWidth
         <div id="pixels" > {
             
             dataMap.map((row, index) => {
-                return <Row rowData = {row} mapWidth={mapWidth} key={index} 
+                return <Row rowData = {row} mapWidth={mapWidth} key={index} row={index}
                 currentTile={currentTile} tileHeight={tileHeight} tileWidth={tileWidth} 
                 selectedTile={selectedTile} layerOrder={layerOrder} transactionStack = {transactionStack}
                 editDataMap = {editDataMap}/>
