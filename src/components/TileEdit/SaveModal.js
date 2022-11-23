@@ -100,7 +100,7 @@ export default function SaveModal(props) {
                 input: object,
             }
         });
-        console.log(res);
+        console.log("Saved succesfully", res);
     }
     const style = {
         position: 'absolute',
