@@ -89,14 +89,16 @@ const Sidemenu = (props) => {
             <Grid id={counter} item md={3} >
               {counter+=1}
               <Badge  cursor="pointer"  badgeContent="x" color="error" onClick={removeSelected} sx={{pl:6}}></Badge>
+              {/*<Box sx={{ border: 5}}>
+                <img src={data}></img>
+            </Box>*/}
               
-            <Card sx={{width:50 ,height:50 ,mb:1}}>
+            <Card sx={{width:40 ,height:40 ,mb:1}}>
             
-            <CardContent>
-      <img src={data} width="40" 
-     height="40" ></img>
+            <CardContent sx={{paddingLeft: 0, paddingTop: 0}}>
+      <img src={data}></img>
     </CardContent>
-    </Card>
+            </Card>
     
             </Grid>
         )
