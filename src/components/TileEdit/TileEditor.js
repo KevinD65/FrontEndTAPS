@@ -40,6 +40,7 @@ const TileEditor = (props) => {
       React.useEffect(() => {
         if(data) {
             console.log("There was data");
+            console.log("Data retrieved", data);
             console.log(data.getTileset.dataURLs);
           setTileList(oldArray => [... data.getTileset.dataURLs]);
         }
