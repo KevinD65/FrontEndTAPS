@@ -37,6 +37,17 @@ const TileEditor = (props) => {
         }
       });
 
+      const refetchTileset = {
+        refetchQueries: [
+          {
+            query: GET_TILESET,
+            variables: {id: props.tileset}
+          }
+        ]
+      };
+
+      const [saveTileset] = useMutation(SAVE_TILESET, refetchTileset);
+
       React.useEffect(() => {
         if(data) {
             console.log("There was data");
@@ -58,6 +69,9 @@ const TileEditor = (props) => {
         
 
       };
+    const handleImport = (imported_tiles) => {
+        setTileList(oldArray => [...oldArray, ...imported_tiles]);
+    }
     return (
         <>
         <Box sx={{ display: 'flex' }}>
@@ -72,6 +86,7 @@ const TileEditor = (props) => {
                 turnOnJSONMod={() => toggleJSON(true)}
                 turnOnPNGMod={() => togglePNG(true)}
                 turnOnSaveMod={() => toggleSave(true)}
+                handleImport={handleImport}
                 />
             </Grid>
             
@@ -91,7 +106,8 @@ const TileEditor = (props) => {
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} tileList={tileList} />
         <PNGSaveModal open={savePNG} onClose={() => togglePNG(false)} tileList={tileList} />
-        <SaveModal open={save} onClose={() => toggleSave(false)} tileList={tileList} tilesetId={props.tileset}/>
+        <SaveModal open={save} onClose={() => toggleSave(false)} tileList={tileList} 
+        tilesetId={props.tileset} saveTileset={saveTileset}/>
         </>
     )
 }

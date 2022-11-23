@@ -14,6 +14,7 @@ import {Typography,} from '@mui/material';
 import { ChromePicker } from 'react-color';
 import TileEditNav from './TileEditNav';
 import "./tileEdit.css"
+import { loadTS } from '../helpful_functions/Tileset_JSON_to_Local';
 
 const styles = {
   'default': {
@@ -33,13 +34,16 @@ const Sidemenu = (props) => {
   const handleImportJSON=(event)=> {
     var reader = new FileReader();
     reader.onload = onReaderLoad;
-    reader.readAsText(event.target.files[0]) 
+    reader.readAsText(event.target.files[0]);
 }
 
-const onReaderLoad=(event)=>{
+async function onReaderLoad (event) {
     console.log(event.target.result);
     var obj = JSON.parse(event.target.result);
-    console.log(obj)
+    //console.log("TS", loadTS(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image));
+    let new_tiles = await loadTS(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image);
+    props.handleImport(new_tiles);
+    
 }
 
   const saveJSON = () => {
