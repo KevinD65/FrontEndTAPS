@@ -6,6 +6,7 @@ import Pixel from "./Pixel";
 
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import { Box } from "@mui/material";
 
 
 
@@ -17,6 +18,7 @@ const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, s
     }
 
     return(
+
         <div className="row">{
             rowData.map((tile, index) =>{
                 //console.log("id", key, index);
@@ -24,7 +26,10 @@ const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, s
                 tileHeight={tileHeight} tileWidth={tileWidth} selectedTile={selectedTile} updateDataMap={updateDataMap}
                 layerOrder={layerOrder}></Pixel>
             })
-        }</div>
+            
+        }
+       
+        </div>
     )
 }
 

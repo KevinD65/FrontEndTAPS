@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
+import {Grid} from '@mui/material';
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
@@ -54,8 +55,15 @@ const Sidemenu = (props) => {
          {/* List of sidebar components */}
          <LayersEdit setErase={props.setErase} layerOrder={props.layerOrder} setOrderCallback={props.setOrderCallback}/>
         <Divider />
+        <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
+        <Grid  container 
+            direction='row'
+            sx={{ border: 1 }}
+            >
+          
 
         <TilesetMap select = {props.select} tiles={props.tiles}/>
+        </Grid>
     </List>
     
     
