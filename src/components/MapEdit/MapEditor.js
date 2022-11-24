@@ -38,6 +38,14 @@ const MapEditor = () => {
     const setOrder = (new_arr) => {
         editOrder(new_arr);
     }
+
+    const updateDataMap = (row, col, layers) => {
+        let new_arr = [...dataMap];
+        //console.log("new_ arr", new_arr, layers);
+        new_arr[row][col].layers = layers;
+        //console.log("after", new_arr);
+        editMap(new_arr);
+    }
     
     const setErase = (newState) => {
         if(newState){
@@ -105,13 +113,15 @@ const MapEditor = () => {
                 .then((image) => loadTS(1, image));
             setTable((oldarray => [... table]));
         }
-        console.log("before");
+        //console.log("before");
         getTable();
         
 
     }, [GIDTable.length == 0])
 
-
+    React.useEffect(() => {
+        console.log("DataMap", dataMap)
+    })
     return (
         <>
         <Box sx={{ display: 'flex' }}>
@@ -124,7 +134,7 @@ const MapEditor = () => {
         <Grid item  md={8} >
        <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} 
        setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  
-       selectedTile ={selectedTile} layerOrder={layerOrder}/>
+       selectedTile ={selectedTile} layerOrder={layerOrder} updateDataMap={updateDataMap}/>
         </Grid>
 
         <Grid item  md={2}>

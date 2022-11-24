@@ -10,7 +10,7 @@ export default function LayersEdit(props) {
     const [erase, toggleErase] = useState(false);
     //const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
     const layerOrder = props.layerOrder;
-    console.log("order", layerOrder);
+    //console.log("order", layerOrder);
     const addLayer = () => {
         let new_arr = [...layerOrder];
         new_arr.push({id: uuidv4(), name: "New Layer"})
