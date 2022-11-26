@@ -48,6 +48,7 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
         updateDataMap(row, column, new_arr);
         //editLayer(new_arr);
         //doDrawing();
+
     }
    }
 
@@ -84,9 +85,12 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
 
 
     return(
+        
         <Box  className="pixel"  sx={{ border: 1}} onClick={drawOnCanvas} backgroundColor={pixelColor} height={tileHeight} width={tileWidth}>
             <canvas ref={canvas} height={tileHeight} width={tileWidth} ></canvas>
         </Box>
+        
+        
     )
 }
 
