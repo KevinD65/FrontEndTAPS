@@ -1,11 +1,12 @@
 import React from "react";
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { Toolbar,Box } from "@mui/material";
+import { Toolbar,Box, Button } from "@mui/material";
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import MapGrid from "./MapGrid";
-import { useState } from "react";
+import MapCanvas from "./MapCanvas";
+import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 //import TS from "/sampletspub.png"
 
@@ -17,6 +18,10 @@ const MapEditor = () => {
     const [tileWidth, setTileWidth]=useState(40)
     const [tileHeight, setTileHeight]=useState(40)
     const [GIDTable, setTable] = useState([]);
+    const canvasRef=useRef(null);
+    const contextRef=useRef(null);
+    const [isDrawing, setIsDrawing]= useState(false);
+  const [clearCanvas, setClearCanvas]=useState(false);
 
     const createDataMap = () => {
         let datamap = [];
@@ -39,10 +44,10 @@ const MapEditor = () => {
         editOrder(new_arr);
     }
 
-    const updateDataMap = (row, col, layers) => {
+    const updateDataMap = (row, col, data) => {
         let new_arr = [...dataMap];
         //console.log("new_ arr", new_arr, layers);
-        new_arr[row][col].layers = layers;
+        //let layers = new_arr[row][col].layers;
         //console.log("after", new_arr);
         editMap(new_arr);
     }
@@ -122,6 +127,86 @@ const MapEditor = () => {
     React.useEffect(() => {
         console.log("DataMap", dataMap)
     })
+
+    const drawBoxes = () => {
+        for(let i = tileWidth; i < (mapWidth * tileWidth); i += tileWidth){
+            contextRef.current.moveTo(i, 0);
+            contextRef.current.lineTo(i, (mapHeight * tileHeight))
+        }
+
+        for(let i = tileHeight; i < (mapHeight * tileHeight); i += tileHeight){
+            contextRef.current.moveTo(0, i);
+            contextRef.current.lineTo((mapWidth * tileWidth), i)
+        }
+
+        contextRef.current.strokeStyle = "black";
+        contextRef.current.stroke();
+    }
+
+    useEffect(()=>{
+         const canvas=canvasRef.current;
+         canvas.width= mapWidth * tileWidth;
+         canvas.height= mapHeight * tileHeight;
+         const context= canvas.getContext("2d")
+         context.lineCap="round"
+         context.strokeStyle="Red"
+         context.lineWidth=2;
+         contextRef.current=context;
+         canvasRef.current=canvas;
+         contextRef.current.fillStyle = "white";
+         contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
+         drawBoxes();
+
+         },[mapWidth, mapHeight,clearCanvas]);
+
+    const drawBox = (layers, x, y) => {
+        contextRef.current.clearRect(x, y, tileWidth, tileHeight);
+        for(let i = 0; i < layerOrder.length; i++){
+            let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
+            if(image_data){
+                let img = new Image;
+                img.src = image_data.data;
+                contextRef.current.drawImage(img, x * tileWidth, y * tileHeight);
+            }
+            else{
+            }
+            
+        }
+    }
+
+    const placeTile =({nativeEvent}) => {
+        const{offsetX, offsetY}=nativeEvent;
+        console.log("Clicked", offsetX, offsetY);
+        let x =  Math.floor(offsetX / tileWidth);
+        let y = Math.floor(offsetY / tileHeight);
+
+        let new_arr = [...dataMap];
+        let layers = new_arr[x][y].layers;
+        let last_layer = layerOrder[layerOrder.length - 1];
+        let new_layers =  JSON.parse(JSON.stringify(layers));
+        console.log("Before", layers)
+        if(selectedTile.gid > 0){
+            let {gid, data} = selectedTile;
+            let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
+            if(index == -1){
+                new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
+            }
+            else{
+               new_layers[index].gid = gid;
+               new_layers[index].data = data;
+            }
+        }
+        else if(selectedTile.gid === 0){
+            let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
+            if(index != -1){
+               new_layers.splice(index, 1);
+            }
+        }
+        new_arr[x][y].layers = new_layers;
+        drawBox(new_layers, x, y);
+        
+    }
+    
     return (
         <>
         <Box sx={{ display: 'flex' }}>
@@ -131,12 +216,17 @@ const MapEditor = () => {
         <Grid item  md={2}>
         <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
-        <Grid item  md={8} >
-       <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} 
-       setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  
-       selectedTile ={selectedTile} layerOrder={layerOrder} updateDataMap={updateDataMap}/>
+        <Grid item  md={8} sx={{pt:4, pl:15}}>
+            <Box>
+            <Button variant="contained" sx={{marginRight:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={()=>{setClearCanvas(!clearCanvas)}}>Clear Canvas</Button>
+            </Box>
+            <Box>
+                <canvas className='canvas-main'
+                ref={canvasRef}
+                onMouseDown={placeTile}
+                ></canvas>
+            </Box>
         </Grid>
-
         <Grid item  md={2}>
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
