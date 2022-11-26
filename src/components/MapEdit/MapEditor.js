@@ -160,7 +160,7 @@ const MapEditor = () => {
          },[mapWidth, mapHeight,clearCanvas]);
 
     const drawBox = (layers, x, y) => {
-        contextRef.current.clearRect(x, y, tileWidth, tileHeight);
+        contextRef.current.clearRect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
         for(let i = 0; i < layerOrder.length; i++){
             let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
             if(image_data){
