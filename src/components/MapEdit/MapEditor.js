@@ -156,11 +156,18 @@ const MapEditor = () => {
          contextRef.current.fillStyle = "white";
          contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
          drawBoxes();
+         drawWholeMap();
 
-         },[mapWidth, mapHeight,clearCanvas]);
+         },[mapWidth, mapHeight,clearCanvas, layerOrder]);
 
     const drawBox = (layers, x, y) => {
+        if(x == 0 && y == 0){
+            console.log("layers", layers);
+        }
         contextRef.current.clearRect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
+        contextRef.current.rect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
+        contextRef.current.stroke();
+
         for(let i = 0; i < layerOrder.length; i++){
             let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
             if(image_data){
@@ -171,6 +178,16 @@ const MapEditor = () => {
             else{
             }
             
+        }
+    }
+
+    //DANGEROUS FUNCTION: Use only as last resort
+    const drawWholeMap = () =>{
+        console.log("At draw whole map");
+        for(let i = 0; i < dataMap.length; i += 1){
+            for(let j = 0; j < dataMap[i].length; j += 1){
+                drawBox(dataMap[i][j].layers, i, j);
+            }
         }
     }
 
@@ -204,6 +221,7 @@ const MapEditor = () => {
         }
         new_arr[x][y].layers = new_layers;
         drawBox(new_layers, x, y);
+        editMap(new_arr);
         
     }
     
