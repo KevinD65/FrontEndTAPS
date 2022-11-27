@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 import "./mapEdit.css"
 import Grass from "../../static/grass.jpeg"
-
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Box } from "@mui/system";
 
@@ -49,8 +48,8 @@ const Pixel = ({tileData, currentTile,tileHeight, tileWidth, selectedTile, layer
         //editLayer(new_arr);
         //doDrawing();
 
+        }
     }
-   }
 
    const doDrawing = () => {
     if(!layers){

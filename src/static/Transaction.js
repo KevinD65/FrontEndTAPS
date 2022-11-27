@@ -1,9 +1,47 @@
-import * as queries from '../cache/queries';
 
 export class TPS_Transaction {
     constructor() {};
     doTransaction() {};
     undoTransaction () {};
+}
+
+/*
+export class EditMapPixel_Transaction extends TPS_Transaction {
+    constructor(previousState, updatedState, callback) {
+        super();
+        this.previousState = previousState;
+        this.updatedState = updatedState;
+        this.updateFunction = callback;
+    }
+    async doTransaction() {
+        console.log("IM DOING A PIXEL EDIT");
+		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }});
+		return data;
+    }
+    async undoTransaction() {
+        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }});
+		return data;
+    }
+}*/
+
+export class EditMap_Transaction extends TPS_Transaction {
+    constructor(previousMap, updatedMap, callback) {
+        super();
+        this.previousMap = previousMap;
+        this.updatedMap = updatedMap;
+        this.updateFunction = callback;
+    }
+    async doTransaction() {
+        console.log("REDOING A TRANSACTION");
+        console.log(this.updatedMap);
+		await this.updateFunction(this.updatedMap);
+    }
+    async undoTransaction() {
+        console.log("UNDOING TRANSACTION")
+        console.log(this.previousMap);
+        await this.updateFunction(this.previousMap);
+		//return data;
+    }
 }
 
 //TO USE, MAKE TRANSACTION OBJECTS THAT EXTEND THIS CLASS, AND OVERRIDE THE doTransaction() AND undoTransaction() FUNCTIONS
@@ -55,6 +93,7 @@ export class TPS {
             }
         }
         this.transactions.push(transaction);
+        console.log("ADDING TRANSACTION");
         this.doTransaction();        
     }
 
@@ -211,3 +250,4 @@ export class TPS {
     //     return text;
     // }
 }
+

@@ -57,7 +57,7 @@ export default function LayersEdit(props) {
 <table class="layers-table">
     <thead>
         <tr>
-            <th>Layers</th>
+            <th>Tools</th>
             <th></th>
         </tr>
     </thead>

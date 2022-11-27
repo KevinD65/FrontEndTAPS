@@ -32,6 +32,12 @@ const Sidemenu = (props) => {
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+  const [currentTilesets, editCurrentTilesets] = useState([]);
+
+  const importTileset = () => {
+
+  }
+
 
     return (
   <Drawer
@@ -61,7 +67,9 @@ const Sidemenu = (props) => {
             sx={{ border: 1 }}
             >
           
-
+        <Button onClick={importTileset} aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}>
+          <Typography variant="h6" component="h6">Import tileset</Typography>
+        </Button>
         <TilesetMap select = {props.select} tiles={props.tiles}/>
         </Grid>
     </List>
