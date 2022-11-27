@@ -29,13 +29,13 @@ function App() {
       </Routes>
       <Routes>  
         <Route element={<Layout authenticateUser = {authenticateUser}/>}>
-          <Route path='/userAsset' element={<UserAsset authenticatedUser = {authenticatedUser} editTile = {editTile}/>}/>
+          <Route path='/userAsset/:id' element={<UserAsset authenticatedUser = {authenticatedUser} editTile = {editTile}/>}/>
           <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
           <Route path='/community' element={<Community authenticatedUser = {authenticatedUser}/>}/>
           <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser} tileset={tileset}/>}/>
           <Route path='/mapEditor' element={<MapEditor authenticatedUser = {authenticatedUser} transactionStack = {transactionStack}/>}/>
         </Route>
-        //<Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
+        <Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
       </Routes>
     </div>
   );

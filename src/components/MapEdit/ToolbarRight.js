@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
+import {Grid} from '@mui/material';
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
@@ -31,6 +32,12 @@ const Sidemenu = (props) => {
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+  const [currentTilesets, editCurrentTilesets] = useState([]);
+
+  const importTileset = () => {
+
+  }
+
 
     return (
   <Drawer
@@ -52,10 +59,19 @@ const Sidemenu = (props) => {
     </Box>
     
          {/* List of sidebar components */}
-         <LayersEdit setErase={props.setErase} />
+         <LayersEdit setErase={props.setErase} layerOrder={props.layerOrder} setOrderCallback={props.setOrderCallback}/>
         <Divider />
-
+        <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
+        <Grid  container 
+            direction='row'
+            sx={{ border: 1 }}
+            >
+          
+        <Button onClick={importTileset} aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}>
+          <Typography variant="h6" component="h6">Import tileset</Typography>
+        </Button>
         <TilesetMap select = {props.select} tiles={props.tiles}/>
+        </Grid>
     </List>
     
     

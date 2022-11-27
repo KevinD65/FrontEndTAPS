@@ -1,8 +1,11 @@
 import React from "react";
 import Pixel from "./Pixel";
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import { Box } from "@mui/material";
 
-const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, selectedTile, layerOrder, transactionStack, editDataMap}) => {
+
+
+const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, selectedTile, layerOrder, updateDataMap}) => {
    
    let pixels=[]
     for (let i=0; i<mapWidth; i++){
@@ -10,14 +13,18 @@ const Row = ({ rowData, mapWidth, row, key, currentTile,tileHeight, tileWidth, s
     }
 
     return(
+
         <div className="row">{
             rowData.map((tile, index) =>{
-                //console.log("TILE: ", tile);
-                return <Pixel key={key + ' ' + index}  tile = {tile} currentTile={currentTile} 
-                tileHeight={tileHeight} tileWidth={tileWidth} selectedTile={selectedTile}
-                layerOrder={layerOrder} transactionStack = {transactionStack} editDataMap = {editDataMap} row = {row} column = {index}></Pixel>
+                //console.log("id", key, index);
+                return <Pixel key={row + ' ' + index}  tileData = {tile} currentTile={currentTile} row={row} column={index} 
+                tileHeight={tileHeight} tileWidth={tileWidth} selectedTile={selectedTile} updateDataMap={updateDataMap}
+                layerOrder={layerOrder}></Pixel>
             })
-        }</div>
+            
+        }
+       
+        </div>
     )
 }
 

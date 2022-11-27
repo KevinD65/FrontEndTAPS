@@ -6,7 +6,7 @@ import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
 import MapGrid from "./MapGrid";
 import { useState } from "react";
-import { EditMap_Transaction } from "../../static/Transaction";
+import { v4 as uuidv4 } from 'uuid';
 //import TS from "/sampletspub.png"
 
 
@@ -31,9 +31,21 @@ const MapEditor = (props) => {
         return datamap;
     }
 
-    const [dataMap, editMap] = useState(createDataMap());
+    const [dataMap, editMap] = useState(() => createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
-    const [layerOrder, editOrder] = useState(["Mountain"]);
+    const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
+
+    const setOrder = (new_arr) => {
+        editOrder(new_arr);
+    }
+
+    const updateDataMap = (row, col, layers) => {
+        let new_arr = [...dataMap];
+        //console.log("new_ arr", new_arr, layers);
+        new_arr[row][col].layers = layers;
+        //console.log("after", new_arr);
+        editMap(new_arr);
+    }
     
     const setErase = (newState) => {
         if(newState){
@@ -98,8 +110,8 @@ const MapEditor = (props) => {
         console.log("NEW: ", clonedDataMap);
         clonedDataMap[targetRow][targetCol] = updatedPixelState.layers; //update the copy with the new pixel data
 
-        let newMapEditTransaction = new EditMap_Transaction(previousDataMap, clonedDataMap, editMap);
-        props.transactionStack.addTransaction(newMapEditTransaction);
+        //let newMapEditTransaction = new EditMap_Transaction(previousDataMap, clonedDataMap, editMap);
+        //props.transactionStack.addTransaction(newMapEditTransaction);
 
         console.log("Added map edit transaction to TPS");
     }
@@ -122,13 +134,15 @@ const MapEditor = (props) => {
                 .then((image) => loadTS(1, image));
             setTable((oldarray => [... table]));
         }
-        console.log("before");
+        //console.log("before");
         getTable();
         
 
     }, [GIDTable.length == 0])
 
-
+    React.useEffect(() => {
+        console.log("DataMap", dataMap)
+    })
     return (
         <>
         <Box sx={{ display: 'flex' }}>
@@ -141,14 +155,14 @@ const MapEditor = (props) => {
         <Grid item  md={8} >
        <MapGrid dataMap={dataMap} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} 
        setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth}  currentTile={currentTile}  
-       selectedTile ={selectedTile} layerOrder={layerOrder} transactionStack = {props.transactionStack} editDataMap = {editDataMap}/>
+       selectedTile ={selectedTile} layerOrder={layerOrder} updateDataMap={updateDataMap}/>
         </Grid>
 
         <Grid item  md={2}>
 
         <ToolbarRight tiles = {GIDTable} select ={(tile) => {
-            changeSelect(tile);
-        }} setErase={setErase}></ToolbarRight>
+            changeSelect(prev => (tile));
+        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
         </Grid>
         </Grid>

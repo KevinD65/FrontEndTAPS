@@ -11,7 +11,6 @@ export default function SaveModal(props) {
     const [tileWidth, changeWidth] = React.useState(50);
     const [tileHeight, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState({});
-    const [saveTileset] = useMutation(SAVE_TILESET);
 
     const handleKeyDown = (e, field) => {
         if (e.key === 'Enter'){
@@ -94,13 +93,13 @@ export default function SaveModal(props) {
 
     const saveTile = async () => {
         let object = await makeJSON();
-        let res = await saveTileset({
+        let res = await props.saveTileset({
             variables: {
                 id: props.tilesetId,
                 input: object,
             }
         });
-        console.log(res);
+        console.log("Saved succesfully", res);
     }
     const style = {
         position: 'absolute',

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import React from 'react'
 import ts from './samplets.png'
 
@@ -14,6 +14,9 @@ export default function TileSelect(props) {
     const tile_height = props.tileprop.height;
     //console.log(sx, sy, swidth, sheight, x, y, tile_width, tile_height);
     */
+    const tallGrid = {
+      width: '100%'
+    }
     const canvas = React.createRef();
 
     const setTile = async () => {
@@ -37,7 +40,9 @@ export default function TileSelect(props) {
       });
 
   return (
-    <Box sx={{ border: 5}}><canvas ref={canvas}  width={160} height={40} onClick={setTile} sx={{ border: 5}}/> </Box>
-        
+    
+    <Grid item md={3}>
+   <canvas ref={canvas}  height={40} onClick={setTile}    sx={{...tallGrid}}/> 
+   </Grid>
   )
 }
