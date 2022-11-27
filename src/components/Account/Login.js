@@ -4,7 +4,7 @@ import TAPSLogo from '../../TAPSLogo.PNG';
 import SignUpModal from './SignUpModal';
 import {Link, useNavigate} from "react-router-dom";
 import {gql, useQuery, useMutation} from '@apollo/client';
-import { ADD_USER, GET_USER } from '../../graphql/queries/loginScreenUsers';
+import { ADD_USER, GET_USER, LOGIN } from '../../graphql/queries/loginScreenUsers';
 import PasswordRecoveryModal from './PasswordRecoveryModal';
 import {Card,FormControl,Input,InputLabel,Grid, Button, Box,Container, TextField,Divider,Typography} from "@mui/material"
 
@@ -32,6 +32,7 @@ function Login(props) {
   }
 
   const [addUser] = useMutation(ADD_USER, refetch);
+  const [login] = useMutation(LOGIN);
 
   //HANDLES SIGN-IN FIELD INPUT
   const handleSignInInput = (type, value) => {
@@ -87,10 +88,11 @@ function Login(props) {
       }
       else if(currentUser){ //sucessful sign-in
         //CALL LOGIN RESOLVER FOR ACCESS/REFRESH TOKENS
+        //login(userdata.getUser.id);
 
         props.authenticateUser(currentUser);
         //console.log("YES " + currentUser.username);
-        navigate('/userAsset');
+        navigate('/userAsset/' + currentUser.id);
       }
     }
   }

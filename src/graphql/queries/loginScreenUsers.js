@@ -26,6 +26,19 @@ query($id: ID, $username: String, $email: String){
 } 
 `;
 
+const LOGIN = gql`
+mutation($id: ID){
+  login(id: $id){
+    id,
+    name,
+    username,
+    hash,
+    email,
+    bio
+  }
+} 
+`;
+
 const VALIDATE_PWRESET_TOKEN = gql`
 query($id: ID!, $token: String!){
     validateResetPWToken(id: $id, token: $token){
@@ -54,4 +67,4 @@ mutation($id: ID!, $name: String, $username: String, $email: String, $hash: Stri
 } 
 `;
 
-export{ADD_USER, GET_USER, VALIDATE_PWRESET_TOKEN, SEND_RECOVERY_EMAIL, UPDATE_USER_INFO};
+export{ADD_USER, GET_USER, LOGIN, VALIDATE_PWRESET_TOKEN, SEND_RECOVERY_EMAIL, UPDATE_USER_INFO};

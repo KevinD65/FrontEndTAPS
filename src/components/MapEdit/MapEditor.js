@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 //import TS from "/sampletspub.png"
 
 
-const MapEditor = () => {
+const MapEditor = (props) => {
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
     const[currentTile,setCurrentTile]=useState("")
@@ -98,6 +98,27 @@ const MapEditor = () => {
         }
         console.log("table", GIDTable);
         return GIDTable;
+    }
+
+    /**
+     * Used for creating a map edit transaction
+     */
+    const editDataMap = (previousPixelState, updatedPixelState) => {
+        let targetRow = previousPixelState.row;
+        let targetCol = previousPixelState.col;
+        console.log("ROW: " + targetRow);
+        console.log("COLUMN: " + targetCol);
+
+        let previousDataMap = dataMap;
+        console.log("PREV: ", previousDataMap);
+        let clonedDataMap = JSON.parse(JSON.stringify(dataMap)); //create deep copy of dataMap
+        console.log("NEW: ", clonedDataMap);
+        clonedDataMap[targetRow][targetCol] = updatedPixelState.layers; //update the copy with the new pixel data
+
+        //let newMapEditTransaction = new EditMap_Transaction(previousDataMap, clonedDataMap, editMap);
+        //props.transactionStack.addTransaction(newMapEditTransaction);
+
+        console.log("Added map edit transaction to TPS");
     }
 
     //let GIDTable = loadTS(1);
@@ -232,7 +253,7 @@ const MapEditor = () => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft  mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>

@@ -1,10 +1,5 @@
-
-
-
 import React from "react";
 import Pixel from "./Pixel";
-
-
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Box } from "@mui/material";
 
