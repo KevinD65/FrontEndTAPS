@@ -13,12 +13,18 @@ import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_
 import { GET_ASSET_SCREEN_FOLDERS, CREATE_ASSET_SCREEN_FOLDER, CHANGE_FOLDER_NAME, DELETE_FOLDER} from '../../graphql/queries/assetScreenFolders';
 import { Update } from '@mui/icons-material';
 import FolderDisplay from './FolderDisplay';
+import {useLocation} from 'react-router-dom';
+
 const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"map",starred:0},
 {name:"Mario " ,image:"something.svg", owner:"abcd", type:"map",starred:0},
 {name:"My city" ,image:"something.svg", owner:"abcd1", type:"map",starred:1},
 {name:"mountain" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:0},{name:"soil" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:1}]
 
 export default function UserAsset(props) {
+  
+const location = useLocation();
+//console.log("At asset", location.state)
+  let currentUser = props.authenticatedUser;
 
   const [currentfolderPath, changePath] = React.useState([{id: null, name: null}]);
   const [currentFolder, changeFolder] = React.useState({id: null, name: null});
@@ -28,11 +34,11 @@ export default function UserAsset(props) {
   }
 
   const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_ASSET_SCREEN_MAPS, {
-    variables: {input: "63563b1a8e23cf6f7a6081d4"},
+    variables: {input: currentUser.id},
   });
 
   const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_ASSET_SCREEN_TILESETS, {
-    variables: {input: "63563b1a8e23cf6f7a6081d4"},
+    variables: {input: currentUser.id},
   });
 
 
@@ -40,7 +46,7 @@ export default function UserAsset(props) {
     refetchQueries: [
       {
         query: GET_ASSET_SCREEN_MAPS,
-        variables: {input: "63563b1a8e23cf6f7a6081d4"}
+        variables: {input: currentUser.id}
       }
     ]
   }
@@ -49,7 +55,7 @@ export default function UserAsset(props) {
     refetchQueries: [
       {
         query: GET_ASSET_SCREEN_TILESETS,
-        variables: {input: "63563b1a8e23cf6f7a6081d4"}
+        variables: {input: currentUser.id}
       }
     ]
   }
@@ -58,7 +64,7 @@ export default function UserAsset(props) {
     refetchQueries: [
       {
         query: GET_ASSET_SCREEN_FOLDERS,
-        variables: {ownerID: "63563b1a8e23cf6f7a6081d4", folderId: currentfolderPath.at(-1).id},
+        variables: {ownerID: currentUser.id, folderId: currentfolderPath.at(-1).id},
       }
     ]
   }
@@ -76,7 +82,7 @@ export default function UserAsset(props) {
   const createNewFolder = async() => {
     createFolder({
       variables: {
-        ownerID: "63563b1a8e23cf6f7a6081d4", name: "New Folder", folderId: currentfolderPath.at(-1).id
+        ownerID: currentUser.id, name: "New Folder", folderId: currentfolderPath.at(-1).id
       }
     });
   }
@@ -85,7 +91,7 @@ export default function UserAsset(props) {
   const createNewMap= async ()=>{
       createMap({
         variables: {
-          input: { name: "New Map" , image :"something.svg", starred:false, ownerID: "63563b1a8e23cf6f7a6081d4"}
+          input: { name: "New Map" , image :"something.svg", starred:false, ownerID: currentUser.id}
         }
       });
 
@@ -111,7 +117,7 @@ export default function UserAsset(props) {
   const createNewTileset = async ()=>{
     createTileset({
       variables: {
-        input: { name: "New Tileset" , image :"something.svg", starred:false, ownerID: "63563b1a8e23cf6f7a6081d4"}
+        input: { name: "New Tileset" , image :"something.svg", starred:false, ownerID: currentUser.id}
       }
     });
 

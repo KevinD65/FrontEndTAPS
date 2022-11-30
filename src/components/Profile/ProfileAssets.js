@@ -1,6 +1,7 @@
 import { React } from "react";
 import './UserProfile.css';
-import Asset from "../Community/Asset";
+import MapQueries from "./MapQueries";
+import TSQueries from "./TSQueries";
 
 const ProfileAssets = (props) => {
 
@@ -8,15 +9,8 @@ const ProfileAssets = (props) => {
 
     return (
         <div id='Profile-Assets'>
-            {
-                /* THIS WILL MAP ALL QUERIED COMMUNITY ASSETS TO THEIR OWN <Asset> COMPONENT
-                props.profileAssets.map(asset => (
-                    <Asset/>
-                ))*/
-            }
+            {props.queryType == "Map" ? <MapQueries currentUser={props.currentUser}/> : <TSQueries currentUser={props.currentUser}/>}
             
-            {/*BELOW IS A HARDCODED STATIC EXAMPLE FOR BUILD #2*/}
-            <Asset/>
         </div>
     )
 }
