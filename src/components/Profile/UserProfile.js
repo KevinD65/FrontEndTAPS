@@ -6,11 +6,13 @@ import ProfileNavbar from "./ProfileNavbar";
 import UpdateAccountScreen from "./UpdateAccountScreen";
 import {gql, useMutation, useQuery} from '@apollo/client';
 import {UPDATE_USER_INFO, GET_USER} from '../../graphql/queries/profileScreenQM';
+import TextField from '@mui/material/TextField';
 
 const UserProfile = (props) => {
 
     //props contains current User object
     let currentUser = props.authenticatedUser;
+    const [editBio, toggleBio] = useState(false);
 
     const { loading: get_user_loading, error: get_user_error, data: user_data } = useQuery(GET_USER, {
         variables: {id: currentUser.id},
@@ -27,14 +29,10 @@ const UserProfile = (props) => {
 
     const [updateAccountScreen, toggleUpdateAccountScreen] = useState(false);
     const [updateAccount] = useMutation(UPDATE_USER_INFO, refetchUser);
+    const [queryType, changeQueryType] = useState("Map");
 
     const queryProfileAssets = async(assetType) => {
-        if(assetType == "Map"){
-            alert("Querying User's Maps");
-        }
-        else if(assetType == "Tileset"){
-            alert("Querying User's Tilesets");
-        }
+        changeQueryType(assetType);
     }
 
     const handleUpdateAccount = async(id, name, username, email, hash, bio) => {
@@ -52,9 +50,23 @@ const UserProfile = (props) => {
         props.authenticateUser(updatedUser.data.updateUser); //update the authenticated user
     }
 
+    const updateBio = async(bio) => {
+        
+        let updatedUser = await updateAccount({
+            variables: {
+              id: currentUser.id,
+              bio: bio,
+            }
+          });
+        props.authenticateUser(updatedUser.data.updateUser);
+        toggleBio(false);
+    }
+
     const showUpdateAccountScreen = async() => {
         toggleUpdateAccountScreen(!updateAccountScreen);
     }
+    
+      
 
     return (
         <div className="userprofile-screen-container">
@@ -65,7 +77,19 @@ const UserProfile = (props) => {
                         <img id='profile-pic' src={DogeLoaf}></img>
                         <div id='bio-name'>{user_data.getUser.name}</div>
                         <div id='bio-username'>{user_data.getUser.username}</div>
-                        <div id='bio-bio'>{user_data.getUser.bio}</div>
+                        {!editBio ? 
+                                <div id='bio-bio' onDoubleClick={()=>{toggleBio(true)}}>{
+                                    user_data.getUser.bio ? user_data.getUser.bio : "Empty Bio"
+                                }</div>
+                                : <TextField
+                                id="standard-textarea"
+                                label="Bio"
+                                placeholder="Enter Bio Here"
+                                multiline
+                                variant="standard"
+                                onBlur={(e) => updateBio(e.target.value)}
+                              />
+                        }
                     </div>}
                     <div id='updateAccount-container'>
                         <div id='updateAccount-button' onClick={showUpdateAccountScreen}>Update Account Information</div>
@@ -74,7 +98,7 @@ const UserProfile = (props) => {
                 <div id='userprofile-asset-panel'>
                     <div id='my-assets-container'>
                         <ProfileNavbar queryProfileAssets = {queryProfileAssets}/>
-                        {/*<ProfileAssets/>*/}
+                        {<ProfileAssets queryType={queryType} currentUser={props.authenticatedUser} />}
                     </div>
                 </div>
             </>: <UpdateAccountScreen currentUser={props.authenticatedUser} updateAccount={handleUpdateAccount} showUpdateAccountScreen={showUpdateAccountScreen}/>

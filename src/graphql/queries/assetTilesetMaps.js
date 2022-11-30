@@ -6,7 +6,8 @@ query($input: ID){
     id,
     name,
     image,
-    starred
+    starred,
+    bio
   }
 } 
 `;

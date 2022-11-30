@@ -92,7 +92,7 @@ function Login(props) {
 
         props.authenticateUser(currentUser);
         //console.log("YES " + currentUser.username);
-        navigate('/userAsset/' + currentUser.id);
+        navigate('/userAsset/' + currentUser.id, {state: {user: currentUser}});
       }
     }
   }
