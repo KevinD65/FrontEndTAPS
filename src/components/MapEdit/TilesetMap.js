@@ -89,6 +89,7 @@ export default function TilesetMap(props) {
   }
 
   useEffect(()=>{
+    console.log(props.importedTileList);
 
   },[props.tiles])
   

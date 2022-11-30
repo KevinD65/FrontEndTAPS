@@ -25,7 +25,7 @@ const MapEditor = (props) => {
     const [isDrawing, setIsDrawing]= useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
-    const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and GIDs
+    const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
     //have mapping between tileset name and starting GID
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
 
@@ -252,15 +252,19 @@ const MapEditor = (props) => {
      */
     const importTileset = (imported_tiles) => {
         let tilesetName = imported_tiles.TSName;
+        let tileCount = imported_tiles.numTiles;
         console.log(tilesetName);
 
         if(tileList.length > 0){
             setTileList(oldArray => [oldArray, imported_tiles]);
-            editImportedTileList(oldTilelistArray => [oldTilelistArray, tilesetName]);
+            let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
+
+            editImportedTileList(oldTilelistArray => [oldTilelistArray, {tilesetName, startingGID, tileCount}]);
         }
         else{
+            console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
-            editImportedTileList([tilesetName]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
         }
     }
     
@@ -286,7 +290,7 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight importTileset={importTileset} tiles = {/*GIDTable*/tileList} select ={(tile) => {
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
             changeSelect(prev => (tile));
         }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
