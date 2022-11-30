@@ -8,6 +8,10 @@ import MapGrid from "./MapGrid";
 import MapCanvas from "./MapCanvas";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import Modal from '@mui/material/Modal';
+import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
+import ReactRouterPrompt from "react-router-prompt";
+import { useMutation, useQuery } from '@apollo/client';
 //import TS from "/sampletspub.png"
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
@@ -196,11 +200,18 @@ const MapEditor = (props) => {
          contextRef.current.fillStyle = "white";
          contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
          drawBoxes();
+         drawWholeMap();
 
-         },[mapWidth, mapHeight,clearCanvas]);
+         },[mapWidth, mapHeight,clearCanvas, layerOrder]);
 
     const drawBox = (layers, x, y) => {
+        if(x == 0 && y == 0){
+            console.log("layers", layers);
+        }
         contextRef.current.clearRect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
+        contextRef.current.rect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
+        contextRef.current.stroke();
+
         for(let i = 0; i < layerOrder.length; i++){
             let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
             if(image_data){
@@ -211,6 +222,16 @@ const MapEditor = (props) => {
             else{
             }
             
+        }
+    }
+
+    //DANGEROUS FUNCTION: Use only as last resort
+    const drawWholeMap = () =>{
+        console.log("At draw whole map");
+        for(let i = 0; i < dataMap.length; i += 1){
+            for(let j = 0; j < dataMap[i].length; j += 1){
+                drawBox(dataMap[i][j].layers, i, j);
+            }
         }
     }
 
@@ -244,6 +265,7 @@ const MapEditor = (props) => {
         }
         new_arr[x][y].layers = new_layers;
         drawBox(new_layers, x, y);
+        editMap(new_arr);
         
     }
 
@@ -267,9 +289,47 @@ const MapEditor = (props) => {
             editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
         }
     }
+    const [toggleLock] = useMutation(TOGGLE_LOCK);
+    const unlock = async() => {
+      let result = await toggleLock({
+        variables: {
+          id: props.map,
+          assetType: "Map",
+          userId: props.authenticatedUser.id,
+          lock: false
+        }
+      });
+      let success = result.data.toggleLock;
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      };
     
     return (
         <>
+        <ReactRouterPrompt when={true}>
+          {({ isActive, onConfirm, onCancel }) => (
+          <Modal open={isActive}>
+            <Box sx={style} >
+            <p>Do you really want to leave?</p>
+            <button onClick={onCancel}>Cancel</button>
+            <button onClick={(event) => {
+              unlock();
+              onConfirm(event);
+            }}>Ok</button>
+            </Box>
+        </Modal>
+          )}
+        </ReactRouterPrompt>
         <Box sx={{ display: 'flex' }}>
         <Grid container 
         direction='row'

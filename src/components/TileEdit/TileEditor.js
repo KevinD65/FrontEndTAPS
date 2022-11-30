@@ -13,6 +13,9 @@ import PNGSaveModal from "./PNGSaveModal";
 import SaveModal from "./SaveModal";
 import { SAVE_TILESET, GET_TILESET } from "../../graphql/queries/TileEditorQueries";
 import { useMutation, useQuery } from '@apollo/client';
+import ReactRouterPrompt from "react-router-prompt";
+import Modal from '@mui/material/Modal';
+import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 
 const TileEditor = (props) => {
     console.log("From Top", props.tileset)
@@ -72,8 +75,50 @@ const TileEditor = (props) => {
     const handleImport = (imported_tiles) => {
         setTileList(oldArray => [...oldArray, ...imported_tiles]);
     }
+
+
+    const style = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+    };
+
+    const [toggleLock] = useMutation(TOGGLE_LOCK);
+    const unlock = async() => {
+      let result = await toggleLock({
+        variables: {
+          id: props.tileset,
+          assetType: "Tileset",
+          userId: props.authenticatedUser.id,
+          lock: false
+        }
+      });
+      let success = result.data.toggleLock;
+      console.log("Unlock successful?", success);
+    }
+
     return (
         <>
+        <ReactRouterPrompt when={true}>
+          {({ isActive, onConfirm, onCancel }) => (
+          <Modal open={isActive}>
+            <Box sx={style} >
+            <p>Do you really want to leave?</p>
+            <button onClick={onCancel}>Cancel</button>
+            <button onClick={(event) => {
+              unlock();
+              onConfirm(event);
+            }}>Ok</button>
+            </Box>
+        </Modal>
+          )}
+        </ReactRouterPrompt>
         <Box sx={{ display: 'flex' }}>
             <Grid container 
             direction='row'

@@ -17,7 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 
-const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
+const Map=({mapName, changeNameCallback, deleteMapCallback, mapId, editMap})=> {
   const [changingName, toggleNameChange] = React.useState(false);
   
 
@@ -42,7 +42,7 @@ const Map=({mapName, changeNameCallback, deleteMapCallback, mapId})=> {
           image={Waterfall}
           alt="map"
           onDoubleClick={()=>{
-            navigate('/MapEditor');
+            editMap(mapId, "Map")
           }}
         />
         <CardContent sx={{display:'flex',}}>

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import { FavoriteBorder,Favorite } from "@mui/icons-material";
-
+import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -25,19 +25,27 @@ import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
 
 const Asset = (props) => {
 
-    let numLikes = 69;
-    let numComments = 3;
-
-    const [anchor,setAnchor]=useState(null)
-
-    const openPopover=(e)=>{
-      setAnchor(e.currentTarget)
-    }
     //props will contain the community asset object which will contain information regarding the asset such as name, type, description, and image
     let asset = props.asset; 
     //******* FOR NOW ASSET TYPE IS SENT IN SEPARATE
     let assetType = props.assetType
     console.log(asset)
+
+    let numLikes = 69;
+    let numComments = 3;
+
+    const [anchor,setAnchor]=useState(null);
+    const [editBio, toggleBio]= useState(false);
+
+    const updateBio = async(bio) => {  
+      props.changeBio(asset.id, bio);
+      toggleBio(false);
+  }
+
+    const openPopover=(e)=>{
+      setAnchor(e.currentTarget)
+    }
+    
     return (
         <div id='Asset'>
 
@@ -55,9 +63,20 @@ const Asset = (props) => {
             {assetType === "Tile" && <GridViewOutlinedIcon sx={{}}></GridViewOutlinedIcon>}
             {assetType === "Folder" && <FolderSharedOutlinedIcon sx={{}}></FolderSharedOutlinedIcon>} &nbsp; {asset.name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-           Map design for a 2D fantasy game that takes place in an ancient ruin. Explore and hunt for treasures thought to be lost to time  a 2D fantasy game that takes place in an ancient ruin. Explore and hunt for treasures thought to be lost to time  
-          </Typography>
+          {!editBio ? 
+            <Typography variant="body2" color="text.secondary" onDoubleClick={() => toggleBio(true)}>
+            {asset.bio ? asset.bio : "Default Bio (Double Click Here to Change"} 
+           </Typography>
+            : <TextField
+              id="standard-textarea"
+              label="Bio"
+              placeholder="Enter Bio Here"
+              multiline
+              variant="standard"
+              onBlur={(e) => updateBio(e.target.value)}
+              />
+            }
+          
           <Checkbox  aria-label='Checkbox demo'
               icon={<FavoriteBorderIcon />} 
               checkedIcon={<FavoriteIcon  sx={{color:"#D1285E"}}/>} 
