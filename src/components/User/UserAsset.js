@@ -6,33 +6,27 @@ import {Button, Grid} from '@mui/material';
 import Map from "./Map"
 import Tileset from "./Tileset"
 import Sidemenu from './Sidemenu';
-
+import {useNavigate} from "react-router-dom"
 import { useQuery, useMutation,  useLazyQuery } from '@apollo/client';
 import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP} from "../../graphql/queries/assetScreenMaps";
 import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET } from '../../graphql/queries/assetTilesetMaps';
 import { GET_ASSET_SCREEN_FOLDERS, CREATE_ASSET_SCREEN_FOLDER, CHANGE_FOLDER_NAME, DELETE_FOLDER} from '../../graphql/queries/assetScreenFolders';
+import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import { Update } from '@mui/icons-material';
 import FolderDisplay from './FolderDisplay';
 import {useLocation} from 'react-router-dom';
-
-const dummyData=[{name:"waterfall" ,image:"something.svg", owner:"abcd", type:"map",starred:0},
-{name:"Mario " ,image:"something.svg", owner:"abcd", type:"map",starred:0},
-{name:"My city" ,image:"something.svg", owner:"abcd1", type:"map",starred:1},
-{name:"mountain" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:0},{name:"soil" ,image:"something.svg", owner:"abcd2", type:"tiles",starred:1}]
+import Modal from '@mui/material/Modal';
 
 export default function UserAsset(props) {
   
 const location = useLocation();
 //console.log("At asset", location.state)
   let currentUser = props.authenticatedUser;
-
+  const navigate= useNavigate();
   const [currentfolderPath, changePath] = React.useState([{id: null, name: null}]);
   const [currentFolder, changeFolder] = React.useState({id: null, name: null});
-  const seeend = () => {
-    console.log(currentfolderPath.at(-1).id);
-    changePath(oldArray => [...oldArray, {id: null, name: null}]);
-  }
-
+  const [lockModal, showLock] = React.useState(false);
+  
   const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_ASSET_SCREEN_MAPS, {
     variables: {input: currentUser.id},
   });
@@ -78,6 +72,7 @@ const location = useLocation();
   const [deleteTileset] = useMutation(DELETE_TILESET, refetchTilesets);
 
   const [createFolder] = useMutation(CREATE_ASSET_SCREEN_FOLDER, refetchFolders);
+  const [toggleLock] = useMutation(TOGGLE_LOCK);
   
   const createNewFolder = async() => {
     createFolder({
@@ -140,7 +135,51 @@ const deleteAssetTileset = async(arg_id) => {
   });
 }
 
+const checkLock = async(id, assetType) => {
+  let result = await toggleLock({
+    variables: {
+      id: id,
+      assetType: assetType,
+      userId: currentUser.id,
+      lock: true
+    }
+  });
+  let success = result.data.toggleLock;
+  console.log("Did lock?", success);
+  if(success && assetType === "Tileset"){
+    props.editTile(id);
+    navigate('/TileEditor');
+  }
+  else if(success && assetType === "Map"){
+    props.editMap(id);
+    navigate('/mapEditor');
+  }
+  else if(!success){
+    showLock(true);
+  }
+}
+
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
   return (
+    <>
+    <Modal open={lockModal}>
+            <Box sx={style} >
+            <p>Asset is currently being edited</p>
+            <button onClick={() => showLock(false)}>Ok</button>
+            </Box>
+        </Modal>
 <Box sx={{ display: 'flex' ,backgroundColor:"F0EBE3"}}>
       <CssBaseline />
       <Sidemenu createNewMapCallback={createNewMap} createNewTilesetCallback={createNewTileset} 
@@ -157,7 +196,8 @@ const deleteAssetTileset = async(arg_id) => {
                 
                 return(
                 <Grid  item md={3} >
-                <Map mapName={data.name} mapId={data.id} changeNameCallback={changeMapName} deleteMapCallback={deleteAssetMap}/>
+                <Map mapName={data.name} mapId={data.id} changeNameCallback={changeMapName} deleteMapCallback={deleteAssetMap}
+                editMap={checkLock}/>
                 </Grid>
             )
                   })}
@@ -172,7 +212,7 @@ const deleteAssetTileset = async(arg_id) => {
             return(
             <Grid  item md={3} >
             <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}
-            editTile={props.editTile}/>
+            editTile={checkLock}/>
             </Grid>
         )
               })}
@@ -186,7 +226,7 @@ const deleteAssetTileset = async(arg_id) => {
   </Grid>
       
 </Box>
-    
+</>
   );
 }
 

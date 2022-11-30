@@ -40,8 +40,7 @@ const Tileset=({editTile, tilesetName, changeNameCallback, deleteCallback, tiles
           image={Waterfall}
           alt="map"
           onDoubleClick={()=>{
-            editTile(tilesetId);
-            navigate('/TileEditor');
+            editTile(tilesetId, "Tileset");
           }}
         />
         <CardContent sx={{display:'flex' }}>
