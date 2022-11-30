@@ -8,6 +8,10 @@ import MapGrid from "./MapGrid";
 import MapCanvas from "./MapCanvas";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import Modal from '@mui/material/Modal';
+import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
+import ReactRouterPrompt from "react-router-prompt";
+import { useMutation, useQuery } from '@apollo/client';
 //import TS from "/sampletspub.png"
 
 
@@ -245,9 +249,48 @@ const MapEditor = (props) => {
         editMap(new_arr);
         
     }
+
+    const [toggleLock] = useMutation(TOGGLE_LOCK);
+    const unlock = async() => {
+      let result = await toggleLock({
+        variables: {
+          id: props.map,
+          assetType: "Map",
+          userId: props.authenticatedUser.id,
+          lock: false
+        }
+      });
+      let success = result.data.toggleLock;
+    }
+
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+      };
     
     return (
         <>
+        <ReactRouterPrompt when={true}>
+          {({ isActive, onConfirm, onCancel }) => (
+          <Modal open={isActive}>
+            <Box sx={style} >
+            <p>Do you really want to leave?</p>
+            <button onClick={onCancel}>Cancel</button>
+            <button onClick={(event) => {
+              unlock();
+              onConfirm(event);
+            }}>Ok</button>
+            </Box>
+        </Modal>
+          )}
+        </ReactRouterPrompt>
         <Box sx={{ display: 'flex' }}>
         <Grid container 
         direction='row'
