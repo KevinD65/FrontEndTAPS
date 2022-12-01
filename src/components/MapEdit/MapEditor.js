@@ -12,6 +12,7 @@ import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
+import JSONSaveModal from "./JSONSaveModal";
 //import TS from "/sampletspub.png"
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
@@ -27,6 +28,8 @@ const MapEditor = (props) => {
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
     const [isDrawing, setIsDrawing]= useState(false);
+
+  const [saveJSON, toggleJSON] =useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
@@ -358,6 +361,7 @@ const MapEditor = (props) => {
         </Grid>
         </Grid>
         </Box>
+        {/*<JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} mapWidth={map} /> */}
         </>
     )
 }

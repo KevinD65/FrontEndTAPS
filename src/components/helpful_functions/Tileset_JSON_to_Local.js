@@ -13,6 +13,8 @@ const grid_generator = (width, height, tile_width, tile_height) => {
 
   const createGIDTableElement = (grid_prop, img) => {
     let c = document.createElement('canvas');
+    c.width = grid_prop.width;
+    c.height = grid_prop.height;
     let ctx = c.getContext("2d");
     ctx.drawImage(img, grid_prop.sx, grid_prop.sy, 
         grid_prop.swidth, grid_prop.sheight, grid_prop.x, grid_prop.y, grid_prop.width, grid_prop.height);

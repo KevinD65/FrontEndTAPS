@@ -15,6 +15,7 @@ import { ChromePicker } from 'react-color';
 import TileEditNav from './TileEditNav';
 import "./tileEdit.css"
 import { loadTS } from '../helpful_functions/Tileset_JSON_to_Local';
+import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
 const styles = {
   'default': {
@@ -30,6 +31,20 @@ const Sidemenu = (props) => {
     changeColor(color);
   }
 
+  const handleImageSelected = async (image) => {
+    console.log("New File Selected");
+        const formData = new FormData();
+        const unsignedUploadPreset = 'ngrdnw4p'
+        formData.append('file', image);
+        formData.append('upload_preset', unsignedUploadPreset);
+  
+        console.log("Cloudinary upload");
+        return uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+            console.log("Upload success", response.secure_url);
+            return response.secure_url;
+        });
+    
+  }
 
   const handleImportJSON=(event)=> {
     var reader = new FileReader();
@@ -42,6 +57,11 @@ async function onReaderLoad (event) {
     var obj = JSON.parse(event.target.result);
     //console.log("TS", loadTS(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image));
     let new_tiles = await loadTS(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image);
+    // let new_srcs = [];
+    // for(let i = 0; i < new_tiles.length; i += 1){
+    //   let src = await handleImageSelected(new_tiles[i]);
+    //   new_srcs.push(src);
+    // }
     props.handleImport(new_tiles);
     
 }

@@ -32,7 +32,12 @@ const TileEditor = (props) => {
     const [saveJSON, toggleJSON] =useState(false);
     const [savePNG, togglePNG] = useState(false);
     const [save, toggleSave] = useState(false);
-    
+    const [predraw, setPredraw] = useState("");
+
+    const drawAgain = (data) => {
+      const new_data = new String(data);
+      setPredraw(new_data);
+    }
 
     const { data, loading, error } = useQuery(GET_TILESET, {
         variables: {
@@ -103,6 +108,15 @@ const TileEditor = (props) => {
       console.log("Unlock successful?", success);
     }
 
+    const removeSelected=(index)=>{
+      console.log("At delete");
+      let lst = tileList;
+      lst.splice(index, 1);
+      console.log("lst", lst)
+      setTileList([... lst]);
+      
+    }
+
     return (
         <>
         <ReactRouterPrompt when={true}>
@@ -136,16 +150,14 @@ const TileEditor = (props) => {
             </Grid>
             
             <Grid item  md={8} sx={{pt:4, pl:10}} >
-     
-                
-                <Canvas  
+                <Canvas  predraw={predraw}
                 brushColor={brushColor} tileList={tileList} setTileList={setTileList} canvasWidth={canvasWidth} setCanvasWidth={setCanvasWidth} canvasHeight={canvasHeight} setCanvasHeight={setCanvasHeight} 
                 brushRadius={brushSize} erase={erase}/>
                 
             </Grid>
         <Grid item  md={2}>
-            <ToolbarRight changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize}
-            setErase={(arg) => {toggleErase(arg)}} erase={erase} tileList={tileList} setTileList={setTileList}/>
+            <ToolbarRight changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize} drawAgain={drawAgain}
+            setErase={(arg) => {toggleErase(arg)}} erase={erase} tileList={tileList} setTileList={setTileList} removeSelected={removeSelected}/>
         </Grid>
         </Grid>
         </Box>
