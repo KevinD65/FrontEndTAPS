@@ -13,9 +13,11 @@ import MapEditNav from './MapEditNav';
 import { Button } from '@mui/material';
 import {Typography} from '@mui/material';
 
+import { parseTilesets } from '../helpful_functions/helpful_function_MapImport';
+
 
 const drawerWidth = 240;
-const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack }) => {
+const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -26,16 +28,20 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
    */
   const handleImportMap = (event)=> {
     let reader = new FileReader();
-    reader.onload = onReaderLoad;
+    reader.onload = onReaderLoadMap;
     reader.readAsText(event.target.files[0]);
   }
 
   /**
-   * If valid map file, loads the map onto the canvas
+   * If valid map file, retrieves the map object data
    */
-  async function onReaderLoad (event) {
+  async function onReaderLoadMap (event) {
     console.log("INSIDE OF onReaderLoad() ToolbarLeft.js for Map Import");
     let map = JSON.parse(event.target.result);
+    console.log(map);
+    let used_tilesets = parseTilesets(map);
+    importMap(map, used_tilesets);
+
     //let new_tiles = await loadTSMapEditor(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image, obj.name);
     //props.importTileset({TSName: obj.name, tiles: new_tiles, numTiles: obj.tilecount});
   }
@@ -69,10 +75,12 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
       <List>
           <Box textAlign='center'>
             {/* Button for the  add menu */}
-            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={handleImportMap}>
-                <Typography variant="h6" component="h2">Import</Typography>
-                
-            </Button>
+            <input onChange={handleImportMap} style={{ display: "none" }} id="contained-button-file-mapImport" type="file"/>
+            <label htmlFor="contained-button-file-mapImport">
+              <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+              <Typography variant="h6" component="h2">Import</Typography>
+              </Button>
+            </label>
             
             <Menu
                 id="basic-menu"

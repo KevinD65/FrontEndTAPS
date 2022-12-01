@@ -8,8 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
-import { useMutation } from '@apollo/client';
-
+import { useMutation, useQuery } from '@apollo/client';
+import JSONSaveModal from "./JSONSaveModal";
+import { GET_TILESETS } from '../../graphql/queries/mapEditorQueries';
 
 const MapEditor = (props) => {
     const [mapWidth, setMapWidth]=useState(5)
@@ -19,11 +20,22 @@ const MapEditor = (props) => {
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
+    const [isDrawing, setIsDrawing]= useState(false);
+
+    const [saveJSON, toggleJSON] =useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
     //have mapping between tileset name and starting GID
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
+
+    //GET_TILESETS QUERY
+    const { loading: get_tilesets_loading, error: get_tilesets_error, data: tilesetData, refetch: refetchUserTilesets } = useQuery(GET_TILESETS, {
+        variables: {ownerID: props.authenticatedUser.id}
+    });
+    if(tilesetData){
+        console.log("THESE ARE MY TILESETS: ", tilesetData);
+    }
 
     /**
      * Creates an empty dataMap using the dimensions of the map
@@ -240,6 +252,7 @@ const MapEditor = (props) => {
         console.log("Before", layers)
         if(selectedTile.gid > 0){
             let {gid, data} = selectedTile;
+            console.log("THIS IS MY DATA", data);
             let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
             if(index == -1){
                 new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
@@ -255,6 +268,7 @@ const MapEditor = (props) => {
                new_layers.splice(index, 1);
             }
         }
+        console.log("NEW LAYERS: ", new_layers);
         new_arr[x][y].layers = new_layers;
         drawBox(new_layers, x, y);
         editMap(new_arr);
@@ -267,19 +281,43 @@ const MapEditor = (props) => {
     const importTileset = (imported_tiles) => {
         let tilesetName = imported_tiles.TSName;
         let tileCount = imported_tiles.numTiles;
+        let tileheight = imported_tiles.tileHeight;
+        let tilewidth = imported_tiles.tileWidth;
+
         console.log(tilesetName);
+        console.log(imported_tiles);
 
         if(tileList.length > 0){
-            setTileList(oldArray => [oldArray, imported_tiles]);
+            setTileList(oldArray => [...oldArray, imported_tiles]);
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
 
-            editImportedTileList(oldTilelistArray => [oldTilelistArray, {tilesetName, startingGID, tileCount}]);
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
-            editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
         }
+    }
+
+    /**
+     * 
+     * 
+     * @param {*map} map_obj 
+     * @param {*array of tileset names} used_tilesets 
+     */
+    const importMap = async(map_obj, used_tilesets) => {
+        await refetchUserTilesets();
+        if(tilesetData){
+            console.log(tilesetData);
+            //store the queried tileset data
+
+            //IMPORT TILESET ON THE MAP EDITOR NEEDS TO BE FIXED FIRST: TO TEST IMPORTING A MAP, A MAP MUST FIRST BE CREATED USING TAPS WHICH REQUIRES A TILESET (ALSO CREATED USING TAPS)
+            //TO BE OPENED AND ASSOCIATED WITH THE MAP. THIS IS BECAUSE WHEN QUERYING THE DB, WE NEED TO SEE IF THE TILESETS ASSOCIATED WITH THE MAP ARE ALSO OWNED BY THE USER; OTHERWISE,
+            //WE DON'T LET THEM IMPORT THE TILESET
+        }
+
+
     }
     
     const [toggleLock] = useMutation(TOGGLE_LOCK);
@@ -306,6 +344,15 @@ const MapEditor = (props) => {
         boxShadow: 24,
         p: 4,
       };
+
+    const changeTile = (tileObj) => {
+        console.log("FIRED");
+        changeSelect(tileObj);
+    }
+
+    useEffect(() => {
+        console.log("USEEFFECT SELECTED TILE" , selectedTile);
+    })
     
     return (
         <>
@@ -328,7 +375,7 @@ const MapEditor = (props) => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap}></ToolbarLeft>
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>
@@ -343,13 +390,12 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
-            changeSelect(prev => (tile));
-        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} changeSelect ={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
         </Grid>
         </Grid>
         </Box>
+        {/*<JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} mapWidth={map} /> */}
         </>
     )
 }
