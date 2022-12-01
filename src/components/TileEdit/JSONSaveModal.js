@@ -109,15 +109,15 @@ export default function JSONSaveModal(props) {
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
-                onKeyDown={handleKeyDown("name")} />
+                onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
-                onKeyDown={handleKeyDown('width')}/>
+                onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
-                onKeyDown={handleKeyDown('height')}/>
+                onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
