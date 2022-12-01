@@ -27,26 +27,18 @@ import Avatar from './Collaborators';
 import {Card,CardContent,Grid,Badge} from '@mui/material';
 import mergeImages from 'merge-base64'
 
-
+import styled from "styled-components";
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
-  const removeSelected=(e)=>{
-    let i=e.target.id
-    console.log(e.target.id)
-    
-  }
-
-
-  useEffect(()=>{
-
-  },[props.tileList])
+  
 
   let counter=0;
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+
     return (
   <Drawer
     anchor={'right'}
@@ -82,28 +74,29 @@ const Sidemenu = (props) => {
             >
     
     {props.tileList.length<=0 && <Typography sx={{color:"black"  ,fontWeight:400, pl:2 ,pt:1,pb:1}}>Save tiles to add...</Typography>}
-    {props.tileList &&  props.tileList.map((data)=>{
+    {props.tileList &&  props.tileList.map((data, index)=>{
             console.log("Data", data);
                 
-            return(
+            return(               
             <Grid id={counter} item md={3} >
               {counter+=1}
-              <Badge  cursor="pointer"  badgeContent="x" color="error" onClick={removeSelected} sx={{pl:6}}></Badge>
+              <Badge badgeContent="x" color="error" onClick={() => props.removeSelected(index)} sx={{pl:6}}></Badge>
               {/*<Box sx={{ border: 5}}>
                 <img src={data}></img>
             </Box>*/}
               
             <Card sx={{width:40 ,height:40 ,mb:1}}>
             
-            <CardContent sx={{paddingLeft: 0, paddingTop: 0}}>
-      <img src={data}></img>
+            <CardContent sx={{paddingLeft: 0, paddingTop: 0}} onClick={() => props.drawAgain(data)}>
+          <img src={data} height={40} width={40}/>
+          
     </CardContent>
             </Card>
     
             </Grid>
         )
               })}
-
+    
 
 
 

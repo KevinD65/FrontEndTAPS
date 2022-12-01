@@ -4,13 +4,12 @@ import { useRef,useEffect,useState } from 'react';
 import { Button,TextField,Box } from '@mui/material';
 import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
-const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius,erase, saveCurrent, setSaveCurrent}) => {
+const Canvas = ({predraw, brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, canvasHeight, setCanvasHeight,brushRadius,erase, saveCurrent, setSaveCurrent}) => {
   
   const canvasRef=useRef(null);
   const contextRef=useRef(null);
   const [isDrawing, setIsDrawing]= useState(false)
   const [clearCanvas, setClearCanvas]=useState(false)
-  
   
   // const canvas=canvasRef.current;
   // canvas.width=canvasWidth;
@@ -18,27 +17,6 @@ const Canvas = ({brushColor,tileList, setTileList,canvasWidth, setCanvasWidth, c
   
 
   // const context= canvas.getContext("2d")
-
-
-  const handleImageSelected = (image) => {
-    console.log("New File Selected");
-        const formData = new FormData();
-        const unsignedUploadPreset = 'ngrdnw4p'
-        formData.append('file', image);
-        formData.append('upload_preset', unsignedUploadPreset);
-
-        console.log("Cloudinary upload");
-        uploadImageToCloudinaryAPIMethod(formData).then((response) => {
-            //console.log("Upload success");
-            console.dir(response.secure_url);
-            
-        });
-    
-}
-
-
- 
-  
 
 
 
@@ -61,6 +39,30 @@ useEffect(()=>{
   canvasRef.current=canvas;
 
   },[canvasWidth,canvasHeight,clearCanvas])
+
+
+
+  useEffect(()=>{
+    console.log("Predraw is not null")
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
+
+  async function redoDrawing(predraw){
+      let picture = await loadImage(predraw);
+      console.log("Picture is ", picture);
+      //.toDataURL();
+      contextRef.current.clearRect(0, 0, canvasWidth, canvasHeight);
+      contextRef.current.drawImage(picture, 0, 0);
+  }
+  redoDrawing(predraw);
+    
+   },[predraw]);
 
  
   const startDrawing=({nativeEvent})=>{
@@ -104,21 +106,36 @@ useEffect(()=>{
   //   console.log("here")
   //   contextRef.clearRect(0, 0, canvasWidth, canvasHeight);
   // }
-  const saveImageToLocal = (event) => {
+  const saveImageToLocal = async (event) => {
     console.log(event.currentTarget)
     let link = event.currentTarget;
     link.setAttribute('download', 'canvas.png');
     let image = canvasRef.current.toDataURL('image/png');
     link.setAttribute('href', image);
+    //let src = await handleImageSelected(image); 
     setTileList([image, ...tileList])
     console.log(tileList)
     // clearCanvas()
    
 };
 
+const handleImageSelected = async (image) => {
+  console.log("New File Selected");
+      const formData = new FormData();
+      const unsignedUploadPreset = 'ngrdnw4p'
+      formData.append('file', image);
+      formData.append('upload_preset', unsignedUploadPreset);
 
+      console.log("Cloudinary upload");
+      return uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+          //console.log("Upload success");
+          console.dir(response.secure_url);
+          return response.secure_url;
+      });
+  
+}
 
-const saveImageToCloud = (event) => {
+const saveImageToCloud = async (event) => {
   let link = event.currentTarget;
   link.setAttribute('download', 'canvas.png');
   let image = canvasRef.current.toDataURL('image/png');

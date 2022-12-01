@@ -12,6 +12,7 @@ import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
+import JSONSaveModal from "./JSONSaveModal";
 //import TS from "/sampletspub.png"
 
 
@@ -26,6 +27,7 @@ const MapEditor = (props) => {
     const contextRef=useRef(null);
     const [isDrawing, setIsDrawing]= useState(false);
   const [clearCanvas, setClearCanvas]=useState(false);
+  const [saveJSON, toggleJSON] =useState(false);
 
     const createDataMap = () => {
         let datamap = [];
@@ -318,6 +320,7 @@ const MapEditor = (props) => {
         </Grid>
         </Grid>
         </Box>
+        {/*<JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} mapWidth={map} /> */}
         </>
     )
 }
