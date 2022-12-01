@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid} from "@mui/material";
 import GrassIcon from '@mui/icons-material/Grass';
 import "./mapEdit.css"
@@ -15,7 +15,10 @@ import { fontWeight } from "@mui/system";
 import TS from "./samplets.png"
 import SelectGrid from "./SelectGrid";
 
+const dog = require("../../dogeloaf.jpg")
+
 const Tiles=[Grass,Grass,Grass,Grass,Grass]
+/*
 const itemData = [
     {
       img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
@@ -65,35 +68,70 @@ const itemData = [
       img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
       title: 'Bike',
     },
-  ];
+  ];*/
   
 export default function TilesetMap(props) {
   const [openTS, toggleOpen] = React.useState(false);
   const [grid_points, setGridPoints] = React.useState([]);
   const [imageData, setImageData]= useState("");
+  const [itemData, setItemData] = useState([]);
+
+
+  console.log("MYTILELIST", itemData);
+  /*
+  const itemData = props.tiles;
+  console.log(itemData);
+  if(itemData.length > 0){
+    console.log(itemData[0].data)
+  }*/
+  if(itemData != props.tiles){
+    setItemData(props.tiles);
+  }
+
+  useEffect(()=>{
+    console.log(props.importedTileList);
+
+  },[props.tiles])
   
  return (
     <>
-    
     {<SelectGrid select={props.select} tiles={props.tiles} gridPoints={grid_points}/>}
-    {/*
+    {
     <ImageList sx={{ width: 239, height: 220 }} cols={3} rowHeight={45}>
-      {itemData.map((item) => (
-        <ImageListItem key={item.img}>
-          <img
+      {itemData.map((tileObject) => {
+        let tileArr = tileObject.tiles
+        let tileImage =  tileArr.map((tile, index) => {
+        console.log(tile.data + index);
+        return(
+          <ImageListItem key={index}>
+            {
+            <img
+              src={`${tile.img}?w=164&h=164&fit=crop&auto=format`}
+              srcSet={`${tile.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              alt={tile.gid}
+              loading="lazy"
+            />
+            }
+          </ImageListItem>
+        )})
+        return tileImage;
+      })
+      }
+    </ImageList>
+    }
+    </>
+    
+ );
+}
+
+/**
+ * <img
             src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
             srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
             alt={item.title}
             loading="lazy"
           />
-        </ImageListItem>
-      ))}
-    </ImageList>
-    */}
-    </>
-    
- );
-}
+ */
 
 
 
