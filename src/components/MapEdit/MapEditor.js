@@ -1,32 +1,24 @@
 import React from "react";
-
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Toolbar,Box, Button } from "@mui/material";
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
-import MapGrid from "./MapGrid";
-import MapCanvas from "./MapCanvas";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
-import { useMutation, useQuery } from '@apollo/client';
-//import TS from "/sampletspub.png"
-
-import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+import { useMutation } from '@apollo/client';
 
 
 const MapEditor = (props) => {
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
-    const [currentTile,setCurrentTile]=useState("")
     const [tileWidth, setTileWidth]=useState(40)
     const [tileHeight, setTileHeight]=useState(40)
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
-    const [isDrawing, setIsDrawing]= useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
@@ -289,6 +281,7 @@ const MapEditor = (props) => {
             editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
         }
     }
+    
     const [toggleLock] = useMutation(TOGGLE_LOCK);
     const unlock = async() => {
       let result = await toggleLock({

@@ -47,7 +47,7 @@ const Navbar=(props)=> {
           TabIndicatorProps={{
     style: {backgroundColor: "#AA8B56" }}} 
     onChange={(e,value)=>{setvalue(value)}} sx={{ flexGrow: 1 , ml:4}}>
-            <Tab label="Home" component={Link} to={`/userAsset`} sx={{color:"#F8EDE3", fontWeight:700, marginRight:5}} /> 
+            <Tab label="Home" component={Link} to={`/userAsset/` + props.authenticatedUser.id} sx={{color:"#F8EDE3", fontWeight:700, marginRight:5}} /> 
             <Tab label="Community" component={Link} to={`/community`} sx={{color:"#F8EDE3", fontWeight:700,marginRight:5}}/>
             <Tab label="Profile" component={Link} to={`/userProfile`} sx={{color:"#F8EDE3", fontWeight:700,marginRight:5}}/>
             

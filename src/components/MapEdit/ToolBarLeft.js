@@ -21,6 +21,25 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
     setAnchor(e.currentTarget)
   }
 
+  /**
+   * Creates a file reader object so users can import local map files
+   */
+  const handleImportMap = (event)=> {
+    let reader = new FileReader();
+    reader.onload = onReaderLoad;
+    reader.readAsText(event.target.files[0]);
+  }
+
+  /**
+   * If valid map file, loads the map onto the canvas
+   */
+  async function onReaderLoad (event) {
+    console.log("INSIDE OF onReaderLoad() ToolbarLeft.js for Map Import");
+    let map = JSON.parse(event.target.result);
+    //let new_tiles = await loadTSMapEditor(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image, obj.name);
+    //props.importTileset({TSName: obj.name, tiles: new_tiles, numTiles: obj.tilecount});
+  }
+
   const handleUndoRedo = async(type) => {
     if(type == "undo"){
       if(transactionStack.hasTransactionToUndo()){
@@ -50,7 +69,7 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
       <List>
           <Box textAlign='center'>
             {/* Button for the  add menu */}
-            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={openPopover}>
+            <Button aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={handleImportMap}>
                 <Typography variant="h6" component="h2">Import</Typography>
                 
             </Button>
