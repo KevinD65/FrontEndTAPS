@@ -317,7 +317,10 @@ const MapEditor = (props) => {
         boxShadow: 24,
         p: 4,
       };
-    
+    const turnOnJSONMod = () => {
+        console.log("here!!!!!")
+        toggleJSON(true);
+    }
     return (
         <>
         <ReactRouterPrompt when={true}>
@@ -339,7 +342,7 @@ const MapEditor = (props) => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>
@@ -361,7 +364,8 @@ const MapEditor = (props) => {
         </Grid>
         </Grid>
         </Box>
-        {/*<JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} mapWidth={map} /> */}
+        <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} layerOrder={layerOrder} tileWidth={tileWidth} tileHeight={tileHeight}
+        dataMap={dataMap} mapWidth={mapWidth} mapHeight={mapHeight} importedTileList={importedTileList}/>
         </>
     )
 }

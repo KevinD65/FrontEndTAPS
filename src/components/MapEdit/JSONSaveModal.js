@@ -64,23 +64,64 @@ export default function JSONSaveModal(props) {
         console.log("HEEE", uri);
         return uri;
     }
+
+    const getLayers = () => {
+      let layers = [];
+      for(let i = 0; i < props.layerOrder.length; i += 1){
+        let layer = props.layerOrder[i];
+        let data = [];
+        for(let j = 0; j < props.dataMap.length; j += 1){
+          for(let k = 0; k < props.dataMap[j].length; k += 1){
+            let layer_data = props.dataMap[j][k].layers.find(x => x.layer_id === layer.id);
+            let gid = layer_data ? layer_data.gid : 0;
+            data.push(gid);
+          }
+        }
+        let layerobj = {
+          data: data,
+          height: props.mapHeight,
+          id: 1,
+          name: layer.name,
+          opacity: 1,
+          type: "tilelayer",
+          visible:true,
+          width:25,
+          x: 0,
+          y: 0
+        }
+        layers.push(layerobj)
+      }
+      return layers;
+    }
+    const getTilesets = () => {
+      let tilesets = [];
+      props.importedTileList.forEach(x => {
+        let tsobj = {
+          firstgid: x.startingGID,
+          source: (x.tilesetName + ".json")
+        };
+        tilesets.push(tsobj);
+      });
+      return tilesets;
+    }
     const makeJSON = async() => {
-        let uri = await makeOnePNG();
-        console.log("TESTTTT");
-        console.log("URI", uri);
-        let tileCount = props.tileList.length;
-        let rows = props.tileList.length / 5 + 1;
-        let cols = tileCount < 5 ? tileCount : 5;
+        //let uri = await makeOnePNG();
+        let layers = getLayers();
+        let tilesets = getTilesets();
         let object = {
-            name: name,
-            image: uri,
-            tilewidth: tileWidth,
-            tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * 50,
-            imagewidth: rows * 50,
-            tilecount: tileCount,
-            type: 'tileset'
+            compressionlevel: -1,
+            height: props.mapHeight,
+            infinite: false,
+            layers: layers,
+            nextlayerid: props.layerOrder.length + 1,
+            nextobjectid: 1,
+            orientation:"orthogonal",
+            renderorder: "right-down",
+            tileheight: props.tileHeight,
+            tilesets: tilesets,
+            tilewidth: props.tileWidth,
+            type: 'map',
+            width: props.mapWidth,
         };
         console.log(object);
         let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
@@ -109,20 +150,24 @@ export default function JSONSaveModal(props) {
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
-                onKeyDown={handleKeyDown("name")} />
+                onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
-                onKeyDown={handleKeyDown('width')}/>
+                <Typography variant="body1">{"Map Width: " + props.mapWidth} </Typography>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
-                onKeyDown={handleKeyDown('height')}/>
+            <Typography variant="body1">{"Map Height: " + props.mapHeight} </Typography>
+            </ListItem>
+            <ListItem>
+            <Typography variant="body1">{"Tile Width: " + props.tileWidth} </Typography>
+            </ListItem>
+            <ListItem>
+            <Typography variant="body1">{"Tile Height: " + props.tileHeight} </Typography>
             </ListItem>
         </List>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
+        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Confirm Properties</Button>
         <canvas ref={canvasRef}/>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
+        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
   </Box>
 </Modal>
   )

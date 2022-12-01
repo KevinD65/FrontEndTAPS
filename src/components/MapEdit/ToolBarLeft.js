@@ -15,10 +15,16 @@ import {Typography} from '@mui/material';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack }) => {
+const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
+  }
+
+  const saveJSON = () => {
+    console.log("At the save");
+    setAnchor(false);
+    turnOnJSONMod();
   }
 
   const handleUndoRedo = async(type) => {
@@ -102,7 +108,7 @@ const Sidemenu = ({mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, t
               >
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Save as Png</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
+                <MenuItem onClick={() => {saveJSON()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
