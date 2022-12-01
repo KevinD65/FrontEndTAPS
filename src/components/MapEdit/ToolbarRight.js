@@ -18,13 +18,15 @@ import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
 import Map from "../User/Map"
 import Tileset from "../User/Tileset"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import LayersEdit  from "./LayersEdit"
 import TilesetMap from "./TilesetMap";
 import Avatar from './Collaborators';
 import {Grid} from '@mui/material';
+
+import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {
@@ -34,10 +36,25 @@ const Sidemenu = (props) => {
   }
   const [currentTilesets, editCurrentTilesets] = useState([]);
 
-  const importTileset = () => {
-
+  /**
+   * Creates a file reader object so users can import local tileset files
+   */
+  const handleImportJSON=(event)=> {
+    let reader = new FileReader();
+    reader.onload = onReaderLoad;
+    reader.readAsText(event.target.files[0]);
+    console.log("INSIDE HANDLEIMPORT");
   }
 
+  /**
+   * If valid tileset file, loads the tileset into a GIDTable and then updates the tileList so that the tileset can be rendered on the right toolbar
+   */
+  async function onReaderLoad (event) {
+    console.log("INSIDE OF onReaderLoad() ToolbarRight.js");
+    let obj = JSON.parse(event.target.result);
+    let new_tiles = await loadTSMapEditor(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image, obj.name);
+    props.importTileset({TSName: obj.name, tiles: new_tiles, numTiles: obj.tilecount});
+  }
 
     return (
   <Drawer
@@ -67,10 +84,13 @@ const Sidemenu = (props) => {
             sx={{ border: 1 }}
             >
           
-        <Button onClick={importTileset} aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}>
-          <Typography variant="h6" component="h6">Import tileset</Typography>
-        </Button>
-        <TilesetMap select = {props.select} tiles={props.tiles}/>
+        <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>
+        <label htmlFor="contained-button-file">
+          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+          <Typography variant="h6" component="h2">Import</Typography>
+          </Button>
+        </label>
+        <TilesetMap select = {props.select} tiles={props.tiles} importedTileList = {props.importedTileList}/>
         </Grid>
     </List>
     

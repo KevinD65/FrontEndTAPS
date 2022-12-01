@@ -14,19 +14,28 @@ import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
 //import TS from "/sampletspub.png"
 
+import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+
 
 const MapEditor = (props) => {
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
-    const[currentTile,setCurrentTile]=useState("")
+    const [currentTile,setCurrentTile]=useState("")
     const [tileWidth, setTileWidth]=useState(40)
     const [tileHeight, setTileHeight]=useState(40)
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
     const [isDrawing, setIsDrawing]= useState(false);
-  const [clearCanvas, setClearCanvas]=useState(false);
+    const [clearCanvas, setClearCanvas]=useState(false);
+    const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
+    const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
+    //have mapping between tileset name and starting GID
+    //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
 
+    /**
+     * Creates an empty dataMap using the dimensions of the map
+     */
     const createDataMap = () => {
         let datamap = [];
         for(let i = 0; i < mapHeight; i++){
@@ -56,6 +65,9 @@ const MapEditor = (props) => {
         editMap(new_arr);
     }
     
+    /**
+     * Erases a tile when the erase tool is selected a a cell is clicked
+     */
     const setErase = (newState) => {
         if(newState){
             console.log("Changing to empty");
@@ -66,6 +78,9 @@ const MapEditor = (props) => {
         }
     } 
 
+    /**
+     * Generates the map editor grid to be shown
+     */
     const grid_generator = (width, height, tile_width, tile_height) => {
         let rows = [];
         for(let i = 0; i + tile_height < height; i = i + tile_height){
@@ -79,6 +94,9 @@ const MapEditor = (props) => {
         return rows;
       }
 
+    /**
+     * Creates an empty GID table cell
+     */
     const createGIDTableElement = (grid_prop, img) => {
         let c = document.createElement('canvas');
         let ctx = c.getContext("2d");
@@ -88,6 +106,9 @@ const MapEditor = (props) => {
         return dataURL;
     }
 
+    /**
+     * Loads a tileset into the GID table
+     */
     const loadTS = (start, img) => {
         let grid_props = grid_generator(550, 200, 40, 40); //todo: hardcoded, make dynamic
         let GIDTable = [];
@@ -124,8 +145,6 @@ const MapEditor = (props) => {
 
         console.log("Added map edit transaction to TPS");
     }
-
-    //let GIDTable = loadTS(1);
 
     React.useEffect(() => {
         function loadImage(url) {
@@ -250,6 +269,27 @@ const MapEditor = (props) => {
         
     }
 
+    /**
+     * sets the tileList state variable to the imported tileset to be rendered in the right toolbar
+     */
+    const importTileset = (imported_tiles) => {
+        let tilesetName = imported_tiles.TSName;
+        let tileCount = imported_tiles.numTiles;
+        console.log(tilesetName);
+
+        if(tileList.length > 0){
+            setTileList(oldArray => [oldArray, imported_tiles]);
+            let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
+
+            editImportedTileList(oldTilelistArray => [oldTilelistArray, {tilesetName, startingGID, tileCount}]);
+        }
+        else{
+            console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
+            setTileList([imported_tiles]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
+        }
+    }
+    
     const [toggleLock] = useMutation(TOGGLE_LOCK);
     const unlock = async() => {
       let result = await toggleLock({
@@ -311,7 +351,7 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight tiles = {GIDTable} select ={(tile) => {
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
             changeSelect(prev => (tile));
         }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
