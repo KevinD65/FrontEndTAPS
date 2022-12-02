@@ -55,7 +55,7 @@ const Sidemenu = (props) => {
       <List>
           <Box textAlign='center'>
             
-              <Avatar/>
+              <Avatar currentUser={props.currentUser}/>
     </Box>
     
          {/* List of sidebar components */}

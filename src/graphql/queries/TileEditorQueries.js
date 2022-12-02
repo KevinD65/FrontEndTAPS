@@ -14,7 +14,8 @@ query($id: ID!){
     image,
     dataURLs,
     tilewidth,
-    tileheight
+    tileheight,
+    collaborators
   }
 }
 `

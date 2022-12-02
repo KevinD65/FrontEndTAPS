@@ -156,7 +156,7 @@ const TileEditor = (props) => {
                 
             </Grid>
         <Grid item  md={2}>
-            <ToolbarRight changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize} drawAgain={drawAgain}
+            <ToolbarRight currentUser={props.authenticatedUser} changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize} drawAgain={drawAgain}
             setErase={(arg) => {toggleErase(arg)}} erase={erase} tileList={tileList} setTileList={setTileList} removeSelected={removeSelected}/>
         </Grid>
         </Grid>
