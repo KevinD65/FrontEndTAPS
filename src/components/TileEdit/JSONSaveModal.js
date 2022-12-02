@@ -6,8 +6,8 @@ import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
 export default function JSONSaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
-    const [tileWidth, changeWidth] = React.useState(50);
-    const [tileHeight, changeHeight] = React.useState(50);
+    const [tileWidthInput, changeWidth] = React.useState(50);
+    const [tileHeightInput, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState("");
 
     const handleKeyDown = (e, field) => {
@@ -16,10 +16,10 @@ export default function JSONSaveModal(props) {
             changeName(e.target.value);
           }
           else if(field === 'width'){
-            changeWidth(e.target.value)
+            changeWidth(Number(e.target.value))
           }
           else if(field === 'height'){
-            changeHeight(e.target.value)
+            changeHeight(Number(e.target.value))
           }
         }
       }
@@ -52,39 +52,49 @@ export default function JSONSaveModal(props) {
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
-        let x = 0;
+        let tileWidth = Number(tileWidthInput);
+        let tileHeight = Number(tileHeightInput);
+        let xpt = 0;
         let y = 0;
         let savedrows = 1;
         let savedcolumns = 1;
         let columns = 1;
+        canvasRef.current.width = tileWidth > 160 ? tileWidth : 160; 
+        let colcalc = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
+        canvasRef.current.height = colcalc * tileHeight;
+        console.log("Width Height", canvasRef.current.width, canvasRef.current.height);
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        // ctx.fillStyle = "#FF0000";
+        // ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         for(let i = 0; i < props.tileList.length; i += 1){
             let img = await loadImage(props.tileList[i]);
-            ctx.drawImage(img, x, y, tileWidth, tileHeight);
-            if(x >= 160){
+            ctx.drawImage(img, xpt, y, tileWidth, tileHeight);
+            savedcolumns = savedcolumns > columns ? savedcolumns : columns;
+            xpt = xpt + tileWidth;
+            columns += 1;
+            if((xpt + tileWidth) > 160){
                 savedrows += 1;
-                x = 0;
+                xpt = 0;
                 columns = 1;
                 y = y + tileHeight;
             }
-            else{
-                savedcolumns = savedcolumns > columns ? savedcolumns : columns;
-                x = x + tileWidth;
-                columns += 1;
-            }
         }
+        console.log("Data joined ", canvasRef.current.toDataURL())
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
         return {uri, savedrows, savedcolumns};
     }
     const makeJSON = async() => {
+      let tileWidth = Number(tileWidthInput);
+      let tileHeight = Number(tileHeightInput);
         let {uri, savedrows, savedcolumns} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
         console.log("TIle count", tileCount);
         let object = {
+            name: name,
             image: uri,
             tilewidth: tileWidth,
             tileheight: tileHeight,
@@ -116,6 +126,7 @@ export default function JSONSaveModal(props) {
   onClose={props.onClose}
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
+  sx={{overflowY: "scroll"}}
 >
   <Box sx={style}>
     <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}> Export JSON</Typography>
@@ -125,16 +136,29 @@ export default function JSONSaveModal(props) {
                 onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
+                <TextField type="number" label="Tile Width" variant="outlined" defaultValue={tileWidthInput} 
                 onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
+                <TextField type="number" label="Tile Height" variant="outlined" defaultValue={tileHeightInput} 
                 onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
+        <Box
+      sx={{
+          mb: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 200,
+          width: 200,
+          overflow: "hidden",
+          overflowY: "scroll",
+         // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+        }}
+    >
         <canvas ref={canvasRef}/>
+        </Box>
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
   </Box>
 </Modal>
