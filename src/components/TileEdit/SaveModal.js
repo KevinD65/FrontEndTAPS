@@ -76,6 +76,9 @@ export default function SaveModal(props) {
                 x = 0;
                 columns = 1;
                 y = y + tileHeight;
+                if(y >= canvasRef.current.height){
+                  canvasRef.current.height = canvasRef.current.height + tileHeight;
+                }
             }
             else{
                 savedcolumns = savedcolumns > columns ? savedcolumns : columns;
