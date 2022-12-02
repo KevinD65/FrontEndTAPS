@@ -3,6 +3,7 @@ const grid_generator = (width, height, tile_width, tile_height) => {
 
     let rows = [];
     for(let i = 0; i + tile_height < height; i = i + tile_height){
+      console.log("OUTER LOOP ", i);
       let new_row = [];
       for(let j = 0; j + tile_width < width; j = j + tile_width){
         let canvas_prop = {sx: j, sy: i, swidth: tile_width, sheight: tile_height, x: 0, y: 0, width: tile_width, height: tile_height};
