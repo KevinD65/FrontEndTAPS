@@ -73,6 +73,22 @@ const MapEditor = (props) => {
         return datamap;
     }
 
+    /**
+     * Creates an empty dataMap using custom dimensions
+     */
+    const createDataMapCustom = (height, width) => {
+        let datamap = [];
+        for(let i = 0; i < height; i++){
+            let row = []
+            for(let j = 0; j < width; j++){
+                let grid_obj = {layers: []};
+                row.push(grid_obj);
+            }
+            datamap.push(row);
+        }
+        return datamap;
+    }
+
     const [dataMap, editMap] = useState(() => createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
@@ -226,7 +242,9 @@ const MapEditor = (props) => {
          drawBoxes();
          drawWholeMap();
 
-         },[mapWidth, mapHeight,clearCanvas, layerOrder]);
+         console.log("USE EFFECT HAS RUN !!!!!!!");
+
+         },[mapWidth, mapHeight, clearCanvas, layerOrder]);
 
     const drawBox = (layers, x, y) => {
         if(x == 0 && y == 0){
@@ -251,10 +269,40 @@ const MapEditor = (props) => {
 
     //DANGEROUS FUNCTION: Use only as last resort
     const drawWholeMap = () =>{
-        console.log("At draw whole map");
+        console.log("At draw whole map", dataMap);
         for(let i = 0; i < dataMap.length; i += 1){
             for(let j = 0; j < dataMap[i].length; j += 1){
                 drawBox(dataMap[i][j].layers, i, j);
+            }
+        }
+    }
+
+    const drawBoxCustom = (layers, layerOrder, width, height, x, y) => {
+        if(x == 0 && y == 0){
+            console.log("layers", layers);
+        }
+        contextRef.current.clearRect(x * width,  y * height, width, height);
+        contextRef.current.rect(x * width,  y * height, width, height);
+        contextRef.current.stroke();
+
+        for(let i = 0; i < layerOrder.length; i++){
+            let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
+            if(image_data){
+                let img = new Image;
+                img.src = image_data.data;
+                contextRef.current.drawImage(img, x * width, y * height);
+            }
+            else{
+            }
+            
+        }
+    }
+
+    //Wicked DANGEROUS FUNCTION: Use only as last resort
+    const drawWholeMapCustom = (customDataMap, layerOrder) =>{
+        for(let i = 0; i < customDataMap.length; i += 1){
+            for(let j = 0; j < customDataMap[i].length; j += 1){
+                drawBoxCustom(customDataMap[i][j].layers, layerOrder, i, j);
             }
         }
     }
@@ -295,10 +343,37 @@ const MapEditor = (props) => {
         
     }
 
+    const populateDataMap = (map_obj, imported_tiles) => {
+        let dataMap = createDataMapCustom(map_obj.height, map_obj.width); //creates an empty dataMap
+
+        console.log("IMPORTED TILES", imported_tiles);
+
+        let mapLayers = map_obj.layers;
+        let layerName, layer_id, layer_obj;
+        for(let layers = 0; layers < mapLayers.length; layers++){
+            layer_obj = mapLayers[layers];
+            layerName = layer_obj.name;
+            layer_id = uuidv4();
+            let layerDataCounter = 0;
+            for(let row = 0; row < dataMap.length; row++){
+                for(let col = 0; col < dataMap[row].length; col++){
+                    let gid = layer_obj.data[layerDataCounter];
+                    let data = imported_tiles.tiles.find(x => x.gid === gid); //wicked slow
+                    dataMap[row][col].layers.push({layer_id: layer_id, gid: gid, data: data});
+                    layerDataCounter++;
+                }
+            }
+        }
+
+        console.log("THIS IS MY POPULATED DATAMAP: ", dataMap);
+
+        return dataMap;
+    }
+
     /**
      * sets the tileList state variable to the imported tileset to be rendered in the right toolbar
      */
-    const importTileset = (imported_tiles) => {
+    const importTileset = (imported_tiles, map_obj) => {
         let tilesetName = imported_tiles.TSName;
         let tileCount = imported_tiles.numTiles;
         let tileheight = imported_tiles.tileHeight;
@@ -306,10 +381,13 @@ const MapEditor = (props) => {
 
         console.log(tilesetName);
         console.log(imported_tiles);
+        console.log("WHAT IS MY MAP OBJ: ", map_obj);
 
         if(tileList.length > 0){
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
             console.log("MYIMPORTEDTILES", imported_tiles.tiles)     
+            
+            //POPULATES GID TABLE
             
             for(let i = 0; i < imported_tiles.tiles; i++){
                 console.log("STARTING GID", startingGID)
@@ -317,15 +395,37 @@ const MapEditor = (props) => {
             }
             console.log(imported_tiles.tiles);
 
+            //POPULATE DATAMAP HERE
+            if(map_obj !== null){
+                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                editMap([...populatedDataMap]);
+            }
+
             editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
+
+            setTileWidth(map_obj.tilewidth);
+            setTileHeight(map_obj.tileheight);
+            setMapWidth(map_obj.width);
+            setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
+            //POPULATE DATAMAP HERE
+            if(map_obj !== null){
+                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                editMap([...populatedDataMap]);
+            }
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
             editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
+
+            console.log("CHANGING DIMENSIONS!!!!!");
+            //setTileWidth(map_obj.tilewidth);
+            //setTileHeight(map_obj.tileheight);
+            //setMapWidth(map_obj.width);
+            setMapHeight(map_obj.height);
         }
     }
 
@@ -372,15 +472,9 @@ const MapEditor = (props) => {
             console.log("THIS IS MY TILESET: ", tileset);
                 
             importTileset({TSName: tilesetData.getOwnerTilesets[mapTileset].name, tiles: tileset, tileHeight: tilesetData.getOwnerTilesets[mapTileset].tileheight, 
-                tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount});
+                tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount}, map_obj);
                 
         }
-
-        //iterate thru layers and push each layer name into tile layer order
-
-        //iterate through and set datamap
-
-
     }
     
     const [toggleLock] = useMutation(TOGGLE_LOCK);
