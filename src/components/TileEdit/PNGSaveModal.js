@@ -24,24 +24,39 @@ export default function JSONSaveModal(props) {
       }
 
     const canvasRef = React.createRef();
+
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
     
     const makeOnePNG = async () => {
-        let row = 0;
-        let col = 0;
+      let x = 0;
+      let y = 0;
+      let savedrows = 1;
+      let savedcolumns = 1;
+      let columns = 1;
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        props.tileList.forEach((tile) => {
-            let img = new Image;
-            img.src = tile;
-            ctx.drawImage(img, row, col, tileWidth, tileHeight);
-            if(row === 160){
-                row = 0;
-                col = col + tileHeight;
-            }
-            else{
-                row = row + tileWidth;
-            }
-        });
+        for(let i = 0; i < props.tileList.length; i += 1){
+          let img = await loadImage(props.tileList[i]);
+          ctx.drawImage(img, x, y, tileWidth, tileHeight);
+          if(x >= 160){
+              savedrows += 1;
+              x = 0;
+              columns = 1;
+              y = y + tileHeight;
+          }
+          else{
+              savedcolumns = savedcolumns > columns ? savedcolumns : columns;
+              x = x + tileWidth;
+              columns += 1;
+          }
+      }
         let uri = canvasRef.current.toDataURL();
         return uri;
     }

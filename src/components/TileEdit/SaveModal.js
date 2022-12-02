@@ -44,11 +44,23 @@ export default function SaveModal(props) {
         
     }
 
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
+
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
-        let row = 0;
-        let col = 0;
+      let x = 0;
+      let y = 0;
+      let savedrows = 1;
+      let savedcolumns = 1;
+      let columns = 1;
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         let tiles = props.tileList;
@@ -57,24 +69,26 @@ export default function SaveModal(props) {
             let src = await handleImageSelected(tiles[i]);
             srcs.push(src);
 
-            let img = new Image;
-            img.setAttribute('crossOrigin', 'anonymous');
-            img.src = tiles[i];
-            ctx.drawImage(img, row, col, tileWidth, tileHeight);
-            if(row >= 200){
-                row = 0;
-                col = col + tileWidth;
+            let img = await loadImage(tiles[i]);
+            ctx.drawImage(img, x, y, tileWidth, tileHeight);
+            if(x >= 160){
+                savedrows += 1;
+                x = 0;
+                columns = 1;
+                y = y + tileHeight;
             }
             else{
-                row = row + tileHeight;
+                savedcolumns = savedcolumns > columns ? savedcolumns : columns;
+                x = x + tileWidth;
+                columns += 1;
             }
         }
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
-        return {uri, srcs};
+        return {uri, savedrows, savedcolumns, srcs};
     }
     const makeJSON = async() => {
-        let {uri, srcs} = await makeOnePNG();
+        let {uri, savedrows, savedcolumns, srcs} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
@@ -86,9 +100,9 @@ export default function SaveModal(props) {
             image: uri,
             tilewidth: tileWidth,
             tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * tileHeight,
-            imagewidth: cols * tileWidth,
+            columns: savedcolumns,
+            imageheight: savedrows * tileHeight,
+            imagewidth: savedcolumns * tileWidth,
             tilecount: tileCount,
             dataURLs: srcs,
             type: 'tileset'
