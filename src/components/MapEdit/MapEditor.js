@@ -242,9 +242,10 @@ const MapEditor = (props) => {
          drawBoxes();
          drawWholeMap();
 
-         console.log("USE EFFECT HAS RUN !!!!!!!");
+         console.log(`USE EFFECT HAS RUN !!!!!!! ${mapHeight} hihihihihihihi`);
 
          },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+         console.log(`MAP HEIGHT IS ${mapHeight} hihihihihihihi`);
 
     const drawBox = (layers, x, y) => {
         if(x == 0 && y == 0){
@@ -270,6 +271,8 @@ const MapEditor = (props) => {
     //DANGEROUS FUNCTION: Use only as last resort
     const drawWholeMap = () =>{
         console.log("At draw whole map", dataMap);
+        console.log("At draw whole map LAYER ORDER", layerOrder);
+
         for(let i = 0; i < dataMap.length; i += 1){
             for(let j = 0; j < dataMap[i].length; j += 1){
                 drawBox(dataMap[i][j].layers, i, j);
@@ -308,6 +311,7 @@ const MapEditor = (props) => {
     }
 
     const placeTile =({nativeEvent}) => {
+        console.log("HELLO IS THIS EVEN WORING");
         const{offsetX, offsetY}=nativeEvent;
         console.log("Clicked", offsetX, offsetY);
         let x =  Math.floor(offsetX / tileWidth);
@@ -350,15 +354,17 @@ const MapEditor = (props) => {
 
         let mapLayers = map_obj.layers;
         let layerName, layer_id, layer_obj;
+        let layerOrderArray = [];
         for(let layers = 0; layers < mapLayers.length; layers++){
             layer_obj = mapLayers[layers];
             layerName = layer_obj.name;
             layer_id = uuidv4();
+            layerOrderArray.push({id: layer_id, name: layerName});
             let layerDataCounter = 0;
             for(let row = 0; row < dataMap.length; row++){
                 for(let col = 0; col < dataMap[row].length; col++){
                     let gid = layer_obj.data[layerDataCounter];
-                    let data = imported_tiles.tiles.find(x => x.gid === gid); //wicked slow
+                    let data = imported_tiles.tiles.find(x => x.gid === gid).data; //wicked slow
                     dataMap[row][col].layers.push({layer_id: layer_id, gid: gid, data: data});
                     layerDataCounter++;
                 }
@@ -366,8 +372,8 @@ const MapEditor = (props) => {
         }
 
         console.log("THIS IS MY POPULATED DATAMAP: ", dataMap);
-
-        return dataMap;
+        let populatedDataMap = dataMap;
+        return {populatedDataMap, layerOrderArray};
     }
 
     /**
@@ -396,36 +402,45 @@ const MapEditor = (props) => {
             console.log(imported_tiles.tiles);
 
             //POPULATE DATAMAP HERE
+            let orderArray;
             if(map_obj !== null){
-                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+                orderArray = layerOrderArray;
+                
                 editMap([...populatedDataMap]);
+
+                setTileWidth(map_obj.tilewidth);
+                setTileHeight(map_obj.tileheight);
+                setMapWidth(map_obj.width);
+                setMapHeight(map_obj.height);
+
+                setOrder([...layerOrderArray]);
             }
 
             editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
-
-            setTileWidth(map_obj.tilewidth);
-            setTileHeight(map_obj.tileheight);
-            setMapWidth(map_obj.width);
-            setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
             //POPULATE DATAMAP HERE
+            let orderArray;
             if(map_obj !== null){
-                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+                orderArray = layerOrderArray;
+
                 editMap([...populatedDataMap]);
+
+                setTileWidth(map_obj.tilewidth);
+                setTileHeight(map_obj.tileheight);
+                setMapWidth(map_obj.width);
+                setMapHeight(map_obj.height);
+
+                setOrder([...layerOrderArray]);
             }
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
             editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
-
-            console.log("CHANGING DIMENSIONS!!!!!");
-            //setTileWidth(map_obj.tilewidth);
-            //setTileHeight(map_obj.tileheight);
-            //setMapWidth(map_obj.width);
-            setMapHeight(map_obj.height);
         }
     }
 
@@ -475,6 +490,8 @@ const MapEditor = (props) => {
                 tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount}, map_obj);
                 
         }
+
+        setMapHeight(10);
     }
     
     const [toggleLock] = useMutation(TOGGLE_LOCK);
