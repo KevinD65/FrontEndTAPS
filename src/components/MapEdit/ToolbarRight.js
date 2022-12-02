@@ -53,7 +53,7 @@ const Sidemenu = (props) => {
     console.log("INSIDE OF onReaderLoad() ToolbarRight.js");
     let obj = JSON.parse(event.target.result);
     let new_tiles = await loadTSMapEditor(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image, obj.name);
-    props.importTileset({TSName: obj.name, tiles: new_tiles, numTiles: obj.tilecount});
+    props.importTileset({TSName: obj.name, tiles: new_tiles, tileHeight: obj.tileheight, tileWidth: obj.tilewidth, numTiles: obj.tilecount}, null);
   }
 
     return (
@@ -90,7 +90,7 @@ const Sidemenu = (props) => {
           <Typography variant="h6" component="h2">Import</Typography>
           </Button>
         </label>
-        <TilesetMap select = {props.select} tiles={props.tiles} importedTileList = {props.importedTileList}/>
+        <TilesetMap changeSelect = {props.changeSelect} tiles={props.tiles} importedTileList = {props.importedTileList}/>
         </Grid>
     </List>
     

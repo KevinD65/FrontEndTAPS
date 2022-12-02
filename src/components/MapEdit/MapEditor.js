@@ -1,11 +1,8 @@
 import React from "react";
-
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { Toolbar,Box, Button } from "@mui/material";
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
-import MapGrid from "./MapGrid";
-import MapCanvas from "./MapCanvas";
 import { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import Modal from '@mui/material/Modal';
@@ -13,6 +10,7 @@ import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
 import JSONSaveModal from "./JSONSaveModal";
+import { GET_TILESETS } from '../../graphql/queries/mapEditorQueries';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 
@@ -37,7 +35,6 @@ const MapEditor = (props) => {
 
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
-    const [currentTile,setCurrentTile]=useState("")
     const [tileWidth, setTileWidth]=useState(40)
     const [tileHeight, setTileHeight]=useState(40)
     const [GIDTable, setTable] = useState([]);
@@ -45,12 +42,20 @@ const MapEditor = (props) => {
     const contextRef=useRef(null);
     const [isDrawing, setIsDrawing]= useState(false);
 
-  const [saveJSON, toggleJSON] =useState(false);
+    const [saveJSON, toggleJSON] =useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
     //have mapping between tileset name and starting GID
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
+
+    //GET_TILESETS QUERY
+    const { loading: get_tilesets_loading, error: get_tilesets_error, data: tilesetData, refetch: refetchUserTilesets } = useQuery(GET_TILESETS, {
+        variables: {ownerID: props.authenticatedUser.id}
+    });
+    if(tilesetData){
+        console.log("THESE ARE MY TILESETS: ", tilesetData);
+    }
 
     /**
      * Creates an empty dataMap using the dimensions of the map
@@ -60,6 +65,22 @@ const MapEditor = (props) => {
         for(let i = 0; i < mapHeight; i++){
             let row = []
             for(let j = 0; j < mapWidth; j++){
+                let grid_obj = {layers: []};
+                row.push(grid_obj);
+            }
+            datamap.push(row);
+        }
+        return datamap;
+    }
+
+    /**
+     * Creates an empty dataMap using custom dimensions
+     */
+    const createDataMapCustom = (height, width) => {
+        let datamap = [];
+        for(let i = 0; i < height; i++){
+            let row = []
+            for(let j = 0; j < width; j++){
                 let grid_obj = {layers: []};
                 row.push(grid_obj);
             }
@@ -221,7 +242,9 @@ const MapEditor = (props) => {
          drawBoxes();
          drawWholeMap();
 
-         },[mapWidth, mapHeight,clearCanvas, layerOrder]);
+         console.log("USE EFFECT HAS RUN !!!!!!!");
+
+         },[mapWidth, mapHeight, clearCanvas, layerOrder]);
 
     const drawBox = (layers, x, y) => {
         if(x == 0 && y == 0){
@@ -246,10 +269,40 @@ const MapEditor = (props) => {
 
     //DANGEROUS FUNCTION: Use only as last resort
     const drawWholeMap = () =>{
-        console.log("At draw whole map");
+        console.log("At draw whole map", dataMap);
         for(let i = 0; i < dataMap.length; i += 1){
             for(let j = 0; j < dataMap[i].length; j += 1){
                 drawBox(dataMap[i][j].layers, i, j);
+            }
+        }
+    }
+
+    const drawBoxCustom = (layers, layerOrder, width, height, x, y) => {
+        if(x == 0 && y == 0){
+            console.log("layers", layers);
+        }
+        contextRef.current.clearRect(x * width,  y * height, width, height);
+        contextRef.current.rect(x * width,  y * height, width, height);
+        contextRef.current.stroke();
+
+        for(let i = 0; i < layerOrder.length; i++){
+            let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
+            if(image_data){
+                let img = new Image;
+                img.src = image_data.data;
+                contextRef.current.drawImage(img, x * width, y * height);
+            }
+            else{
+            }
+            
+        }
+    }
+
+    //Wicked DANGEROUS FUNCTION: Use only as last resort
+    const drawWholeMapCustom = (customDataMap, layerOrder) =>{
+        for(let i = 0; i < customDataMap.length; i += 1){
+            for(let j = 0; j < customDataMap[i].length; j += 1){
+                drawBoxCustom(customDataMap[i][j].layers, layerOrder, i, j);
             }
         }
     }
@@ -267,6 +320,7 @@ const MapEditor = (props) => {
         console.log("Before", layers)
         if(selectedTile.gid > 0){
             let {gid, data} = selectedTile;
+            console.log("adhjkahiqwahdu9q298-q98asodnmlkq2neoih2897ydhasndiaheiud2hipudh89qpuhdiuawnbdiujw", gid, data);
             let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
             if(index == -1){
                 new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
@@ -282,30 +336,144 @@ const MapEditor = (props) => {
                new_layers.splice(index, 1);
             }
         }
+        console.log("NEW LAYERS: ", new_layers);
         new_arr[x][y].layers = new_layers;
         drawBox(new_layers, x, y);
         editMap(new_arr);
         
     }
 
+    const populateDataMap = (map_obj, imported_tiles) => {
+        let dataMap = createDataMapCustom(map_obj.height, map_obj.width); //creates an empty dataMap
+
+        console.log("IMPORTED TILES", imported_tiles);
+
+        let mapLayers = map_obj.layers;
+        let layerName, layer_id, layer_obj;
+        for(let layers = 0; layers < mapLayers.length; layers++){
+            layer_obj = mapLayers[layers];
+            layerName = layer_obj.name;
+            layer_id = uuidv4();
+            let layerDataCounter = 0;
+            for(let row = 0; row < dataMap.length; row++){
+                for(let col = 0; col < dataMap[row].length; col++){
+                    let gid = layer_obj.data[layerDataCounter];
+                    let data = imported_tiles.tiles.find(x => x.gid === gid); //wicked slow
+                    dataMap[row][col].layers.push({layer_id: layer_id, gid: gid, data: data});
+                    layerDataCounter++;
+                }
+            }
+        }
+
+        console.log("THIS IS MY POPULATED DATAMAP: ", dataMap);
+
+        return dataMap;
+    }
+
     /**
      * sets the tileList state variable to the imported tileset to be rendered in the right toolbar
      */
-    const importTileset = (imported_tiles) => {
+    const importTileset = (imported_tiles, map_obj) => {
         let tilesetName = imported_tiles.TSName;
         let tileCount = imported_tiles.numTiles;
+        let tileheight = imported_tiles.tileHeight;
+        let tilewidth = imported_tiles.tileWidth;
+
         console.log(tilesetName);
+        console.log(imported_tiles);
+        console.log("WHAT IS MY MAP OBJ: ", map_obj);
 
         if(tileList.length > 0){
-            setTileList(oldArray => [oldArray, imported_tiles]);
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
+            console.log("MYIMPORTEDTILES", imported_tiles.tiles)     
+            
+            //POPULATES GID TABLE
+            
+            for(let i = 0; i < imported_tiles.tiles; i++){
+                console.log("STARTING GID", startingGID)
+                imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
+            }
+            console.log(imported_tiles.tiles);
 
-            editImportedTileList(oldTilelistArray => [oldTilelistArray, {tilesetName, startingGID, tileCount}]);
+            //POPULATE DATAMAP HERE
+            if(map_obj !== null){
+                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                editMap([...populatedDataMap]);
+            }
+
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            setTileList(oldArray => [...oldArray, imported_tiles]);
+
+            setTileWidth(map_obj.tilewidth);
+            setTileHeight(map_obj.tileheight);
+            setMapWidth(map_obj.width);
+            setMapHeight(map_obj.height);
+            
+            //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
+            //POPULATE DATAMAP HERE
+            if(map_obj !== null){
+                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                editMap([...populatedDataMap]);
+            }
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
-            editImportedTileList([{tilesetName, startingGID: 1, tileCount}]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
+
+            console.log("CHANGING DIMENSIONS!!!!!");
+            //setTileWidth(map_obj.tilewidth);
+            //setTileHeight(map_obj.tileheight);
+            //setMapWidth(map_obj.width);
+            setMapHeight(map_obj.height);
+        }
+    }
+
+    /**
+     * 
+     * 
+     * @param {*map} map_obj 
+     * @param {*array of tileset names} used_tilesets 
+     */
+    const importMap = async(map_obj, used_tilesets) => {
+        await refetchUserTilesets();
+        if(tilesetData){
+            console.log(tilesetData);
+            //store the queried tileset data
+
+            let crossCheckSuccess;
+            for(let tileset = 0; tileset < used_tilesets.length; tileset++){
+                crossCheckSuccess = false;
+                for(let mapTilesets = 0; mapTilesets < tilesetData.getOwnerTilesets.length; mapTilesets++){
+                    if(tilesetData.getOwnerTilesets[mapTilesets].name === used_tilesets[tileset]){
+                        crossCheckSuccess = true;
+                    }
+                }
+                if(!crossCheckSuccess){
+                    console.log("CROSS CHECK FAILED");
+                    //DO NOT LET USER IMPORT BECAUSE ONE OF THE TILESETS ASSOCIATED WITH THIS MAP IS NOT ASSOCIATED WITH THE USER
+                }
+                crossCheckSuccess = false;
+            }
+
+            //IMPORT TILESET ON THE MAP EDITOR NEEDS TO BE FIXED FIRST: TO TEST IMPORTING A MAP, A MAP MUST FIRST BE CREATED USING TAPS WHICH REQUIRES A TILESET (ALSO CREATED USING TAPS)
+            //TO BE OPENED AND ASSOCIATED WITH THE MAP. THIS IS BECAUSE WHEN QUERYING THE DB, WE NEED TO SEE IF THE TILESETS ASSOCIATED WITH THE MAP ARE ALSO OWNED BY THE USER; OTHERWISE,
+            //WE DON'T LET THEM IMPORT THE TILESET
+        }
+
+        //import each tileset to the right toolbar
+        let tileset;
+        for(let mapTileset = 0; mapTileset < tilesetData.getOwnerTilesets.length; mapTileset++){
+            console.log("TILESET OF MAP: ", tilesetData.getOwnerTilesets[mapTileset]);
+            
+            tileset = await loadTSMapEditor(tilesetData.getOwnerTilesets[mapTileset].imagewidth, tilesetData.getOwnerTilesets[mapTileset].imageheight, 
+                tilesetData.getOwnerTilesets[mapTileset].tilewidth, tilesetData.getOwnerTilesets[mapTileset].tileheight, tilesetData.getOwnerTilesets[mapTileset].image, 
+                tilesetData.getOwnerTilesets[mapTileset].name);
+            console.log("THIS IS MY TILESET: ", tileset);
+                
+            importTileset({TSName: tilesetData.getOwnerTilesets[mapTileset].name, tiles: tileset, tileHeight: tilesetData.getOwnerTilesets[mapTileset].tileheight, 
+                tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount}, map_obj);
+                
         }
     }
     
@@ -333,6 +501,16 @@ const MapEditor = (props) => {
         boxShadow: 24,
         p: 4,
       };
+
+    const changeTile = (tileObj) => {
+        console.log("FIRED");
+        changeSelect(tileObj);
+    }
+
+    useEffect(() => {
+        console.log("USEEFFECT SELECTED TILE" , selectedTile);
+    })
+    
     const turnOnJSONMod = () => {
         console.log("here!!!!!")
         toggleJSON(true);
@@ -358,7 +536,7 @@ const MapEditor = (props) => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>
@@ -373,9 +551,7 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
-            changeSelect(prev => (tile));
-        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} changeSelect ={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
 
         </Grid>
         </Grid>
