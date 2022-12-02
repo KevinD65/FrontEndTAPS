@@ -27,7 +27,7 @@ export default function SaveModal(props) {
       }
 
     const handleImageSelected = async (image) => {
-        console.log("New File Selected");
+        console.log("New File Selected Image data", image);
             const formData = new FormData();
             const unsignedUploadPreset = 'ngrdnw4p'
             formData.append('file', image);
@@ -39,6 +39,7 @@ export default function SaveModal(props) {
                 return response.secure_url;
                 
             });
+            console.log("Piece URL", url);
             return url;
         
     }
@@ -129,15 +130,15 @@ export default function SaveModal(props) {
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
-                onKeyDown={handleKeyDown("name")} />
+                onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
-                onKeyDown={handleKeyDown('width')}/>
+                onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
-                onKeyDown={handleKeyDown('height')}/>
+                onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>
         <Button onClick={makeJSON}>Preview</Button>

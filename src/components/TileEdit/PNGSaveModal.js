@@ -33,13 +33,13 @@ export default function JSONSaveModal(props) {
         props.tileList.forEach((tile) => {
             let img = new Image;
             img.src = tile;
-            ctx.drawImage(img, row, col, 40, 40);
+            ctx.drawImage(img, row, col, tileWidth, tileHeight);
             if(row === 160){
                 row = 0;
-                col = col + 40;
+                col = col + tileHeight;
             }
             else{
-                row = row + 40;
+                row = row + tileWidth;
             }
         });
         let uri = canvasRef.current.toDataURL();
@@ -72,15 +72,15 @@ export default function JSONSaveModal(props) {
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
-                onKeyDown={handleKeyDown("name")} />
+                onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
-                onKeyDown={handleKeyDown('width')}/>
+                onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
                 <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
-                onKeyDown={handleKeyDown('height')}/>
+                onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>
         {/* <Button onClick={makeJSON}>Preview</Button>
