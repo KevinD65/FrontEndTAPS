@@ -17,7 +17,7 @@ import { parseTilesets } from '../helpful_functions/helpful_function_MapImport';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack }) => {
+const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap }) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -41,6 +41,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
     console.log(map);
     let used_tilesets = parseTilesets(map);
     importMap(map, used_tilesets);
+  }
 
     //let new_tiles = await loadTSMapEditor(obj.imagewidth, obj.imageheight, obj.tilewidth, obj.tileheight, obj.image, obj.name);
     //props.importTileset({TSName: obj.name, tiles: new_tiles, numTiles: obj.tilecount});
@@ -156,7 +157,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
     
     
   </Box>
-      </Drawer>
+  </Drawer>
             
             
             
@@ -165,5 +166,6 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
 }
 
 export default Sidemenu
+
 
 

@@ -252,7 +252,7 @@ const MapEditor = (props) => {
         console.log("Before", layers)
         if(selectedTile.gid > 0){
             let {gid, data} = selectedTile;
-            console.log("THIS IS MY DATA", data);
+            console.log("adhjkahiqwahdu9q298-q98asodnmlkq2neoih2897ydhasndiaheiud2hipudh89qpuhdiuawnbdiujw", gid, data);
             let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
             if(index == -1){
                 new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
@@ -288,10 +288,19 @@ const MapEditor = (props) => {
         console.log(imported_tiles);
 
         if(tileList.length > 0){
-            setTileList(oldArray => [...oldArray, imported_tiles]);
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
+            console.log("MYIMPORTEDTILES", imported_tiles.tiles)     
+            
+            for(let i = 0; i < imported_tiles.tiles; i++){
+                console.log("STARTING GID", startingGID)
+                imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
+            }
+            console.log(imported_tiles.tiles);
 
             editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            setTileList(oldArray => [...oldArray, imported_tiles]);
+            
+            //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
@@ -379,7 +388,7 @@ const MapEditor = (props) => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  ></ToolbarLeft>
+        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} ></ToolbarLeft>
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>
