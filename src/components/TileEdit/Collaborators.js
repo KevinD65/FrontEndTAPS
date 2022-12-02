@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import { deepOrange, deepPurple,amber} from '@mui/material/colors';
 import { Box, Button, Tooltip, Typography,Modal,TextField } from '@mui/material';
 import { useState } from 'react';
-import { ADD_COLLABORATOR,GET_COLLABORATORS} from "../../graphql/queries/collaboratorQueries";
+
 import { useMutation, useQuery } from '@apollo/client';
  
  
@@ -26,38 +26,50 @@ export default function Collaborators(props) {
  };
  const[searchedUsername,setSearchedUsername]=useState("")
  const [open, setOpen] = useState(false);
+ let colors= [amber[500],deepOrange[500],deepPurple[500]]
  
- const [collabList, setCollabList]=useState([])
+
  const[usernames, setUsernames]=useState([])
  console.log(props.currentUser)
 
- const { loading: get_collab_loading, error: get_collab_error, data:collabdata } = useQuery(GET_COLLABORATORS, {
-  variables: {input: props.currentUser.id},
-});
+//  const { loading: get_collab_loading, error: get_collab_error, data:collabdata } = useQuery(GET_COLLABORATORS, {
+//   variables: {input: props.currentUser.id},
+// });
  
-const refetchCollaborators = {
-  refetchQueries: [
-    {
-      query: GET_COLLABORATORS,
-      variables: {input: props.currentUser.id}
-    }
-  ]
-}
+// const refetchCollaborators = {
+//   refetchQueries: [
+//     {
+//       query: GET_COLLABORATORS,
+//       variables: {input: props.currentUser.id}
+//     }
+//   ]
+// }
 
-const [addCollaborator] = useMutation(ADD_COLLABORATOR, refetchCollaborators);
+// const refetchCollaborators = {
+//     refetchQueries: [
+//       {
+//         query: GET_COLLABORATORS,
+//         variables: {input: props.currentUser.id}
+//       }
+//     ]
+//   }
+  
 
-const addNewCollaborator= async (newUsername)=>{
-  addCollaborator({
-    variables: {
-      input: { id:props.currentUser.id, username:newUsername}
-    }
-  });
 
-}
 
-if(!get_collab_loading && !get_collab_error && collabdata){
-  console.log(collabdata)
-}
+
+// const addNewCollaborator= async (newUsername)=>{
+//   addCollaborator({
+//     variables: {
+//       input: { id:props.currentUser.id, username:newUsername}
+//     }
+//   });
+
+// }
+
+// if(!get_collab_loading && !get_collab_error && collabdata){
+//   console.log(collabdata)
+// }
  
  const handleOpen = () => {
    setOpen(true);
@@ -68,15 +80,25 @@ if(!get_collab_loading && !get_collab_error && collabdata){
  const doneEditingValue=(e)=>{
   
  }
+
+ const addCollab=async(user)=>{
+  console.log("anmol singh bassi", props.tileSetID)
+    let result = await props.addCollaborator({
+      variables: {
+          id: props.tileSetID,
+          username: user
+      }
+  });
+ }
  const handleKeyDown = async(e) => {
    if (e.key === 'Enter'){
+
     
-     setSearchedUsername(e.target.value)
+     addCollab(e.target.value)
+
     
-    addNewCollaborator(e.target.value)
-    //  addCollaborator();
     
-   
+    
  
     
     
@@ -114,7 +136,8 @@ if(!get_collab_loading && !get_collab_error && collabdata){
    <Typography id="modal-modal-description" sx={{ mt: 2 ,fontWeight:700,}}>
      People with Access
      <Stack sx={{pl:2}}>
-       {collabList.map((collab)=>{
+      {/* {console.log("maxxxxx relaxx", props.collaborators)} */}
+       {props.collaborators.map((collab)=>{
           return <Typography sx={{pt:1}}>{collab.name}</Typography>
        })}
      
@@ -123,10 +146,13 @@ if(!get_collab_loading && !get_collab_error && collabdata){
  </Box>
 </Modal>
    <Stack sx={{pl:1, }}direction="row" spacing={1} >
-     <Tooltip title="Max"><Avatar>MR</Avatar></Tooltip>
-     <Tooltip title="Anmol"><Avatar  sx={{ bgcolor: deepOrange[500] }}>AS</Avatar></Tooltip>
-     <Tooltip title="Kevin"><Avatar sx={{ bgcolor: deepPurple[500] }}>KD</Avatar></Tooltip>
-     <Tooltip title="Abhi"><Avatar sx={{ bgcolor: amber[500] }}>AG</Avatar></Tooltip>
+   {props.collaborators.map((collab)=>{
+    var item = colors[Math.floor(Math.random()*colors.length)];
+     return <Tooltip title={collab.name} sx={{ bgcolor: item }}><Avatar>{collab.name[0]}</Avatar></Tooltip>
+    //  <Tooltip title="Anmol"><Avatar  sx={{ bgcolor: deepOrange[500] }}>AS</Avatar></Tooltip>
+    //  <Tooltip title="Kevin"><Avatar sx={{ bgcolor: deepPurple[500] }}>KD</Avatar></Tooltip>
+    //  <Tooltip title="Abhi"><Avatar sx={{ bgcolor: amber[500] }}>AG</Avatar></Tooltip>
+    })}
    </Stack>
    </>
  );

@@ -15,9 +15,14 @@ query($id: ID!){
     dataURLs,
     tilewidth,
     tileheight,
-    collaborators
+    collabolators {
+      id,
+      username,
+      name
+    }
   }
 }
 `
+
 
 export{SAVE_TILESET, GET_TILESET};

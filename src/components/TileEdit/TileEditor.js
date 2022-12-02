@@ -18,6 +18,7 @@ import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
+import { ADD_COLLABORATOR_TILE,GET_COLLABORATORS} from "../../graphql/queries/collaboratorQueries";
 
 const TileEditor = (props) => {
   let currentUser = props.authenticatedUser;
@@ -49,7 +50,8 @@ const TileEditor = (props) => {
     const [savePNG, togglePNG] = useState(false);
     const [save, toggleSave] = useState(false);
     const [predraw, setPredraw] = useState("");
-
+    const [collabList, setCollabList]=useState([])
+   
     const drawAgain = (data) => {
       const new_data = new String(data);
       setPredraw(new_data);
@@ -69,7 +71,7 @@ const TileEditor = (props) => {
           }
         ]
       };
-
+      const [addCollaborator] = useMutation(ADD_COLLABORATOR_TILE, refetchTileset);
       const [saveTileset] = useMutation(SAVE_TILESET, refetchTileset);
 
       React.useEffect(() => {
@@ -77,7 +79,9 @@ const TileEditor = (props) => {
             console.log("There was data");
             console.log("Data retrieved", data);
             console.log(data.getTileset.dataURLs);
+            
           setTileList(oldArray => [... data.getTileset.dataURLs]);
+          setCollabList([...  data.getTileset.collabolators])
         }
     }, [data])
 
@@ -86,6 +90,8 @@ const TileEditor = (props) => {
         changeColor(color.hex);
     }
 
+
+   
     const handleExport = () => {
         
         setDrawing(canvasRef.current.canvasContainer.childNodes[1].toDataURL())
@@ -173,7 +179,7 @@ const TileEditor = (props) => {
             </Grid>
         <Grid item  md={2}>
             <ToolbarRight currentUser={props.authenticatedUser} changeBrushSizeCallback={(size) => changeBrushSize(size)} defaultBrush={brushSize} drawAgain={drawAgain}
-            setErase={(arg) => {toggleErase(arg)}} erase={erase} tileList={tileList} setTileList={setTileList} removeSelected={removeSelected}/>
+            setErase={(arg) => {toggleErase(arg)}} collaborators={collabList}   erase={erase} tileList={tileList} setTileList={setTileList} tileSetID={props.tileset} removeSelected={removeSelected} addCollaborator={addCollaborator}/>
         </Grid>
         </Grid>
         </Box>

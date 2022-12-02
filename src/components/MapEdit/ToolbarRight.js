@@ -72,7 +72,7 @@ const Sidemenu = (props) => {
       <List>
           <Box textAlign='center'>
             
-              <Avatar/>
+              <Avatar currentUser={props.currentUser} addCollaborator={props.addCollaborator} map={props.map} collaborators={props.collaborators}/>
     </Box>
     
          {/* List of sidebar components */}
