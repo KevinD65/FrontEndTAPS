@@ -7,8 +7,10 @@ import {gql, useQuery, useMutation} from '@apollo/client';
 import { ADD_USER, GET_USER, LOGIN } from '../../graphql/queries/loginScreenUsers';
 import PasswordRecoveryModal from './PasswordRecoveryModal';
 import {Card,FormControl,Input,InputLabel,Grid, Button, Box,Container, TextField,Divider,Typography} from "@mui/material"
+import Cookies from 'universal-cookie';
 
 function Login(props) {
+  const cookies = new Cookies();
   let currentUser = null;
   let attemptUserSignIn = null;
   let validator = require("email-validator");
@@ -92,6 +94,8 @@ function Login(props) {
 
         props.authenticateUser(currentUser);
         //console.log("YES " + currentUser.username);
+        
+        cookies.set(currentUser.id, currentUser, { path: '/' });
         navigate('/userAsset/' + currentUser.id, {state: {user: currentUser}});
       }
     }

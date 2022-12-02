@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import CommunityAssets from "./CommunityAssets";
 import RecentSearches from "./RecentSearches";
 import Searchbar from "./Searchbar";
@@ -9,13 +9,26 @@ import {GET_COMMUNITY_SCREEN_FOLDERS} from "../../graphql/queries/communityScree
 
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ASSET_SCREEN_MAPS } from "../../graphql/queries/assetScreenMaps";
+import Cookies from 'universal-cookie';
+import {useLocation} from 'react-router-dom';
 
 
-const Community = () => {
+const Community = (props) => {
     const [recentSearches, updateRecentSearches] = useState(["map"]);
     const [tagFilter, updateTagFilter] = useState("Maps");
 console.log(tagFilter);
-    
+let currentUser = props.authenticatedUser;
+const location = useLocation();
+const cookies = new Cookies();
+
+useEffect(() => {
+  if(currentUser.id === "-1"){
+    let path = location.pathname.split("/");
+    let user = cookies.get(path[path.length - 1]);
+    console.log("User refresh community", user);
+    props.authenticateUser(user);
+  }
+}, []);
 
 //set the initial fetching of maps to look for maps of a tag
     const { loading: get_maps_loading, error: get_maps_error, data:mapdata } = useQuery(GET_COMMUNITY_SCREEN_MAPS, {

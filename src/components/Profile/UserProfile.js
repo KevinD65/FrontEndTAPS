@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import './UserProfile.css';
 import DogeLoaf from '../../dogeloaf.jpg';
 import ProfileAssets from "./ProfileAssets";
@@ -7,11 +7,25 @@ import UpdateAccountScreen from "./UpdateAccountScreen";
 import {gql, useMutation, useQuery} from '@apollo/client';
 import {UPDATE_USER_INFO, GET_USER} from '../../graphql/queries/profileScreenQM';
 import TextField from '@mui/material/TextField';
+import Cookies from 'universal-cookie';
+import {useLocation} from 'react-router-dom';
 
 const UserProfile = (props) => {
 
     //props contains current User object
     let currentUser = props.authenticatedUser;
+    const location = useLocation();
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    if(currentUser.id === "-1"){
+      let path = location.pathname.split("/");
+      let user = cookies.get(path[path.length - 1]);
+      console.log("User refresh community", user);
+      props.authenticateUser(user);
+    }
+  }, []);
+
     const [editBio, toggleBio] = useState(false);
 
     const { loading: get_user_loading, error: get_user_error, data: user_data } = useQuery(GET_USER, {
