@@ -54,41 +54,38 @@ export default function JSONSaveModal(props) {
     const makeOnePNG = async () => {
         let tileWidth = Number(tileWidthInput);
         let tileHeight = Number(tileHeightInput);
-        let xpt = 0;
-        let y = 0;
-        let savedrows = 1;
-        let savedcolumns = 1;
-        let columns = 1;
-        canvasRef.current.width = tileWidth > 160 ? tileWidth : 160; 
-        let colcalc = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
-        canvasRef.current.height = colcalc * tileHeight;
-        console.log("Width Height", canvasRef.current.width, canvasRef.current.height);
+        
+        canvasRef.current.width = tileWidth * 4; 
+        let rowCount = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
+        canvasRef.current.height = rowCount * tileHeight;
+        let colCount = Math.floor(canvasRef.current.width / tileWidth);
+
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        // ctx.fillStyle = "#FF0000";
-        // ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        
+        let x = 0;
+        let y = 0;
+        let colCounter = 0;
         for(let i = 0; i < props.tileList.length; i += 1){
-            let img = await loadImage(props.tileList[i]);
-            ctx.drawImage(img, xpt, y, tileWidth, tileHeight);
-            savedcolumns = savedcolumns > columns ? savedcolumns : columns;
-            xpt = xpt + tileWidth;
-            columns += 1;
-            if((xpt + tileWidth) > 160){
-                savedrows += 1;
-                xpt = 0;
-                columns = 1;
-                y = y + tileHeight;
-            }
+          let img = await loadImage(props.tileList[i]);
+          ctx.drawImage(img, x, y, tileWidth, tileHeight);
+          x = x + tileWidth;
+          colCounter = colCounter + 1;
+          if(colCounter === colCount){
+            x = 0;
+            colCounter = 0;
+            y = y + tileHeight;
+          }
         }
         console.log("Data joined ", canvasRef.current.toDataURL())
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
-        return {uri, savedrows, savedcolumns};
+        return {uri, rowCount, colCount};
     }
     const makeJSON = async() => {
       let tileWidth = Number(tileWidthInput);
       let tileHeight = Number(tileHeightInput);
-        let {uri, savedrows, savedcolumns} = await makeOnePNG();
+        let {uri, rowCount, colCount} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
@@ -98,9 +95,9 @@ export default function JSONSaveModal(props) {
             image: uri,
             tilewidth: tileWidth,
             tileheight: tileHeight,
-            columns: savedcolumns,
-            imageheight: savedrows * tileHeight,
-            imagewidth: savedcolumns * tileWidth,
+            columns: colCount,
+            imageheight: rowCount * tileHeight,
+            imagewidth: colCount * tileWidth,
             tilecount: tileCount,
             type: 'tileset'
         };
