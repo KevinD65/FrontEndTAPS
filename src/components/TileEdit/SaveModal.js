@@ -27,7 +27,7 @@ export default function SaveModal(props) {
       }
 
     const handleImageSelected = async (image) => {
-        console.log("New File Selected");
+        console.log("New File Selected Image data", image);
             const formData = new FormData();
             const unsignedUploadPreset = 'ngrdnw4p'
             formData.append('file', image);
@@ -39,6 +39,7 @@ export default function SaveModal(props) {
                 return response.secure_url;
                 
             });
+            console.log("Piece URL", url);
             return url;
         
     }
