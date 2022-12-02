@@ -41,50 +41,62 @@ export default function JSONSaveModal(props) {
         
     }
 
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
-        let row = 0;
-        let col = 0;
+        let x = 0;
+        let y = 0;
+        let savedrows = 1;
+        let savedcolumns = 1;
+        let columns = 1;
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        props.tileList.forEach((tile) => {
-            let img = new Image;
-            img.src = tile;
-            ctx.drawImage(img, row, col, 40, 40);
-            if(row === 160){
-                row = 0;
-                col = col + 40;
+        for(let i = 0; i < props.tileList.length; i += 1){
+            let img = await loadImage(props.tileList[i]);
+            ctx.drawImage(img, x, y, tileWidth, tileHeight);
+            if(x >= 160){
+                savedrows += 1;
+                x = 0;
+                columns = 1;
+                y = y + tileHeight;
             }
             else{
-                row = row + 40;
+                savedcolumns = savedcolumns > columns ? savedcolumns : columns;
+                x = x + tileWidth;
+                columns += 1;
             }
-        });
+        }
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
-        return uri;
+        return {uri, savedrows, savedcolumns};
     }
     const makeJSON = async() => {
-        let uri = await makeOnePNG();
+        let {uri, savedrows, savedcolumns} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
         console.log("TIle count", tileCount);
-        let rows = props.tileList.length / 5 + 1;
-        let cols = tileCount < 5 ? tileCount : 5;
         let object = {
-            name: name,
             image: uri,
             tilewidth: tileWidth,
             tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * tileHeight,
-            imagewidth: cols * tileWidth,
+            columns: savedcolumns,
+            imageheight: savedrows * tileHeight,
+            imagewidth: savedcolumns * tileWidth,
             tilecount: tileCount,
             type: 'tileset'
         };
         console.log(object);
         let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
+        console.log("Dataaaaaaa", data);
         setDownload(data);
     }
     const style = {
