@@ -13,6 +13,10 @@ export function parseTilesets (map_obj){
         tileset_path = map_tilesets[index].source;
         tileset_name = tileset_path.split("/");
         tileset_name = tileset_name[tileset_name.length - 1];
+        tileset_name = tileset_name.split(".")[0];
+
+        //console.log(tileset_name);
+
         used_tilesets.push(tileset_name);
     }
 

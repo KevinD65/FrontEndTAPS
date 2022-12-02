@@ -14,14 +14,27 @@ import { GET_ASSET_SCREEN_FOLDERS, CREATE_ASSET_SCREEN_FOLDER, CHANGE_FOLDER_NAM
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import { Update } from '@mui/icons-material';
 import FolderDisplay from './FolderDisplay';
-import {useLocation} from 'react-router-dom';
 import Modal from '@mui/material/Modal';
+import Cookies from 'universal-cookie';
+import {useLocation} from 'react-router-dom';
 
 export default function UserAsset(props) {
   
-const location = useLocation();
+
 //console.log("At asset", location.state)
   let currentUser = props.authenticatedUser;
+  const location = useLocation();
+  const cookies = new Cookies();
+
+  React.useEffect(() => {
+    if(currentUser.id === "-1"){
+      let path = location.pathname.split("/");
+      let user = cookies.get(path[path.length - 1]);
+      console.log("User is empty", user);
+      props.authenticateUser(user);
+    }
+  }, []);
+
   const navigate= useNavigate();
   const [currentfolderPath, changePath] = React.useState([{id: null, name: null}]);
   const [currentFolder, changeFolder] = React.useState({id: null, name: null});
@@ -148,11 +161,11 @@ const checkLock = async(id, assetType) => {
   console.log("Did lock?", success);
   if(success && assetType === "Tileset"){
     props.editTile(id);
-    navigate('/TileEditor');
+    navigate(`/TileEditor/${currentUser.id}/${id}`);
   }
   else if(success && assetType === "Map"){
     props.editMap(id);
-    navigate('/mapEditor');
+    navigate(`/mapEditor/${currentUser.id}/${id}`);
   }
   else if(!success){
     showLock(true);

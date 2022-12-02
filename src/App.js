@@ -1,5 +1,5 @@
 import './App.css';
-import { React, useState} from 'react';
+import { React, useState, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Login from "./components/Account/Login"
 import UserAsset from "./components/User/UserAsset"
@@ -16,7 +16,7 @@ function App() {
 
   //state variable which keeps track of the authenticated user (decides whether to load user data or go to login screen). Not preserved on refresh (need JSON web tokens).
   //if manually navigate to page without authenticatedUser being set, nothing will render. Same result vice versa.
-  const [authenticatedUser, authenticateUser] = useState(null); 
+  const [authenticatedUser, authenticateUser] = useState({id: "-1"}); 
   const [tileset, editTile] = useState("");
   const [map, editMap] = useState("");
 
@@ -25,16 +25,15 @@ function App() {
   return (
     <div id='screen'>
       <Routes>
-        {!authenticatedUser &&
-        <Route path='/' element={<Login authenticateUser = {authenticateUser}/>}/>}
+        {<Route path='/' element={<Login authenticateUser = {authenticateUser}/>}/>}
       </Routes>
       <Routes>  
-        <Route element={<Layout authenticateUser = {authenticateUser} authenticatedUser = {authenticatedUser}/>}>
-          <Route path='/userAsset/:id' element={<UserAsset authenticatedUser = {authenticatedUser} editTile = {editTile} editMap={editMap}/>}/>
-          <Route path='/userProfile' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
-          <Route path='/community' element={<Community authenticatedUser = {authenticatedUser}/>}/>
-          <Route path='/tileEditor' element={<TileEditor authenticatedUser = {authenticatedUser} tileset={tileset}/>}/>
-          <Route path='/mapEditor' element={<MapEditor map={map} authenticatedUser = {authenticatedUser} transactionStack = {transactionStack}/>}/>
+        <Route element={<Layout authenticateUser = {authenticateUser} user={authenticatedUser}/>}>
+          <Route path='/userAsset/:id' element={<UserAsset authenticatedUser = {authenticatedUser} editTile = {editTile} editMap={editMap} authenticateUser = {authenticateUser}/> }/>
+          <Route path='/userProfile/:id' element={<UserProfile authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
+          <Route path='/community/:id' element={<Community authenticatedUser = {authenticatedUser} authenticateUser = {authenticateUser}/>}/>
+          <Route path='/tileEditor/:id/:assetid' element={<TileEditor authenticatedUser = {authenticatedUser} tileset={tileset} authenticateUser = {authenticateUser} editTile={editTile}/>}/>
+          <Route path='/mapEditor/:id/:assetid' element={<MapEditor map={map} authenticatedUser = {authenticatedUser} transactionStack = {transactionStack} authenticateUser = {authenticateUser} editMap={editMap}/>}/>
         </Route>
         <Route path='/resetpassword/:id/:token' element={<PasswordResetScreen/>}/>
       </Routes>

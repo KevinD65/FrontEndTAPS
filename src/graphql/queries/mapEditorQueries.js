@@ -12,7 +12,15 @@ mutation($id: ID!, $input: TileInput){
 const GET_TILESETS = gql`
 query($ownerID: ID!){
     getOwnerTilesets(ownerID: $ownerID){
-        name
+        name,
+        image,
+        tilewidth,
+        tileheight,
+        columns,
+        imageheight,
+        imagewidth,
+        tilecount,
+        type
     }
 }
 `

@@ -33,13 +33,13 @@ export default function JSONSaveModal(props) {
         props.tileList.forEach((tile) => {
             let img = new Image;
             img.src = tile;
-            ctx.drawImage(img, row, col, 40, 40);
+            ctx.drawImage(img, row, col, tileWidth, tileHeight);
             if(row === 160){
                 row = 0;
-                col = col + 40;
+                col = col + tileHeight;
             }
             else{
-                row = row + 40;
+                row = row + tileWidth;
             }
         });
         let uri = canvasRef.current.toDataURL();

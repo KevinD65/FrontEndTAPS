@@ -16,9 +16,25 @@ import { useMutation, useQuery } from '@apollo/client';
 import ReactRouterPrompt from "react-router-prompt";
 import Modal from '@mui/material/Modal';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
+import Cookies from 'universal-cookie';
+import {useLocation} from 'react-router-dom';
 
 const TileEditor = (props) => {
-    console.log("From Top", props.tileset)
+  let currentUser = props.authenticatedUser;
+  const location = useLocation();
+  const cookies = new Cookies();
+
+  React.useEffect(() => {
+    if(currentUser.id === "-1"){
+      let path = location.pathname.split("/");
+      let user = cookies.get(path[path.length - 2]);
+      let tsId = path[path.length - 1]
+      console.log("Tile refresh", user);
+      props.authenticateUser(user);
+      props.editTile(tsId);
+    }
+  }, []);  
+
     const[tileList, setTileList]=useState([])
     const canvasRef = useRef(null);
     const[base64,setBase64]=useState("")

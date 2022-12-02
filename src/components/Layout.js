@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 const Layout = (props) => {
   return (
     <>
-      <Navbar authenticateUser = {props.authenticateUser} authenticatedUser = {props.authenticatedUser}/>
+      <Navbar authenticateUser = {props.authenticateUser} user={props.user}/>
       <Outlet />
     </>
   );

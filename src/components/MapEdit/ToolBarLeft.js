@@ -40,6 +40,8 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
     let map = JSON.parse(event.target.result);
     console.log(map);
     let used_tilesets = parseTilesets(map);
+
+    console.log("PARSED TILESETS", used_tilesets);
     importMap(map, used_tilesets);
   }
 

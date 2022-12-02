@@ -11,8 +11,28 @@ import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
 import JSONSaveModal from "./JSONSaveModal";
 import { GET_TILESETS } from '../../graphql/queries/mapEditorQueries';
+import Cookies from 'universal-cookie';
+import {useLocation} from 'react-router-dom';
+
+import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+
 
 const MapEditor = (props) => {
+    let currentUser = props.authenticatedUser;
+  const location = useLocation();
+  const cookies = new Cookies();
+
+  React.useEffect(() => {
+    if(currentUser.id === "-1"){
+      let path = location.pathname.split("/");
+      let user = cookies.get(path[path.length - 2]);
+      let mapId = path[path.length - 1]
+      console.log("Map refresh", user);
+      props.authenticateUser(user);
+      props.editMap(mapId);
+    }
+  }, []);
+
     const [mapWidth, setMapWidth]=useState(5)
     const [mapHeight, setMapHeight]=useState(5)
     const [tileWidth, setTileWidth]=useState(40)
@@ -321,10 +341,44 @@ const MapEditor = (props) => {
             console.log(tilesetData);
             //store the queried tileset data
 
+            let crossCheckSuccess;
+            for(let tileset = 0; tileset < used_tilesets.length; tileset++){
+                crossCheckSuccess = false;
+                for(let mapTilesets = 0; mapTilesets < tilesetData.getOwnerTilesets.length; mapTilesets++){
+                    if(tilesetData.getOwnerTilesets[mapTilesets].name === used_tilesets[tileset]){
+                        crossCheckSuccess = true;
+                    }
+                }
+                if(!crossCheckSuccess){
+                    console.log("CROSS CHECK FAILED");
+                    //DO NOT LET USER IMPORT BECAUSE ONE OF THE TILESETS ASSOCIATED WITH THIS MAP IS NOT ASSOCIATED WITH THE USER
+                }
+                crossCheckSuccess = false;
+            }
+
             //IMPORT TILESET ON THE MAP EDITOR NEEDS TO BE FIXED FIRST: TO TEST IMPORTING A MAP, A MAP MUST FIRST BE CREATED USING TAPS WHICH REQUIRES A TILESET (ALSO CREATED USING TAPS)
             //TO BE OPENED AND ASSOCIATED WITH THE MAP. THIS IS BECAUSE WHEN QUERYING THE DB, WE NEED TO SEE IF THE TILESETS ASSOCIATED WITH THE MAP ARE ALSO OWNED BY THE USER; OTHERWISE,
             //WE DON'T LET THEM IMPORT THE TILESET
         }
+
+        //import each tileset to the right toolbar
+        let tileset;
+        for(let mapTileset = 0; mapTileset < tilesetData.getOwnerTilesets.length; mapTileset++){
+            console.log("TILESET OF MAP: ", tilesetData.getOwnerTilesets[mapTileset]);
+            
+            tileset = await loadTSMapEditor(tilesetData.getOwnerTilesets[mapTileset].imagewidth, tilesetData.getOwnerTilesets[mapTileset].imageheight, 
+                tilesetData.getOwnerTilesets[mapTileset].tilewidth, tilesetData.getOwnerTilesets[mapTileset].tileheight, tilesetData.getOwnerTilesets[mapTileset].image, 
+                tilesetData.getOwnerTilesets[mapTileset].name);
+            console.log("THIS IS MY TILESET: ", tileset);
+                
+            importTileset({TSName: tilesetData.getOwnerTilesets[mapTileset].name, tiles: tileset, tileHeight: tilesetData.getOwnerTilesets[mapTileset].tileheight, 
+                tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount});
+                
+        }
+
+        //iterate thru layers and push each layer name into tile layer order
+
+        //iterate through and set datamap
 
 
     }

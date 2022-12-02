@@ -1,4 +1,6 @@
 const grid_generator = (width, height, tile_width, tile_height) => {
+    console.log("WORKING INSIDE grid_generator");
+
     let rows = [];
     for(let i = 0; i + tile_height < height; i = i + tile_height){
       let new_row = [];
@@ -8,6 +10,8 @@ const grid_generator = (width, height, tile_width, tile_height) => {
       }
       rows.push(new_row);
     }
+    console.log("MY ROWS RETURNING FROM grid_generator ", rows);
+
     return rows;
   }
 
@@ -22,6 +26,11 @@ const grid_generator = (width, height, tile_width, tile_height) => {
     return dataURL;
 }
 
+/**
+ * Returns a promise and waits for the image to load
+ * 
+ * @param {*} url 
+ */
 function loadImage(url) {
     return new Promise((fulfill, reject) => {
       let imageObj = new Image();
@@ -35,14 +44,20 @@ function loadImage(url) {
    * Loads a tileset based on an image by slicing it up and filling a GIDTable array
    */
 export async function loadTSMapEditor (width, height, tile_width, tile_height, image, name) {
+  console.log("INSIDE MAP EDITOR: ", width, height, tile_width, tile_height, image, name);
+
+
   let img = await loadImage(image);
   let grid_props = grid_generator(width, height, tile_width, tile_height);
+  console.log("GP: ", grid_props);
+
   let GIDTable = [];
   let gid = 1;
   for(let grid_row = 0; grid_row < grid_props.length; grid_row = grid_row + 1){
       for(let grid_col = 0; grid_col < grid_props[grid_row].length; grid_col = grid_col + 1){
           GIDTable.push({fileName: name, gid: gid, data:createGIDTableElement(grid_props[grid_row][grid_col], img)});
           gid = gid + 1;
+          console.log("IS SOMETHING HAPPENING HERE");
       }
   }
   console.log("table", GIDTable);

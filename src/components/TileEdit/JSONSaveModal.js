@@ -69,6 +69,7 @@ export default function JSONSaveModal(props) {
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
+        console.log("TIle count", tileCount);
         let rows = props.tileList.length / 5 + 1;
         let cols = tileCount < 5 ? tileCount : 5;
         let object = {
@@ -77,8 +78,8 @@ export default function JSONSaveModal(props) {
             tilewidth: tileWidth,
             tileheight: tileHeight,
             columns: cols,
-            imageheight: rows * 50,
-            imagewidth: rows * 50,
+            imageheight: rows * tileHeight,
+            imagewidth: cols * tileWidth,
             tilecount: tileCount,
             type: 'tileset'
         };
