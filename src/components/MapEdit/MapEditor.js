@@ -15,12 +15,15 @@ import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
+import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
 
 
 const MapEditor = (props) => {
     let currentUser = props.authenticatedUser;
   const location = useLocation();
   const cookies = new Cookies();
+  const [collabList, setCollabList]=useState([])
 
   React.useEffect(() => {
     if(currentUser.id === "-1"){
@@ -37,6 +40,7 @@ const MapEditor = (props) => {
     const [mapHeight, setMapHeight]=useState(15)
     const [tileWidth, setTileWidth]=useState(50)
     const [tileHeight, setTileHeight]=useState(50)
+
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
@@ -48,6 +52,33 @@ const MapEditor = (props) => {
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
     //have mapping between tileset name and starting GID
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
+
+
+
+  console.log(props.map, "hsuadfasf")
+    const { data, loading, error } = useQuery(GET_MAP, {
+        variables: {
+          id: props.map,
+        }
+      });
+
+      const refetchTileset = {
+        refetchQueries: [
+          {
+            query: GET_MAP,
+            variables: {id: props.map}
+          }
+        ]
+      };
+
+
+      React.useEffect(() => {
+        if(data) {
+            
+          setCollabList([...  data.getMap.collabolators])
+        }
+    }, [data])
+      const [addCollaborator] = useMutation(ADD_COLLABORATOR_MAP, refetchTileset);
 
     //GET_TILESETS QUERY
     const { loading: get_tilesets_loading, error: get_tilesets_error, data: tilesetData, refetch: refetchUserTilesets } = useQuery(GET_TILESETS, {
@@ -551,7 +582,11 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} changeSelect ={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
+
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
+            changeSelect(prev => (tile));
+        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
+
 
         </Grid>
         </Grid>
