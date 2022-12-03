@@ -8,8 +8,8 @@ import { useMutation, useQuery } from '@apollo/client';
 
 export default function SaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
-    const [tileWidth, changeWidth] = React.useState(50);
-    const [tileHeight, changeHeight] = React.useState(50);
+    const [tileWidthInput, changeWidth] = React.useState(50);
+    const [tileHeightInput, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState({});
 
     const handleKeyDown = (e, field) => {
@@ -44,52 +44,79 @@ export default function SaveModal(props) {
         
     }
 
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
+
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
-        let row = 0;
-        let col = 0;
-        let ctx = canvasRef.current.getContext("2d");
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        let tiles = props.tileList;
-        let srcs = []
-        for(let i = 0; i < tiles.length; i += 1){
-            let src = await handleImageSelected(tiles[i]);
-            srcs.push(src);
+      let tileWidth = Number(tileWidthInput);
+      let tileHeight = Number(tileHeightInput);
 
-            let img = new Image;
-            img.setAttribute('crossOrigin', 'anonymous');
-            img.src = tiles[i];
-            ctx.drawImage(img, row, col, tileWidth, tileHeight);
-            if(row >= 200){
-                row = 0;
-                col = col + tileWidth;
-            }
-            else{
-                row = row + tileHeight;
-            }
+      canvasRef.current.width = tileWidth * 4; 
+      let rowCount = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
+      canvasRef.current.height = rowCount * tileHeight;
+      let colCount = Math.floor(canvasRef.current.width / tileWidth);
+
+      let ctx = canvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+
+      let x = 0;
+      let y = 0;
+      let colCounter = 0;
+      
+      let tiles = props.tileList;
+      let srcs = []
+      for(let i = 0; i < tiles.length; i += 1){
+        let src = await handleImageSelected(tiles[i]);
+        srcs.push(src);
+        let img = await loadImage(tiles[i]);
+        ctx.drawImage(img, x, y, tileWidth, tileHeight);
+        x = x + tileWidth;
+        colCounter = colCounter + 1;
+        if(colCounter === colCount){
+          x = 0;
+          colCounter = 0;
+          y = y + tileHeight;
+        }
+            // if(x >= 160){
+            //     savedrows += 1;
+            //     x = 0;
+            //     columns = 1;
+            //     y = y + tileHeight;
+            //     if(y >= canvasRef.current.height){
+            //       canvasRef.current.height = canvasRef.current.height + tileHeight;
+            //     }
+            // }
+            // else{
+            //     savedcolumns = savedcolumns > columns ? savedcolumns : columns;
+            //     x = x + tileWidth;
+            //     columns += 1;
+            // }
         }
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
-        return {uri, srcs};
+        return {uri, rowCount, colCount, srcs};
     }
     const makeJSON = async() => {
-        let {uri, srcs} = await makeOnePNG();
+        let {uri, rowCount, colCount, srcs} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
-        let tileCount = props.tileList.length;
-        let rows = Math.floor(props.tileList.length / 5) + 1;
-        console.log("rows", rows);
-        let cols = tileCount < 5 ? tileCount : 5;
         let object = {
             name: name,
             image: uri,
-            tilewidth: tileWidth,
-            tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * tileHeight,
-            imagewidth: cols * tileWidth,
-            tilecount: tileCount,
+            tilewidth: tileWidthInput,
+            tileheight: tileHeightInput,
+            columns: colCount,
+            imageheight: rowCount * tileHeightInput,
+            imagewidth: colCount * tileWidthInput,
+            tilecount: props.tileList.length,
             dataURLs: srcs,
             type: 'tileset'
         };
@@ -133,11 +160,11 @@ export default function SaveModal(props) {
                 onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
+                <TextField label="Tile Width" variant="outlined" defaultValue={tileWidthInput} 
                 onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
+                <TextField label="Tile Height" variant="outlined" defaultValue={tileHeightInput} 
                 onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>

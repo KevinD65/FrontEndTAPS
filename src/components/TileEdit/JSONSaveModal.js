@@ -6,8 +6,8 @@ import {uploadImageToCloudinaryAPIMethod} from "../../client"
 
 export default function JSONSaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
-    const [tileWidth, changeWidth] = React.useState(50);
-    const [tileHeight, changeHeight] = React.useState(50);
+    const [tileWidthInput, changeWidth] = React.useState(50);
+    const [tileHeightInput, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState("");
 
     const handleKeyDown = (e, field) => {
@@ -16,10 +16,10 @@ export default function JSONSaveModal(props) {
             changeName(e.target.value);
           }
           else if(field === 'width'){
-            changeWidth(e.target.value)
+            changeWidth(Number(e.target.value))
           }
           else if(field === 'height'){
-            changeHeight(e.target.value)
+            changeHeight(Number(e.target.value))
           }
         }
       }
@@ -41,50 +41,69 @@ export default function JSONSaveModal(props) {
         
     }
 
+    function loadImage(url) {
+      return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+      });
+    }
     const canvasRef = React.createRef();
     
     const makeOnePNG = async () => {
-        let row = 0;
-        let col = 0;
+        let tileWidth = Number(tileWidthInput);
+        let tileHeight = Number(tileHeightInput);
+        
+        canvasRef.current.width = tileWidth * 4; 
+        let rowCount = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
+        canvasRef.current.height = rowCount * tileHeight;
+        let colCount = Math.floor(canvasRef.current.width / tileWidth);
+
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        props.tileList.forEach((tile) => {
-            let img = new Image;
-            img.src = tile;
-            ctx.drawImage(img, row, col, 40, 40);
-            if(row === 160){
-                row = 0;
-                col = col + 40;
-            }
-            else{
-                row = row + 40;
-            }
-        });
+        
+        let x = 0;
+        let y = 0;
+        let colCounter = 0;
+        for(let i = 0; i < props.tileList.length; i += 1){
+          let img = await loadImage(props.tileList[i]);
+          ctx.drawImage(img, x, y, tileWidth, tileHeight);
+          x = x + tileWidth;
+          colCounter = colCounter + 1;
+          if(colCounter === colCount){
+            x = 0;
+            colCounter = 0;
+            y = y + tileHeight;
+          }
+        }
+        console.log("Data joined ", canvasRef.current.toDataURL())
         let uri = await handleImageSelected(canvasRef.current.toDataURL());
         console.log("HEEE", uri);
-        return uri;
+        return {uri, rowCount, colCount};
     }
     const makeJSON = async() => {
-        let uri = await makeOnePNG();
+      let tileWidth = Number(tileWidthInput);
+      let tileHeight = Number(tileHeightInput);
+        let {uri, rowCount, colCount} = await makeOnePNG();
         console.log("TESTTTT");
         console.log("URI", uri);
         let tileCount = props.tileList.length;
         console.log("TIle count", tileCount);
-        let rows = props.tileList.length / 5 + 1;
-        let cols = tileCount < 5 ? tileCount : 5;
         let object = {
             name: name,
             image: uri,
             tilewidth: tileWidth,
             tileheight: tileHeight,
-            columns: cols,
-            imageheight: rows * tileHeight,
-            imagewidth: cols * tileWidth,
+            columns: colCount,
+            imageheight: rowCount * tileHeight,
+            imagewidth: colCount * tileWidth,
             tilecount: tileCount,
             type: 'tileset'
         };
         console.log(object);
         let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
+        console.log("Dataaaaaaa", data);
         setDownload(data);
     }
     const style = {
@@ -104,6 +123,7 @@ export default function JSONSaveModal(props) {
   onClose={props.onClose}
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
+  sx={{overflowY: "scroll"}}
 >
   <Box sx={style}>
     <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}> Export JSON</Typography>
@@ -113,16 +133,29 @@ export default function JSONSaveModal(props) {
                 onKeyDown={handleKeyDown("name")} onChange={e => changeName(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Width" variant="outlined" defaultValue={tileWidth} 
+                <TextField type="number" label="Tile Width" variant="outlined" defaultValue={tileWidthInput} 
                 onKeyDown={handleKeyDown('width')} onChange={e => changeWidth(e.target.value)}/>
             </ListItem>
             <ListItem>
-                <TextField label="Tile Height" variant="outlined" defaultValue={tileHeight} 
+                <TextField type="number" label="Tile Height" variant="outlined" defaultValue={tileHeightInput} 
                 onKeyDown={handleKeyDown('height')} onChange={e => changeHeight(e.target.value)}/>
             </ListItem>
         </List>
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
+        <Box
+      sx={{
+          mb: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 200,
+          width: 200,
+          overflow: "hidden",
+          overflowY: "scroll",
+         // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+        }}
+    >
         <canvas ref={canvasRef}/>
+        </Box>
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
   </Box>
 </Modal>

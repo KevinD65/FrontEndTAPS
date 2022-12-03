@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Grid} from "@mui/material";
 import GrassIcon from '@mui/icons-material/Grass';
 import "./mapEdit.css"
@@ -14,10 +14,12 @@ import {Typography} from "@mui/material";
 import { fontWeight } from "@mui/system";
 import TS from "./samplets.png"
 import SelectGrid from "./SelectGrid";
+import drawImage from "./../TileEdit/drawImage";
 
 const dog = require("../../dogeloaf.jpg")
 
 const Tiles=[Grass,Grass,Grass,Grass,Grass]
+
 /*
 const itemData = [
     {
@@ -75,18 +77,60 @@ export default function TilesetMap(props) {
   const [grid_points, setGridPoints] = React.useState([]);
   const [imageData, setImageData]= useState("");
   const [itemData, setItemData] = useState([]);
+  const [tilesetInfo, setTilesetInfo] = useState([]);
 
 
   console.log("MYTILELIST", itemData);
-  /*
-  const itemData = props.tiles;
-  console.log(itemData);
-  if(itemData.length > 0){
-    console.log(itemData[0].data)
-  }*/
-  if(itemData != props.tiles){
+  if(itemData !== props.tiles){
     setItemData(props.tiles);
   }
+  if(tilesetInfo !== props.importedTileList){
+    setTilesetInfo(props.importedTileList);
+  }
+
+
+  /**
+   * loadImage() and drawTilesToSidebar() are used to render the images of the tiles on the right toolbar when tilesets are imported for use in the map editor
+   */
+  /*
+  function loadImage(url) {
+    return new Promise((fulfill, reject) => {
+      let imageObj = new Image();
+      imageObj.onload = () => fulfill(imageObj);
+      imageObj.setAttribute('crossOrigin', 'anonymous');
+      imageObj.src = url;
+    });
+  }
+
+  const rightSidebarCanvasRef = useRef(null);
+  async function drawTilesToSidebar(cloudinaryLink, tileWidth, tileHeight){
+    let tileImage = await loadImage(cloudinaryLink);
+
+    document.createElement("canvas"); //create a canvas element; not good practice in React
+    rightSidebarCanvasRef.canvas.width = tileWidth;
+    rightSidebarCanvasRef.canvas.height = tileHeight;
+
+    rightSidebarCanvasRef.drawImage(tileImage, 0, 0);
+    //let imageDataURL = canvas.toD
+
+    return <canvas className='canvas-tile'
+      ref={rightSidebarCanvasRef}
+      >
+    </canvas>*/
+    /*
+    for(let link = 0; link < cloudinaryLinks.length; link++){
+      let tileImage = await loadImage(cloudinaryLinks[link]);
+      rightSidebarCanvasRef.canvas.width = tileWidth;
+      rightSidebarCanvasRef.canvas.height = tileHeight;
+
+      rightSidebarCanvasRef.drawImage(tileImage, 0, 0);
+      //let imageDataURL = canvas.toD
+
+      return <canvas className='canvas-tile'
+        ref={rightSidebarCanvasRef}
+        >
+      </canvas>
+    }}*/
 
   useEffect(()=>{
     console.log(props.importedTileList);
@@ -101,19 +145,22 @@ export default function TilesetMap(props) {
       {itemData.map((tileObject) => {
         let tileArr = tileObject.tiles
         let tileImage =  tileArr.map((tile, index) => {
+        console.log("MYTILE", tile);
         console.log(tile.data + index);
+
         return(
-          <ImageListItem key={index}>
+          <ImageListItem key={index} onClick = {(event) => props.changeSelect({gid: tile.gid, data: tile.data})}>
             {
             <img
-              src={`${tile.img}?w=164&h=164&fit=crop&auto=format`}
-              srcSet={`${tile.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              src={tile.data}
+              //srcSet={`${tile.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
               alt={tile.gid}
-              loading="lazy"
+              height={40} width={40}
+              //loading="lazy"
             />
             }
           </ImageListItem>
-        )})
+          )})
         return tileImage;
       })
       }

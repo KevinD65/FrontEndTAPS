@@ -27,7 +27,6 @@ import Avatar from './Collaborators';
 import {Card,CardContent,Grid,Badge} from '@mui/material';
 import mergeImages from 'merge-base64'
 
-import styled from "styled-components";
 
 const drawerWidth = 240;
 const Sidemenu = (props) => {

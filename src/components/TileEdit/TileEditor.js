@@ -100,6 +100,7 @@ const TileEditor = (props) => {
 
       };
     const handleImport = (imported_tiles) => {
+        console.log(imported_tiles);
         setTileList(oldArray => [...oldArray, ...imported_tiles]);
     }
 
