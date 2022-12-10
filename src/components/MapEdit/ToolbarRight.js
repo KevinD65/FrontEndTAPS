@@ -85,9 +85,9 @@ const Sidemenu = (props) => {
             sx={{ border: 1 }}
             >
           
-        <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>
+        {/*<input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>*/}
         <label htmlFor="contained-button-file">
-          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  onClick={() => {props.togglePNG(true)}}>
           <Typography variant="h6" component="h2">Import</Typography>
           </Button>
         </label>

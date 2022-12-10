@@ -59,7 +59,9 @@ export async function loadTSMapEditor (width, height, tile_width, tile_height, i
           
           GIDTable.push({fileName: name, gid: gid, data: createGIDTableElement(grid_props[grid_row][grid_col], img)});
           gid = gid + 1;
-          console.log("IS SOMETHING HAPPENING HERE");
+          if(gid > tileCount){
+            return GIDTable;
+          }
       }
   }
   console.log("table", GIDTable);
