@@ -11,7 +11,7 @@ const CommunityAssets = (props) => {
     console.log(tilesetdata);
     var folderdata = props.folderdata.getFoldersWithTag;
     console.log(folderdata);
-    console.log(props.currentUser)
+    //console.log(props.currentUser)
     return (
         <div id='Community-Assets'>
             <Typography id='Community-Assets-Label' sx={{pl:4}}>Some Popular Assets</Typography>

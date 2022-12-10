@@ -20,7 +20,7 @@ console.log(tagFilter);
 let currentUser = props.authenticatedUser;
 const location = useLocation();
 const cookies = new Cookies();
-console.log(currentUser)
+//console.log(currentUser)
 useEffect(() => {
   if(currentUser.id === "-1"){
     let path = location.pathname.split("/");

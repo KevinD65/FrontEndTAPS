@@ -36,7 +36,7 @@ export default function TSQueries(props) {
             
                 
             return(
-                <Asset asset={data} assetType={"Tile"} changeBio={changeTSBio}/>
+                <Asset currentUser={props.currentUser} asset={data} assetType={"Tile"} changeBio={changeTSBio}/>
         )
               })}
     </>

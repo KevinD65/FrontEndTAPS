@@ -34,7 +34,7 @@ export default function MapQueries(props) {
             
                 
             return(
-                <Asset asset={data} assetType={"Map"} changeBio={changeMapBio}/>
+                <Asset currentUser={props.currentUser} asset={data} assetType={"Map"} changeBio={changeMapBio}/>
         )
               })}
     </>
