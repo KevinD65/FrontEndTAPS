@@ -15,8 +15,11 @@ import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+
+import PNGModal from "./ImportPNG";
 import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
 import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
+
 
 
 const MapEditor = (props) => {
@@ -37,8 +40,8 @@ const MapEditor = (props) => {
     }
   }, []);
 
-    const [mapWidth, setMapWidth]=useState(15)
-    const [mapHeight, setMapHeight]=useState(15)
+    const [mapWidth, setMapWidth]=useState(5)
+    const [mapHeight, setMapHeight]=useState(5)
     const [tileWidth, setTileWidth]=useState(50)
     const [tileHeight, setTileHeight]=useState(50)
 
@@ -48,6 +51,7 @@ const MapEditor = (props) => {
     const [isDrawing, setIsDrawing]= useState(false);
 
     const [saveJSON, toggleJSON] =useState(false);
+    const [importPNG, togglePNG] = useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
@@ -493,22 +497,18 @@ const MapEditor = (props) => {
         let tileCount = imported_tiles.numTiles;
         let tileheight = imported_tiles.tileHeight;
         let tilewidth = imported_tiles.tileWidth;
-
-        console.log(tilesetName);
-        console.log(imported_tiles);
-        console.log("WHAT IS MY MAP OBJ: ", map_obj);
+        let export_ts = imported_tiles.export_ts;
 
         if(tileList.length > 0){
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
-            console.log("MYIMPORTEDTILES", imported_tiles.tiles)     
-            
+             
+            export_ts.firstgid = startingGID;
             //POPULATES GID TABLE
             
             for(let i = 0; i < imported_tiles.tiles; i++){
                 console.log("STARTING GID", startingGID)
                 imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
             }
-            console.log(imported_tiles.tiles);
 
             //POPULATE DATAMAP HERE
             if(map_obj !== null){
@@ -516,13 +516,13 @@ const MapEditor = (props) => {
                 editMap([...populatedDataMap]);
             }
 
-            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount, export_ts}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
 
-            setTileWidth(map_obj.tilewidth);
-            setTileHeight(map_obj.tileheight);
-            setMapWidth(map_obj.width);
-            setMapHeight(map_obj.height);
+            // setTileWidth(map_obj.tilewidth);
+            // setTileHeight(map_obj.tileheight);
+            // setMapWidth(map_obj.width);
+            // setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
@@ -534,7 +534,7 @@ const MapEditor = (props) => {
             }
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
-            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount, export_ts}]);
 
             console.log("CHANGING DIMENSIONS!!!!!");
             //setTileWidth(map_obj.tilewidth);
@@ -675,7 +675,8 @@ const MapEditor = (props) => {
 
         <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
             changeSelect(prev => (tile));
-        }}  changeSelect={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
+
+        }} changeSelect={changeTile} togglePNG={togglePNG} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
 
 
         </Grid>
@@ -683,7 +684,9 @@ const MapEditor = (props) => {
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} layerOrder={layerOrder} tileWidth={tileWidth} tileHeight={tileHeight}
         dataMap={dataMap} mapWidth={mapWidth} mapHeight={mapHeight} importedTileList={importedTileList}/>
+        <PNGModal open={importPNG} onClose={() => togglePNG(false)} importTileset={importTileset}/>
         </>
+        
     )
 }
 
