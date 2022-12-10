@@ -14,8 +14,10 @@
     "bcrypt-nodejs": "0.0.3",
     "bcryptjs": "^2.4.3",
     "email-validator": "^2.0.4",
+    "file-saver": "^2.0.5",
     "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
+    "jszip": "^3.10.1",
     "merge-base64": "^1.0.4",
     "react": "^18.2.0",
     "react-canvas-draw": "^1.2.1",
@@ -26,6 +28,7 @@
     "react-router-prompt": "^0.3.0",
     "react-scripts": "5.0.1",
     "react-uuid": "^2.0.0",
+    "save-as": "^0.1.8",
     "styled-components": "^5.3.6",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"
