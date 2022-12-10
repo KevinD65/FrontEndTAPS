@@ -8,8 +8,8 @@ import Tileset from "./Tileset"
 import Sidemenu from './Sidemenu';
 import {useNavigate} from "react-router-dom"
 import { useQuery, useMutation,  useLazyQuery } from '@apollo/client';
-import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP} from "../../graphql/queries/assetScreenMaps";
-import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET } from '../../graphql/queries/assetTilesetMaps';
+import {GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP, GET_SHARED_MAPS} from "../../graphql/queries/assetScreenMaps";
+import { GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET, GET_SHARED_TILESETS } from '../../graphql/queries/assetTilesetMaps';
 import { GET_ASSET_SCREEN_FOLDERS, CREATE_ASSET_SCREEN_FOLDER, CHANGE_FOLDER_NAME, DELETE_FOLDER} from '../../graphql/queries/assetScreenFolders';
 import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import { Update } from '@mui/icons-material';
@@ -47,6 +47,34 @@ export default function UserAsset(props) {
   const { loading: get_tilesets_loading, error: get_tilesets_error, data:tilesetdata } = useQuery(GET_ASSET_SCREEN_TILESETS, {
     variables: {input: currentUser.id},
   });
+  const { loading: get_shared_tilesets_loading, error: get_shared_tilesets_error, data:shared_tilesetdata } = useQuery(GET_SHARED_TILESETS, {
+    variables: {id: currentUser.id},
+  });
+
+   
+ const { loading: get_shared_maps_loading, error: get_shared_maps_error, data:shared_mapdata } = useQuery(GET_SHARED_MAPS, {
+  variables: {id: currentUser.id},
+});
+
+
+const refetchSharedMaps = {
+  refetchQueries: [
+    {
+      query: GET_SHARED_MAPS,
+      variables: {input: currentUser.id}
+    }
+  ]
+}
+
+
+const refetchSharedTilesets = {
+  refetchQueries: [
+    {
+      query: GET_SHARED_TILESETS,
+      variables: {input: currentUser.id}
+    }
+  ]
+}
 
 
   const refetchMaps = {
@@ -222,6 +250,34 @@ const style = {
     {!get_tilesets_loading && !get_tilesets_error && tilesetdata.getOwnerTilesets.map((data)=>{
             
                 
+            return(
+            <Grid  item md={3} >
+            <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}
+            editTile={checkLock}/>
+            </Grid>
+        )
+              })}
+  
+    </Grid>
+    <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}  > Shared Maps <hr/></Typography>
+    <Grid container>
+      {!get_shared_maps_loading && !get_shared_maps_error && shared_mapdata.getSharedMaps.map((data)=>{
+            
+                
+                return(
+                <Grid  item md={3} >
+                <Map mapName={data.name} mapId={data.id} changeNameCallback={changeMapName} deleteMapCallback={deleteAssetMap}
+                editMap={checkLock}/>
+                </Grid>
+            )
+                  })}
+    </Grid>
+
+    <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}  > Shared Tilesets <hr/></Typography>
+    <Grid container   >
+    {!get_shared_tilesets_loading && !get_shared_tilesets_error && shared_tilesetdata.getSharedTilesets.map((data)=>{
+            
+          {console.log("shared",data)}
             return(
             <Grid  item md={3} >
             <Tileset tilesetName={data.name} tilesetId={data.id} changeNameCallback={changeTilesetName} deleteCallback={deleteAssetTileset}

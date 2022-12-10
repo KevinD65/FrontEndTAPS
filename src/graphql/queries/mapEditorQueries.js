@@ -9,6 +9,7 @@ mutation($id: ID!, $input: TileInput){
   }
 `*/
 
+
 const GET_TILESETS = gql`
 query($ownerID: ID!){
     getOwnerTilesets(ownerID: $ownerID){
@@ -25,4 +26,19 @@ query($ownerID: ID!){
 }
 `
 
-export{GET_TILESETS};
+const GET_MAP = gql`
+query($id: ID!){
+    getMap(id: $id){
+      height
+         collabolators {
+        id,
+        username,
+        name
+      }
+    }
+  }
+`
+
+
+
+export{GET_TILESETS, GET_MAP};
