@@ -16,11 +16,17 @@ import {useLocation} from 'react-router-dom';
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
 
+import PNGModal from "./ImportPNG";
+import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
+import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
+
+
 
 const MapEditor = (props) => {
     let currentUser = props.authenticatedUser;
   const location = useLocation();
   const cookies = new Cookies();
+  const [collabList, setCollabList]=useState([])
 
   React.useEffect(() => {
     if(currentUser.id === "-1"){
@@ -37,17 +43,46 @@ const MapEditor = (props) => {
     const [mapHeight, setMapHeight]=useState(15)
     const [tileWidth, setTileWidth]=useState(50)
     const [tileHeight, setTileHeight]=useState(50)
+
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);
     const [isDrawing, setIsDrawing]= useState(false);
 
     const [saveJSON, toggleJSON] =useState(false);
+    const [importPNG, togglePNG] = useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
     //have mapping between tileset name and starting GID
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
+
+
+
+  console.log(props.map, "hsuadfasf")
+    const { data, loading, error } = useQuery(GET_MAP, {
+        variables: {
+          id: props.map,
+        }
+      });
+
+      const refetchTileset = {
+        refetchQueries: [
+          {
+            query: GET_MAP,
+            variables: {id: props.map}
+          }
+        ]
+      };
+
+
+      React.useEffect(() => {
+        if(data) {
+            
+          setCollabList([...  data.getMap.collabolators])
+        }
+    }, [data])
+      const [addCollaborator] = useMutation(ADD_COLLABORATOR_MAP, refetchTileset);
 
     //GET_TILESETS QUERY
     const { loading: get_tilesets_loading, error: get_tilesets_error, data: tilesetData, refetch: refetchUserTilesets } = useQuery(GET_TILESETS, {
@@ -384,7 +419,7 @@ const MapEditor = (props) => {
         let tileCount = imported_tiles.numTiles;
         let tileheight = imported_tiles.tileHeight;
         let tilewidth = imported_tiles.tileWidth;
-
+        let img_src = imported_tiles.img_src;
         console.log(tilesetName);
         console.log(imported_tiles);
         console.log("WHAT IS MY MAP OBJ: ", map_obj);
@@ -417,8 +452,13 @@ const MapEditor = (props) => {
                 setOrder([...layerOrderArray]);
             }
 
-            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount, img_src}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
+
+            // setTileWidth(map_obj.tilewidth);
+            // setTileHeight(map_obj.tileheight);
+            // setMapWidth(map_obj.width);
+            // setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
@@ -568,14 +608,19 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={2}>
 
-        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} changeSelect ={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}></ToolbarRight>
+
+        <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
+            changeSelect(prev => (tile));
+        }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
 
         </Grid>
         </Grid>
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} layerOrder={layerOrder} tileWidth={tileWidth} tileHeight={tileHeight}
         dataMap={dataMap} mapWidth={mapWidth} mapHeight={mapHeight} importedTileList={importedTileList}/>
+        <PNGModal open={importPNG} onClose={() => togglePNG(false)} importTileset={importTileset}/>
         </>
+        
     )
 }
 

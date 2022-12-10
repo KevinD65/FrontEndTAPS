@@ -23,6 +23,18 @@ mutation($input: MapInput){
 }
 `
 
+const GET_SHARED_MAPS=gql`
+query($id: ID!){
+  getSharedMaps(id: $id){
+    id,
+    name,
+    image,
+    starred,
+    bio
+  }
+}
+`;
+
 const GET_COMMUNITY_SCREEN_MAPS = gql`
 query($input: String){
   getMapsWithTag(tag: $input){
@@ -52,4 +64,5 @@ mutation($id: ID!){
 }
 `
 
-export{GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP};
+
+export{GET_ASSET_SCREEN_MAPS, CREATE_ASSET_SCREEN_MAP, CHANGE_MAP_NAME, DELETE_MAP,GET_SHARED_MAPS};

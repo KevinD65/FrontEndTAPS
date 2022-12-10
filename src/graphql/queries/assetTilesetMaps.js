@@ -12,6 +12,31 @@ query($input: ID){
 } 
 `;
 
+// const GET_SHARED_SCREEN_TILESETS = gql`
+// query($input: ID){
+//   getOwnerTilesets(ownerID: $input){
+//     id,
+//     name,
+//     image,
+//     starred,
+//     bio
+//   }
+// } 
+// `;
+
+const GET_SHARED_TILESETS=gql`
+query($id: ID!){
+  getSharedTilesets(id: $id){
+    id,
+    name,
+    image,
+    starred,
+    bio
+  }
+}
+`;
+
+
 const CREATE_ASSET_SCREEN_TILESET = gql`
 mutation($input: TileInput){
   addTileSet(TilesetInput: $input){
@@ -40,4 +65,4 @@ mutation($id: ID!){
 }
 `
 
-export{GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET};
+export{GET_ASSET_SCREEN_TILESETS, CREATE_ASSET_SCREEN_TILESET, CHANGE_TILESET_NAME, DELETE_TILESET,GET_SHARED_TILESETS};

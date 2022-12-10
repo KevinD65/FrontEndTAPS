@@ -2,18 +2,121 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { deepOrange, deepPurple,amber} from '@mui/material/colors';
-import { Tooltip, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Typography,Modal,TextField } from '@mui/material';
+import { useState } from 'react';
 
-export default function Collaborators() {
-  return (
-    <> 
-    <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1 ,mt:4,mb:2 }}>Collaborators</Typography>
-    <Stack sx={{pl:1, }}direction="row" spacing={1} >
-      <Tooltip title="Max"><Avatar>MR</Avatar></Tooltip>
-      <Tooltip title="Anmol"><Avatar  sx={{ bgcolor: deepOrange[500] }}>AS</Avatar></Tooltip>
-      <Tooltip title="Kevin"><Avatar sx={{ bgcolor: deepPurple[500] }}>KD</Avatar></Tooltip>
-      <Tooltip title="Abhi"><Avatar sx={{ bgcolor: amber[500] }}>AG</Avatar></Tooltip>
-    </Stack>
-    </>
-  );
+import { useMutation, useQuery } from '@apollo/client';
+ 
+ 
+export default function Collaborators(props) {
+ let gotUser=null;
+ let error=false;
+ // console.log(props.currentUser)
+ const style = {
+   position: 'absolute',
+   top: '50%',
+   left: '50%',
+   transform: 'translate(-50%, -50%)',
+   width: 400,
+   bgcolor: 'background.paper',
+  
+   boxShadow: 24,
+   p: 4,
+   borderRadius:2,
+ };
+ const[searchedUsername,setSearchedUsername]=useState("")
+ const [open, setOpen] = useState(false);
+ let colors= [amber[500],deepOrange[500],deepPurple[500]]
+ 
+
+ const[usernames, setUsernames]=useState([])
+ console.log(props.currentUser)
+ 
+
+
+ 
+ const handleOpen = () => {
+   setOpen(true);
+ };
+ const handleClose = () => {
+   setOpen(false);
+ };
+ const doneEditingValue=(e)=>{
+  
+ }
+
+ const addCollab=async(user)=>{
+  console.log("map", props.map)
+    let result = await props.addCollaborator({
+      variables: {
+          id: props.map,
+          username: user
+      }
+  });
+ }
+ const handleKeyDown = async(e) => {
+   if (e.key === 'Enter'){
+
+    
+     addCollab(e.target.value)
+
+  
+    
+     e.target.value=""
+   }
+ }
+ 
+
+
+
+ 
+ return (
+   <>
+   <Box  sx={{ display: 'flex',justifyContent: 'space-between', color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1 ,mt:4,mb:2}}>
+     <Typography sx={{ pt:1}}>Collaborators</Typography>
+   <Button onClick={handleOpen} sx={{color:"white", fontSize:15}}>+</Button>
+   </Box>
+ 
+<Modal
+ open={open}
+ onClose={handleClose}
+ aria-labelledby="modal-modal-title"
+ aria-describedby="modal-modal-description"
+>
+ <Box sx={style}>
+ <Typography id="modal-modal-title" variant="h6" component="h2" sx={{fontWeight:700,}}>
+     Owner:
+   </Typography>
+   <Typography id="modal-modal-title" variant="h6" component="h2" sx={{fontWeight:700,}}>
+     Share Current TileSet
+   </Typography>
+  
+   <TextField sx={{ mt: 2 }} id="outlined-success" label="Enter username to add collaborator "   onKeyDown={handleKeyDown} variant="filled" fullWidth/>
+   {error &&<Typography sx={{color:"red"}}>User not found</Typography>}
+   <Typography id="modal-modal-description" sx={{ mt: 2 ,fontWeight:700,}}>
+     People with Access
+     <Stack sx={{pl:2}}>
+     {/* {console.log("maxxxxx relaxx", props.collaborators)}  */}
+        {props.collaborators.map((collab)=>{
+          return <Typography sx={{pt:1}}>{collab.name}</Typography>
+       })}
+     
+     </Stack>
+   </Typography>
+ </Box>
+</Modal>
+   <Stack sx={{pl:1, }}direction="row" spacing={1} >
+   {props.collaborators.map((collab)=>{
+    var item = colors[Math.floor(Math.random()*colors.length)];
+     return <Tooltip title={collab.name} sx={{ bgcolor: item }}><Avatar>{collab.name[0]}</Avatar></Tooltip>
+    //  <Tooltip title="Anmol"><Avatar  sx={{ bgcolor: deepOrange[500] }}>AS</Avatar></Tooltip>
+    //  <Tooltip title="Kevin"><Avatar sx={{ bgcolor: deepPurple[500] }}>KD</Avatar></Tooltip>
+    //  <Tooltip title="Abhi"><Avatar sx={{ bgcolor: amber[500] }}>AG</Avatar></Tooltip>
+    })}
+   </Stack>
+   </>
+ );
 }
+ 
+ 
+ 

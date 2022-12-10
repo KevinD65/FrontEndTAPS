@@ -66,6 +66,10 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
     }
   }
 
+  const saveMapDB = () => {
+    setAnchor(false)
+  }
+
     return (
   <Drawer
     variant="permanent"
@@ -138,7 +142,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
                 <Divider></Divider>
                 <MenuItem onClick={() => {saveJSON()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
+                <MenuItem onClick={()=>{saveMapDB}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
               </Menu>
       
