@@ -33,10 +33,10 @@ const MapEditor = (props) => {
     }
   }, []);
 
-    const [mapWidth, setMapWidth]=useState(5)
-    const [mapHeight, setMapHeight]=useState(5)
-    const [tileWidth, setTileWidth]=useState(40)
-    const [tileHeight, setTileHeight]=useState(40)
+    const [mapWidth, setMapWidth]=useState(15)
+    const [mapHeight, setMapHeight]=useState(15)
+    const [tileWidth, setTileWidth]=useState(50)
+    const [tileHeight, setTileHeight]=useState(50)
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
     const contextRef=useRef(null);

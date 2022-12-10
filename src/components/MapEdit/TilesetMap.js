@@ -153,9 +153,10 @@ export default function TilesetMap(props) {
             {
             <img
               src={tile.data}
-              srcSet={`${tile.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+              //srcSet={`${tile.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
               alt={tile.gid}
-              loading="lazy"
+              height={40} width={40}
+              //loading="lazy"
             />
             }
           </ImageListItem>
