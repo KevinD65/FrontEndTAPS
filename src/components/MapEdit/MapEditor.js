@@ -27,6 +27,7 @@ const MapEditor = (props) => {
   const location = useLocation();
   const cookies = new Cookies();
   const [collabList, setCollabList]=useState([])
+  const [drag, setDrag]=useState(false);
 
   React.useEffect(() => {
     if(currentUser.id === "-1"){
@@ -124,9 +125,10 @@ const MapEditor = (props) => {
         return datamap;
     }
 
-    const [dataMap, editMap] = useState(() => createDataMap());
+    const [dataMap, editMap] = useState(createDataMap());
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
+    const[newDataMap, setNewDataMap]=useState([])
 
     const setOrder = (new_arr) => {
         editOrder(new_arr);
@@ -274,12 +276,30 @@ const MapEditor = (props) => {
          canvasRef.current=canvas;
          contextRef.current.fillStyle = "white";
          contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
-         drawBoxes();
-         drawWholeMap();
-
+         
+         
+         
+         let a= createDataMapCustom(mapHeight,mapWidth);
+         console.log("this is a" ,a)
+         setNewDataMap([...a])
+         
+         console.log("this is dataMap" ,dataMap)
+        
          console.log("USE EFFECT HAS RUN !!!!!!!");
 
          },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+
+
+         useEffect(()=>{
+           
+            
+             editMap([...newDataMap])
+             console.log(newDataMap)
+             drawWholeMapCustom(newDataMap, layerOrder);
+             drawBoxes();
+
+        },[newDataMap]);
+
 
     const drawBox = (layers, x, y) => {
         if(x == 0 && y == 0){
@@ -342,14 +362,78 @@ const MapEditor = (props) => {
         }
     }
 
-    const placeTile =({nativeEvent}) => {
+    const handleDragEnter=({nativeEvent})=>{
+        console.log("i was dragged")
+        placeTile(nativeEvent)
+    }
+    const handleDoubleClick=()=>{
+        setDrag(!drag)
+    }
+    const handleMouseOut=()=>{
+        setDrag(false)
+    }
+
+    const placeTileMove =async({nativeEvent}) => {
+        if (drag){
+        console.log("placing tile")
+       
+        
         const{offsetX, offsetY}=nativeEvent;
         console.log("Clicked", offsetX, offsetY);
         let x =  Math.floor(offsetX / tileWidth);
         let y = Math.floor(offsetY / tileHeight);
 
-        let new_arr = [...dataMap];
+        let new_arr = await [...dataMap];
         let layers = new_arr[x][y].layers;
+        let last_layer = layerOrder[layerOrder.length - 1];
+        let new_layers =  JSON.parse(JSON.stringify(layers));
+        console.log("Before", layers)
+        if(selectedTile.gid > 0){
+            let {gid, data} = selectedTile;
+            console.log("adhjkahiqwahdu9q298-q98asodnmlkq2neoih2897ydhasndiaheiud2hipudh89qpuhdiuawnbdiujw", gid, data);
+            let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
+            if(index == -1){
+                new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
+            }
+            else{
+               new_layers[index].gid = gid;
+               new_layers[index].data = data;
+            }
+        }
+        else if(selectedTile.gid === 0){
+            let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
+            if(index != -1){
+               new_layers.splice(index, 1);
+            }
+        }
+        console.log("NEW LAYERS: ", new_layers);
+        new_arr[x][y].layers = new_layers;
+        drawBox(new_layers, x, y);
+        editMap(new_arr);
+    }
+    }
+
+    
+    
+
+    const placeTile =({nativeEvent}) => {
+        
+        console.log("placing tile",dataMap)
+        console.log("tile height, tile width", tileHeight,tileWidth)
+        console.log("please layers",layerOrder.length)
+        const{offsetX, offsetY}=nativeEvent;
+        
+        console.log("Clicked", offsetX, offsetY);
+        let x =  Math.floor(offsetX / tileWidth);
+        let y = Math.floor(offsetY / tileHeight);
+        let new_arr = [...dataMap];
+        
+        console.log("new_arr",new_arr);
+        console.log("x, y",x, y)
+        
+        let layers = new_arr[x][y].layers;
+        console.log("please layers 1", layers)
+       
         let last_layer = layerOrder[layerOrder.length - 1];
         let new_layers =  JSON.parse(JSON.stringify(layers));
         console.log("Before", layers)
@@ -459,6 +543,7 @@ const MapEditor = (props) => {
             //setMapHeight(map_obj.height);
         }
     }
+    
 
     /**
      * 
@@ -577,6 +662,11 @@ const MapEditor = (props) => {
                 <canvas className='canvas-main'
                 ref={canvasRef}
                 onMouseDown={placeTile}
+                 onMouseMove={ placeTileMove}
+                 onDoubleClick={handleDoubleClick}
+                 onMouseOut={handleMouseOut}
+                
+                
                 ></canvas>
             </Box>
         </Grid>
@@ -585,7 +675,9 @@ const MapEditor = (props) => {
 
         <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
             changeSelect(prev => (tile));
+
         }} changeSelect={changeTile} togglePNG={togglePNG} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
+
 
         </Grid>
         </Grid>
