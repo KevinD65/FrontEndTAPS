@@ -11,6 +11,7 @@ const CommunityAssets = (props) => {
     console.log(tilesetdata);
     var folderdata = props.folderdata.getFoldersWithTag;
     console.log(folderdata);
+    console.log(props.currentUser)
     return (
         <div id='Community-Assets'>
             <Typography id='Community-Assets-Label' sx={{pl:4}}>Some Popular Assets</Typography>
@@ -19,19 +20,19 @@ const CommunityAssets = (props) => {
             {
                 
                 mapdata.map(asset => (
-                    <Asset asset = {asset} assetType = {"Map"}/>
+                    <Asset currentUser = {props.currentUser} asset = {asset} assetType = {"Map"}/>
                 ))
             }
             {
                 
                 tilesetdata.map(asset => (
-                    <Asset asset = {asset} assetType = {"Tile"}/>
+                    <Asset currentUser = {props.currentUser} asset = {asset} assetType = {"Tile"}/>
                 ))
             }
             {
                 
                 folderdata.map(asset => (
-                    <Asset asset = {asset} assetType = {"Folder"}/>
+                    <Asset currentUser = {props.currentUser} asset = {asset} assetType = {"Folder"}/>
                 ))
             }
             

@@ -21,6 +21,7 @@ import Divider from '@mui/material/Divider';
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined';
 import FolderSharedOutlinedIcon from '@mui/icons-material/FolderSharedOutlined';
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 const Asset = (props) => {
@@ -29,7 +30,7 @@ const Asset = (props) => {
     let asset = props.asset; 
     //******* FOR NOW ASSET TYPE IS SENT IN SEPARATE
     let assetType = props.assetType
-    console.log(asset)
+    //console.log(props.currentUser)
 
     let numLikes = 69;
     let numComments = 3;
@@ -44,6 +45,12 @@ const Asset = (props) => {
 
     const openPopover=(e)=>{
       setAnchor(e.currentTarget)
+    }
+
+    const copyAsset=(e)=>{
+      console.log(props.currentUser)
+      console.log(asset)
+
     }
     
     return (
@@ -87,6 +94,8 @@ const Asset = (props) => {
               <CommentIcon />
             </IconButton>
 
+          
+
                 {/* Menu for adding notes and tilesets */}
                 <Menu
                 id="basic-menu"
@@ -125,6 +134,11 @@ const Asset = (props) => {
                 </MenuItem>
               </Menu>
             {numComments}
+
+            <IconButton aria-label="copy asset" onClick={copyAsset} >
+              <DownloadIcon />
+            </IconButton>
+            
         </CardContent>
       </CardActionArea>
     </Card>

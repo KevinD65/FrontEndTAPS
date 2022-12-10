@@ -20,7 +20,7 @@ console.log(tagFilter);
 let currentUser = props.authenticatedUser;
 const location = useLocation();
 const cookies = new Cookies();
-
+console.log(currentUser)
 useEffect(() => {
   if(currentUser.id === "-1"){
     let path = location.pathname.split("/");
@@ -119,7 +119,7 @@ useEffect(() => {
                 </div> */}
                 <div className="community-screen-middlecontent">
                     
-                    {!get_maps_loading && !get_maps_error && !get_tilesets_loading && !get_tilesets_error && !get_folders_loading && !get_folders_error &&<CommunityAssets mapdata = {mapdata} tilesetdata ={tilesetdata} folderdata ={folderdata}/>}
+                    {!get_maps_loading && !get_maps_error && !get_tilesets_loading && !get_tilesets_error && !get_folders_loading && !get_folders_error &&<CommunityAssets currentUser = {currentUser} mapdata = {mapdata} tilesetdata ={tilesetdata} folderdata ={folderdata}/>}
                 </div>
                 <div className="community-screen-rightsidecontent">
                     <RecentSearches recentSearches={recentSearches} executeSearch={executeSearch}/>
