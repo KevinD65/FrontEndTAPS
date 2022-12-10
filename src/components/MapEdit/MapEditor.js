@@ -15,8 +15,11 @@ import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
+
+import PNGModal from "./ImportPNG";
 import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
 import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
+
 
 
 const MapEditor = (props) => {
@@ -47,6 +50,7 @@ const MapEditor = (props) => {
     const [isDrawing, setIsDrawing]= useState(false);
 
     const [saveJSON, toggleJSON] =useState(false);
+    const [importPNG, togglePNG] = useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
@@ -409,7 +413,7 @@ const MapEditor = (props) => {
         let tileCount = imported_tiles.numTiles;
         let tileheight = imported_tiles.tileHeight;
         let tilewidth = imported_tiles.tileWidth;
-
+        let img_src = imported_tiles.img_src;
         console.log(tilesetName);
         console.log(imported_tiles);
         console.log("WHAT IS MY MAP OBJ: ", map_obj);
@@ -432,13 +436,13 @@ const MapEditor = (props) => {
                 editMap([...populatedDataMap]);
             }
 
-            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount, img_src}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
 
-            setTileWidth(map_obj.tilewidth);
-            setTileHeight(map_obj.tileheight);
-            setMapWidth(map_obj.width);
-            setMapHeight(map_obj.height);
+            // setTileWidth(map_obj.tilewidth);
+            // setTileHeight(map_obj.tileheight);
+            // setMapWidth(map_obj.width);
+            // setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
@@ -587,13 +591,14 @@ const MapEditor = (props) => {
             changeSelect(prev => (tile));
         }} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
 
-
         </Grid>
         </Grid>
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} layerOrder={layerOrder} tileWidth={tileWidth} tileHeight={tileHeight}
         dataMap={dataMap} mapWidth={mapWidth} mapHeight={mapHeight} importedTileList={importedTileList}/>
+        <PNGModal open={importPNG} onClose={() => togglePNG(false)} importTileset={importTileset}/>
         </>
+        
     )
 }
 
