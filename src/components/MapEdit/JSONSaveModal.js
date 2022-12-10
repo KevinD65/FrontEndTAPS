@@ -2,7 +2,9 @@ import React from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
-import {uploadImageToCloudinaryAPIMethod} from "../../client"
+import {uploadImageToCloudinaryAPIMethod} from "../../client";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export default function JSONSaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
@@ -85,7 +87,7 @@ export default function JSONSaveModal(props) {
           opacity: 1,
           type: "tilelayer",
           visible:true,
-          width:25,
+          width:props.mapWidth,
           x: 0,
           y: 0
         }
@@ -95,19 +97,32 @@ export default function JSONSaveModal(props) {
     }
     const getTilesets = () => {
       let tilesets = [];
+      let images = [];
       props.importedTileList.forEach(x => {
+        console.log("Export details", x);
         let tsobj = {
           firstgid: x.startingGID,
-          source: (x.tilesetName + ".json")
+          image: "..\/tilesets\/" + x.export_ts.name + ".png",
+          imageheight: x.export_ts.imageheight,
+          imagewidth: x.export_ts.imagewidth,
+          margin: x.export_ts.margin,
+          name: x.export_ts.name,
+          spacing: x.export_ts.spacing,
+          tilecount: x.export_ts.tilecount,
+          tileheight: x.export_ts.tileheight,
+          tilewidth: x.export_ts.tilewidth
         };
         tilesets.push(tsobj);
+        images.push({name: tsobj.name, imgData: x.export_ts.image, width: tsobj.imagewidth, height: tsobj.imageheight});
       });
-      return tilesets;
-    }
+      return {tilesets, images};
+    };
+
     const makeJSON = async() => {
         //let uri = await makeOnePNG();
+        console.log("MAKE JSONNNNNNNN occured");
         let layers = getLayers();
-        let tilesets = getTilesets();
+        let {tilesets, images} = getTilesets();
         let object = {
             compressionlevel: -1,
             height: props.mapHeight,
@@ -124,8 +139,22 @@ export default function JSONSaveModal(props) {
             width: props.mapWidth,
         };
         console.log(object);
-        let data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(object))
-        setDownload(data);
+        let data = JSON.stringify(object);
+
+        var zip = new JSZip();
+        let assets = zip.folder("assets");
+        assets.folder("tilemaps").file(name + ".json", data);
+        console.log("Imagessssss", images);
+
+        let ts = assets.folder("tilesets");
+        for(let i = 0; i < images.length; i++){
+          ts.file(images[i].name + ".png", images[i].imgData.slice("data:image/png;base64,".length), {base64:true});
+        };
+        zip.generateAsync({type:"blob"})
+        .then(function (blob) {
+          saveAs(blob, "your_assets.zip");
+        });
+        //setDownload(data);
     }
     const style = {
         position: 'absolute',
