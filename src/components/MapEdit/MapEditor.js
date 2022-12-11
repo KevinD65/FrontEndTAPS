@@ -95,13 +95,18 @@ const MapEditor = (props) => {
     /**
      * Creates an empty dataMap using the dimensions of the map
      */
-    const createDataMap = () => {
+    const createDataMap = (old_map) => {
         let datamap = [];
         for(let i = 0; i < mapHeight; i++){
             let row = []
             for(let j = 0; j < mapWidth; j++){
                 let grid_obj = {layers: []};
-                row.push(grid_obj);
+                if(old_map && old_map[i] && old_map[i][j] != null){
+                    row.push(old_map[i][j]);
+                }
+                else{
+                    row.push(grid_obj);
+                }
             }
             datamap.push(row);
         }
@@ -124,7 +129,7 @@ const MapEditor = (props) => {
         return datamap;
     }
 
-    const [dataMap, editMap] = useState(() => createDataMap());
+    const [dataMap, editMap] = useState(() => createDataMap(null));
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
 
@@ -276,10 +281,17 @@ const MapEditor = (props) => {
          contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
          drawBoxes();
          drawWholeMap();
-
+         let new_map = createDataMap(dataMap)
+         editMap([...new_map])
          console.log("USE EFFECT HAS RUN !!!!!!!");
 
          },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+
+    useEffect(() => {
+        if(contextRef.current != null){
+            drawWholeMap();
+        }
+    }, [dataMap])
 
     const drawBox = (layers, x, y) => {
         if(x == 0 && y == 0){
@@ -307,7 +319,7 @@ const MapEditor = (props) => {
         console.log("At draw whole map", dataMap);
         for(let i = 0; i < dataMap.length; i += 1){
             for(let j = 0; j < dataMap[i].length; j += 1){
-                drawBox(dataMap[i][j].layers, i, j);
+                drawBox(dataMap[i][j].layers, j, i);
             }
         }
     }
@@ -349,7 +361,7 @@ const MapEditor = (props) => {
         let y = Math.floor(offsetY / tileHeight);
 
         let new_arr = [...dataMap];
-        let layers = new_arr[x][y].layers;
+        let layers = new_arr[y][x].layers;
         let last_layer = layerOrder[layerOrder.length - 1];
         let new_layers =  JSON.parse(JSON.stringify(layers));
         console.log("Before", layers)
@@ -372,7 +384,7 @@ const MapEditor = (props) => {
             }
         }
         console.log("NEW LAYERS: ", new_layers);
-        new_arr[x][y].layers = new_layers;
+        new_arr[y][x].layers = new_layers;
         drawBox(new_layers, x, y);
         editMap(new_arr);
         
