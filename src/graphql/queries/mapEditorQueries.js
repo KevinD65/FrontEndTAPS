@@ -29,12 +29,18 @@ query($ownerID: ID!){
 const GET_MAP = gql`
 query($id: ID!){
     getMap(id: $id){
-      height
+      height,
          collabolators {
         id,
         username,
         name
-      }
+      },
+      mapData,
+      importedTileList,
+      tilesets,
+      layerOrder,
+      mapHeight,
+      mapWidth
     }
   }
 `

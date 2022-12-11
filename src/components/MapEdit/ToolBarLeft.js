@@ -17,7 +17,7 @@ import { parseTilesets } from '../helpful_functions/helpful_function_MapImport';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap }) => {
+const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap, saveMapToDB}) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -64,6 +64,11 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
         await transactionStack.doTransaction();
       }
     }
+  }
+
+  const saveMapDB = () => {
+    setAnchor(false);
+    saveMapToDB();
   }
 
     return (
@@ -138,7 +143,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
                 <Divider></Divider>
                 <MenuItem onClick={() => {saveJSON()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
+                <MenuItem onClick={()=>{/*setAnchor(false)*/saveMapDB()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
               </Menu>
       
