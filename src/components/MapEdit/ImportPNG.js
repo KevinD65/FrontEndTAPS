@@ -10,6 +10,7 @@ export default function PNGModal(props) {
     const [tileWidth, changeWidth] = React.useState(50);
     const [tileHeight, changeHeight] = React.useState(50);
     const [tileCount, changeCount] = React.useState(3);
+    const [filein, toggleInput] = React.useState(false);
     const imgRef = React.createRef();
 
     const handleKeyDown = (e, field) => {
@@ -69,6 +70,7 @@ export default function PNGModal(props) {
       tilewidth: tileWidth
     };
     props.importTileset({TSName: name, tiles: new_tiles, tileHeight: tileHeight, tileWidth: tileWidth, numTiles: tileCount, export_ts: export_ts}, null);
+    toggleInput(false);
   }
     
   // {
@@ -102,7 +104,7 @@ export default function PNGModal(props) {
   aria-describedby="modal-modal-description"
 >
   <Box sx={style}>
-    <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}> Export JSON</Typography>
+    <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}>Import Tileset as PNG</Typography>
         <List>
             <ListItem>
                 <TextField label="Name" variant="outlined" defaultValue={name} 
@@ -121,9 +123,10 @@ export default function PNGModal(props) {
                 onKeyDown={handleKeyDown("count")} onChange={e => changeCount(e.target.value)}/>
             </ListItem>
         </List>
-        <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>
+        
         <label htmlFor="contained-button-file">
-          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+          {filein && <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>}
+          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  onClick={() => {toggleInput(true)}}>
           <Typography variant="h6" component="h2">Import</Typography>
           </Button>
         </label>
