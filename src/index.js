@@ -10,7 +10,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const client = new ApolloClient({
   uri: 'http://localhost:42069/graphql',
-  // uri:'https://taps416.herokuapp.com/graphql',
+  //'https://taps416.herokuapp.com/graphql',
   cache: new InMemoryCache(),
   //fetchPolicy: 'network-only'
 });

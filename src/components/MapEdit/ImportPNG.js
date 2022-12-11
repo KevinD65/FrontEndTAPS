@@ -53,11 +53,36 @@ export default function PNGModal(props) {
    */
   async function onReaderLoad (event) {
     let img = await loadImage(event.target.result);
+    
     let new_tiles = await loadTSMapEditor(img.naturalWidth, img.naturalHeight, tileWidth, tileHeight, img.src, name, 1, tileCount);
     console.log("PNGGGGGGGGGGGG TILES", new_tiles);
-    props.importTileset({TSName: name, tiles: new_tiles, tileHeight: tileHeight, tileWidth: tileWidth, numTiles: tileCount, img_src: event.target.result}, null);
+    let export_ts = {
+      firstgid: -1,
+      image: event.target.result,
+      imageheight: img.naturalHeight,
+      imagewidth: img.naturalWidth,
+      margin: 0,
+      name: name,
+      spacing: 0,
+      tilecount: tileCount,
+      tileheight: tileHeight,
+      tilewidth: tileWidth
+    };
+    props.importTileset({TSName: name, tiles: new_tiles, tileHeight: tileHeight, tileWidth: tileWidth, numTiles: tileCount, export_ts: export_ts}, null);
   }
     
+  // {
+  //   "firstgid":1,
+  //   "image":"..\/tilesets\/ts_example.png",
+  //   "imageheight":150,
+  //   "imagewidth":300,
+  //   "margin":0,
+  //   "name":"test",
+  //   "spacing":0,
+  //   "tilecount":18,
+  //   "tileheight":50,
+  //   "tilewidth":50
+  //  }
     const style = {
         position: 'absolute',
         top: '50%',
