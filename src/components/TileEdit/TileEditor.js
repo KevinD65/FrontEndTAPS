@@ -1,7 +1,7 @@
 import React from "react";
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { Toolbar,Box } from "@mui/material";
+import { Toolbar,Box, Typography } from "@mui/material";
 import { useState } from 'react';
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
@@ -11,6 +11,7 @@ import Canvas from "./Canvas";
 import JSONSaveModal from "./JSONSaveModal";
 import PNGSaveModal from "./PNGSaveModal";
 import SaveModal from "./SaveModal";
+import {Button} from "@mui/material";
 import { SAVE_TILESET, GET_TILESET } from "../../graphql/queries/TileEditorQueries";
 import { useMutation, useQuery } from '@apollo/client';
 import ReactRouterPrompt from "react-router-prompt";
@@ -106,6 +107,7 @@ const TileEditor = (props) => {
 
 
     const style = {
+
       position: 'absolute',
       top: '50%',
       left: '50%',
@@ -114,6 +116,7 @@ const TileEditor = (props) => {
       bgcolor: 'background.paper',
       border: '2px solid #000',
       boxShadow: 24,
+      borderRadius:2,
       p: 4,
     };
 
@@ -144,14 +147,16 @@ const TileEditor = (props) => {
         <>
         <ReactRouterPrompt when={true}>
           {({ isActive, onConfirm, onCancel }) => (
-          <Modal open={isActive}>
+          <Modal open={isActive} sx={{borderRadius:"10px", }}>
             <Box sx={style} >
-            <p>Do you really want to leave?</p>
-            <button onClick={onCancel}>Cancel</button>
-            <button onClick={(event) => {
+            <Typography sx={{fontSize:"1.2rem", fontWeight:500, mb:3}}>Do you really want to leave?</Typography>
+            <Box sx={{ display:"flex"  }} >
+            <Button variant="contained" sx={{ marginLeft: "auto" }}onClick={onCancel} color="error">Cancel</Button>
+            <Button align= "right" variant="contained" sx={{ml:1}} color="success" onClick={(event) => {
               unlock();
               onConfirm(event);
-            }}>Ok</button>
+            }}>Ok</Button>
+            </Box>
             </Box>
         </Modal>
           )}

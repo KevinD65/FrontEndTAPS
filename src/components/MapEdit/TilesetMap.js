@@ -140,9 +140,10 @@ export default function TilesetMap(props) {
  return (
     <>
     {<SelectGrid select={props.select} tiles={props.tiles} gridPoints={grid_points}/>}
+    {!itemData[0] && <Box sx={{fontSize:"10px", pt:2, pl:2}}>Add Tilesets using the + button </Box> }
     {
     <ImageList sx={{ width: 239, height: 220 }} cols={3} rowHeight={45}>
-      {itemData.map((tileObject) => {
+      { itemData.map((tileObject) => {
         let tileArr = tileObject.tiles
         let tileImage =  tileArr.map((tile, index) => {
         console.log("MYTILE", tile);
@@ -164,8 +165,11 @@ export default function TilesetMap(props) {
         return tileImage;
       })
       }
+      
+      
     </ImageList>
     }
+    
     </>
     
  );

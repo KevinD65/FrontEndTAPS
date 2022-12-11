@@ -59,6 +59,13 @@ const Sidemenu = (props) => {
 
     return (
   <Drawer
+
+
+  PaperProps={{
+    sx: {
+      backgroundColor: "#F8EDE3"
+    }
+  }}
     anchor={'right'}
     variant="permanent"
     sx={{
@@ -79,18 +86,24 @@ const Sidemenu = (props) => {
          {/* List of sidebar components */}
          <LayersEdit setErase={props.setErase} layerOrder={props.layerOrder} setOrderCallback={props.setOrderCallback}/>
         <Divider />
-        <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets</Typography>
+        <Box sx={{display:"flex", justifyContent:"space-between" ,color:"white" ,backgroundColor:"#4E6C50"}}>
+        <Typography sx={{color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1}}>Tilesets
+        
+        
+        </Typography>
+        <label htmlFor="contained-button-file" sx={{color:"white" ,backgroundColor:"#4E6C50"}}>
+          <Button  component="span"    >
+          <Typography variant="h6" component="h2" sx={{color:"white"}}>+</Typography>
+          </Button>
+        </label>
+        </Box>
         <Grid  container 
             direction='row'
             sx={{ border: 1 }}
             >
           
         <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>
-        <label htmlFor="contained-button-file">
-          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
-          <Typography variant="h6" component="h2">Import</Typography>
-          </Button>
-        </label>
+        
         <TilesetMap changeSelect = {props.changeSelect} tiles={props.tiles} importedTileList = {props.importedTileList}/>
         </Grid>
     </List>

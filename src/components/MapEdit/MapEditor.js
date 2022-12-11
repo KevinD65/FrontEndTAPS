@@ -94,9 +94,9 @@ const MapEditor = (props) => {
      */
     const createDataMap = () => {
         let datamap = [];
-        for(let i = 0; i < mapHeight; i++){
+        for(let i = 0; i < mapWidth; i++){
             let row = []
-            for(let j = 0; j < mapWidth; j++){
+            for(let j = 0; j < mapHeight; j++){
                 let grid_obj = {layers: []};
                 row.push(grid_obj);
             }
@@ -260,41 +260,63 @@ const MapEditor = (props) => {
         contextRef.current.stroke();
     }
 
-    useEffect(()=>{
-         const canvas=canvasRef.current;
-         canvas.width= mapWidth * tileWidth;
-         canvas.height= mapHeight * tileHeight;
-         const context= canvas.getContext("2d")
-         context.lineCap="round"
-         context.strokeStyle="Red"
-         context.lineWidth=2;
-         contextRef.current=context;
-         canvasRef.current=canvas;
-         contextRef.current.fillStyle = "white";
-         contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
+    // useEffect(()=>{
+    //      const canvas=canvasRef.current;
+    //      canvas.width= mapWidth * tileWidth;
+    //      canvas.height= mapHeight * tileHeight;
+    //      const context= canvas.getContext("2d")
+    //      context.lineCap="round"
+    //      context.strokeStyle="Red"
+    //      context.lineWidth=2;
+    //      contextRef.current=context;
+    //      canvasRef.current=canvas;
+    //      contextRef.current.fillStyle = "white";
+    //      contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
          
          
          
-         let a= createDataMapCustom(mapHeight,mapWidth);
-         console.log("this is a" ,a)
-         setNewDataMap([...a])
-         
-         console.log("this is dataMap" ,dataMap)
+    //      let a= createDataMap();
+    //      console.log("this is a" ,a)
+    //      setNewDataMap([...a]);
+    //      editMap([...a]);
+    //      drawBoxes();
+    //      console.log("this is dataMap" ,dataMap)
         
-         console.log("USE EFFECT HAS RUN !!!!!!!");
+    //      console.log("USE EFFECT HAS RUN !!!!!!!");
 
-         },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+    //      },[mapWidth, mapHeight, clearCanvas, layerOrder]);
 
 
-         useEffect(()=>{
+    //     //  useEffect(()=>{
            
             
-             editMap([...newDataMap])
-             console.log(newDataMap)
-             drawWholeMapCustom(newDataMap, layerOrder);
-             drawBoxes();
+    //     //      editMap([...newDataMap])
+    //     //      console.log(newDataMap)
+    //     //      //drawWholeMapCustom(newDataMap, layerOrder);
+    //     //      drawBoxes();
 
-        },[newDataMap]);
+    //     // },[newDataMap]);
+
+    useEffect(()=>{
+        const canvas=canvasRef.current;
+        canvas.width= mapWidth * tileWidth;
+        canvas.height= mapHeight * tileHeight;
+        const context= canvas.getContext("2d")
+        context.lineCap="round"
+        context.strokeStyle="Red"
+        context.lineWidth=2;
+        contextRef.current=context;
+        canvasRef.current=canvas;
+        contextRef.current.fillStyle = "white";
+        contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
+        // let a= createDataMap();
+        // console.log("this is a" ,a)
+        // editMap([...a]);
+        drawBoxes();
+        drawWholeMap();
+        
+        console.log("USE EFFECT HAS RUN !!!!!!!");
+        },[mapWidth, mapHeight, clearCanvas, layerOrder]);
 
 
     const drawBox = (layers, x, y) => {
@@ -421,11 +443,12 @@ const MapEditor = (props) => {
         
         console.log("Clicked", offsetX, offsetY);
         let x =  Math.floor(offsetX / tileWidth);
-        let y = Math.floor(offsetY / tileHeight);
+        let y= Math.floor(offsetY / tileHeight);
         let new_arr = [...dataMap];
         
         console.log("new_arr",new_arr);
         console.log("x, y",x, y)
+        console.log(new_arr[x])
         
         let layers = new_arr[x][y].layers;
         console.log("please layers 1", layers)
@@ -615,6 +638,7 @@ const MapEditor = (props) => {
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
+        borderRadius:2,
         p: 4,
       };
 
@@ -635,14 +659,17 @@ const MapEditor = (props) => {
         <>
         <ReactRouterPrompt when={true}>
           {({ isActive, onConfirm, onCancel }) => (
-          <Modal open={isActive}>
+          <Modal open={isActive} sx={{borderRadius:"10px", }}>
+            
             <Box sx={style} >
             <p>Do you really want to leave?</p>
-            <button onClick={onCancel}>Cancel</button>
-            <button onClick={(event) => {
+            <Box sx={{ display:"flex"  }} >
+            <Button variant="contained" sx={{ marginLeft: "auto" }}onClick={onCancel} color="error">Cancel</Button>
+            <Button align= "right" variant="contained" sx={{ml:1}} color="success" onClick={(event) => {
               unlock();
               onConfirm(event);
-            }}>Ok</button>
+            }}>Ok</Button>
+            </Box>
             </Box>
         </Modal>
           )}
@@ -654,7 +681,7 @@ const MapEditor = (props) => {
         <Grid item  md={2}>
         <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} ></ToolbarLeft>
         </Grid>
-        <Grid item  md={8} sx={{pt:4, pl:15}}>
+        <Grid item className={"canvas-grid"} md={8} sx={{pt:4, pl:10}}>
             <Box>
             <Button variant="contained" sx={{marginRight:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={()=>{setClearCanvas(!clearCanvas)}}>Clear Canvas</Button>
             </Box>

@@ -72,7 +72,7 @@ export default function Collaborators(props) {
  
  return (
    <>
-   <Box  sx={{ display: 'flex',justifyContent: 'space-between', color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1 ,mt:4,mb:2}}>
+   <Box  sx={{ display: 'flex',justifyContent: 'space-between', color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700, pl:2 ,pt:1,pb:1 ,mt:3,mb:2}}>
      <Typography sx={{ pt:1}}>Collaborators</Typography>
    <Button onClick={handleOpen} sx={{color:"white", fontSize:15}}>+</Button>
    </Box>
