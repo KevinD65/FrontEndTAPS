@@ -125,11 +125,10 @@ function Login(props) {
     });
 
     //console.log(newUser.data.createUser);
-    currentUser = newUser.data.createUser.username
+    currentUser = newUser.data.createUser
     props.authenticateUser(currentUser);
     cookies.set(currentUser.id, currentUser, { path: '/' });
     navigate('/userAsset/' + currentUser.id, {state: {user: currentUser}});
-
     return true;
   }
 
