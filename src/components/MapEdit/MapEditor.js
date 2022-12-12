@@ -10,12 +10,12 @@ import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
 import JSONSaveModal from "./JSONSaveModal";
-import { GET_TILESETS } from '../../graphql/queries/MapEditorQueries';
+import { GET_TILESETS } from '../../graphql/queries/mapEditorQueries';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
-import { GET_MAP } from "../../graphql/queries/MapEditorQueries";
+import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
 import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
 
 
