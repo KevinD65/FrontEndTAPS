@@ -115,6 +115,16 @@ const MapEditor = (props) => {
             setMapWidth(savedMapWidth);
           }
 
+          let savedTileHeight = JSON.parse(data.getMap.tileheight);
+          if(savedTileHeight !== null){
+            setTileHeight(savedTileHeight);
+          }
+
+          let savedTileWidth = JSON.parse(data.getMap.tilewidth);
+          if(savedTileWidth !== null){
+            setTileWidth(savedTileWidth);
+          }
+
           console.log("TOMATO POTATO");
           console.log("THIS IS MY SAVED MAP DATA: ", savedMapData);
           console.log("THIS IS MY SAVED TILELIST DATA: ", savedTileListData);
@@ -715,7 +725,9 @@ const MapEditor = (props) => {
 
         let updatedMap = await updateMap({ variables: { 
             id: props.map, 
-            input: { mapData: JSON.stringify(dataMap), importedTileList: JSON.stringify(importedTileList), tilesets: JSON.stringify(tileListCloudinary), layerOrder: JSON.stringify(layerOrder), mapHeight: parseInt(mapHeight), mapWidth: parseInt(mapWidth)}
+            input: { mapData: JSON.stringify(dataMap), importedTileList: JSON.stringify(importedTileList), tilesets: JSON.stringify(tileListCloudinary), 
+                layerOrder: JSON.stringify(layerOrder), mapHeight: parseInt(mapHeight), mapWidth: parseInt(mapWidth), tileheight: parseInt(tileHeight), 
+                tilewidth: parseInt(tileWidth)}
         }});
     }
     
