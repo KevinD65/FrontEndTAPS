@@ -750,7 +750,6 @@ const MapEditor = (props) => {
         </Grid>
         <Grid item  md={8} sx={{pt:4, pl:15}}>
             <Box>
-            <Button variant="contained" sx={{marginRight:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={()=>{setClearCanvas(!clearCanvas)}}>Clear Canvas</Button>
             </Box>
             <Box>
                 <canvas className='canvas-main'
