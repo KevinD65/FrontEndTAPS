@@ -81,13 +81,13 @@ export default function JSONSaveModal(props) {
         }
         let layerobj = {
           data: data,
-          height: props.mapHeight,
-          id: 1,
+          height: parseInt(props.mapHeight),
+          id: parseInt(i+1),
           name: layer.name,
           opacity: 1,
           type: "tilelayer",
-          visible:true,
-          width:props.mapWidth,
+          visible: true,
+          width: parseInt(props.mapWidth),
           x: 0,
           y: 0
         }
@@ -101,16 +101,16 @@ export default function JSONSaveModal(props) {
       props.importedTileList.forEach(x => {
         console.log("Export details", x);
         let tsobj = {
-          firstgid: x.startingGID,
+          firstgid: parseInt(x.startingGID),
           image: "..\/tilesets\/" + x.export_ts.name + ".png",
-          imageheight: x.export_ts.imageheight,
-          imagewidth: x.export_ts.imagewidth,
-          margin: x.export_ts.margin,
+          imageheight: parseInt(x.export_ts.imageheight),
+          imagewidth: parseInt(x.export_ts.imagewidth),
+          margin: parseInt(x.export_ts.margin),
           name: x.export_ts.name,
-          spacing: x.export_ts.spacing,
-          tilecount: x.export_ts.tilecount,
-          tileheight: x.export_ts.tileheight,
-          tilewidth: x.export_ts.tilewidth
+          spacing: parseInt(x.export_ts.spacing),
+          tilecount: parseInt(x.export_ts.tilecount),
+          tileheight: parseInt(x.export_ts.tileheight),
+          tilewidth: parseInt(x.export_ts.tilewidth)
         };
         tilesets.push(tsobj);
         images.push({name: tsobj.name, imgData: x.export_ts.image, width: tsobj.imagewidth, height: tsobj.imageheight});
@@ -125,18 +125,18 @@ export default function JSONSaveModal(props) {
         let {tilesets, images} = getTilesets();
         let object = {
             compressionlevel: -1,
-            height: props.mapHeight,
+            height: parseInt(props.mapHeight),
             infinite: false,
             layers: layers,
-            nextlayerid: props.layerOrder.length + 1,
+            nextlayerid: parseInt(props.layerOrder.length + 1),
             nextobjectid: 1,
             orientation:"orthogonal",
             renderorder: "right-down",
-            tileheight: props.tileHeight,
+            tileheight: parseInt(props.tileHeight),
             tilesets: tilesets,
-            tilewidth: props.tileWidth,
+            tilewidth: parseInt(props.tileWidth),
             type: 'map',
-            width: props.mapWidth,
+            width: parseInt(props.mapWidth),
         };
         console.log(object);
         let data = JSON.stringify(object);
@@ -144,7 +144,6 @@ export default function JSONSaveModal(props) {
         var zip = new JSZip();
         let assets = zip.folder("assets");
         assets.folder("tilemaps").file(name + ".json", data);
-        console.log("Imagessssss", images);
 
         let ts = assets.folder("tilesets");
         for(let i = 0; i < images.length; i++){

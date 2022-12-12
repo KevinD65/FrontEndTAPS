@@ -58,7 +58,9 @@ const MapEditor = (props) => {
     //when figuring out which tile to pull, reference the GID and GID mapping, then do math to figure out which one to pull
 
 
-
+    React.useEffect(() => {
+        console.log("Tilelisttttttttttttttttttttttttttt ", tileList);
+    });
   
     const { data, loading, error } = useQuery(GET_MAP, {
         variables: {
@@ -268,7 +270,7 @@ const MapEditor = (props) => {
          editMap([...new_map])
 
 
-         },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+         },[mapWidth, mapHeight, tileWidth, tileHeight, clearCanvas, layerOrder]);
 
 
     useEffect(() => {
@@ -461,7 +463,7 @@ const MapEditor = (props) => {
             export_ts.firstgid = startingGID;
             //POPULATES GID TABLE
             
-            for(let i = 0; i < imported_tiles.tiles; i++){
+            for(let i = 0; i < imported_tiles.tiles.length; i++){
                 imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
             }
 
