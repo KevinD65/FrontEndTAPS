@@ -5,7 +5,7 @@ import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell
 
 export default function JSONSaveModal(props) {
     const [name, changeName] = React.useState("New Tileset");
-    const [tileWidth, changeWidth] = React.useState(50);
+    const [tileWidthInput, changeWidth] = React.useState(50);
     const [tileHeight, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState("");
 
