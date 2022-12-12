@@ -89,9 +89,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
             {/* Button for the  add menu */}
             <input onChange={handleImportMap} style={{ display: "none" }} id="contained-button-file-mapImport" type="file"/>
             <label htmlFor="contained-button-file-mapImport">
-              <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
-              <Typography variant="h6" component="h2">Import</Typography>
-              </Button>
+              
             </label>
             
             <Menu
@@ -155,14 +153,6 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
          <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  />
         <Divider />
     </List>
-
-    <Divider>
-      <Undo onClick = {() => handleUndoRedo("undo")}/>
-      <Redo onClick = {() => handleUndoRedo("redo")}/>
-    </Divider>
-    
-    
-    
   </Box>
   </Drawer>
             
@@ -173,6 +163,12 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
 }
 
 export default Sidemenu
+
+/**
+ * <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+              <Typography variant="h6" component="h2">Import</Typography>
+              </Button>
+ */
 
 
 

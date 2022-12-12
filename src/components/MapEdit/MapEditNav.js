@@ -27,6 +27,7 @@ export default function MapEditNav({mapWidth, mapHeight, setMapHeight,setMapWidt
 
 
     const doneEditingValue=(e)=>{
+
         changingWidth?setMapWidth(e): setMapHeight(e)
         
         
@@ -85,12 +86,6 @@ export default function MapEditNav({mapWidth, mapHeight, setMapHeight,setMapWidt
         </tr>
 
         <Divider/>
-
-        <tr class="active-row">
-            
-            <td>Colliadble</td>
-            <td><Checkbox  defaultChecked /></td>
-        </tr>
         
     </tbody>
 </table>

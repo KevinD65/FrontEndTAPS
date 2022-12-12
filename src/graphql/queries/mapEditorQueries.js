@@ -40,7 +40,9 @@ query($id: ID!){
       tilesets,
       layerOrder,
       mapHeight,
-      mapWidth
+      mapWidth,
+      tilewidth,
+      tileheight
     }
   }
 `
