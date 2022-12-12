@@ -55,7 +55,7 @@ export default function PNGModal(props) {
   async function onReaderLoad (event) {
     let img = await loadImage(event.target.result);
     
-    let new_tiles = await loadTSMapEditor(img.naturalWidth, img.naturalHeight, tileWidth, tileHeight, img.src, name, 1, tileCount);
+    let new_tiles = await loadTSMapEditor(parseInt(img.naturalWidth),parseInt( img.naturalHeight), parseInt(tileWidth), parseInt(tileHeight), img.src, name, 1, parseInt(tileCount));
     console.log("PNGGGGGGGGGGGG TILES", new_tiles);
     let export_ts = {
       firstgid: -1,

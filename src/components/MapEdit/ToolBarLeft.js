@@ -142,7 +142,6 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
                 }}
                 
               >
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Save as Png</MenuItem>
                 <Divider></Divider>
                 <MenuItem onClick={() => {saveJSON()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
                 <Divider></Divider>

@@ -156,7 +156,7 @@ export default function JSONSaveModal(props) {
     >
         <canvas ref={canvasRef}/>
         </Box>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
+        {download && <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>}
   </Box>
 </Modal>
   )

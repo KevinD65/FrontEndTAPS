@@ -95,7 +95,6 @@ const Sidemenu = (props) => {
                 <Divider></Divider>
                 <MenuItem onClick={() => createTileset()}> <GridViewOutlinedIcon/> &nbsp; New Tile</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={() => createFolder()}> <FolderOpen/> &nbsp; New Folder</MenuItem>
                 
               </Menu>
     </Box>

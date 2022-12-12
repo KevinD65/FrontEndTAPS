@@ -146,8 +146,6 @@ export default function TilesetMap(props) {
       { itemData.map((tileObject) => {
         let tileArr = tileObject.tiles
         let tileImage =  tileArr.map((tile, index) => {
-        console.log("MYTILE", tile);
-        console.log(tile.data + index);
 
         return(
           <ImageListItem key={index} onClick = {(event) => props.changeSelect({gid: tile.gid, data: tile.data})}>

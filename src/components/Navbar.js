@@ -10,16 +10,22 @@ import tapsLogo from "../static/taps-logo.svg"
 import { Tabs,Tab } from '@mui/material';
 import { borderLeft } from '@mui/system';
 import {Link, useNavigate} from "react-router-dom"
+import {useLocation} from 'react-router-dom';
 
 const Navbar=(props)=> {
   const [value,setvalue]=useState(0);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  let path = location.pathname.split("/");
+  console.log("this is path", path)
+
 
   //USED TO SET THE AUTHENTICATED USER STATE VARIABLE TO NULL AND REDIRECT TO THE LOGIN SCREEN UPON LOGOUT
   const handleLogout = () => {
     props.authenticateUser(null);
     navigate('/');
-    window.location.reload(); //force top level page reload
+    // window.location.reload(); //force top level page reload
   }
 
   return (
@@ -36,7 +42,7 @@ const Navbar=(props)=> {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-            component={Link} to={`/userAsset`}
+            component={Link} to={`/userAsset/${props.user.id}`}
             onClick={()=>{setvalue(0)}}
           >
             <img src={tapsLogo} alt="logo"  />
@@ -52,7 +58,7 @@ const Navbar=(props)=> {
             <Tab label="Profile" component={Link} to={`/userProfile/${props.user.id}`} sx={{color:"#F8EDE3", fontWeight:700,marginRight:5}}/>
             
           </Tabs>
-          <Button color="inherit" onClick={handleLogout}>Logout</Button>
+          {path.length<=3 &&<Button color="inherit" onClick={handleLogout}>Logout</Button>}
         </Toolbar>
         
       </AppBar>
