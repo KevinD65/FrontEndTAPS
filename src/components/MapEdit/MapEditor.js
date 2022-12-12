@@ -149,13 +149,13 @@ const MapEditor = (props) => {
      * Creates an empty dataMap using the dimensions of the map
      */
     const createDataMap = (old_map) => {
-        if(old_map != null && old_map.length == mapHeight && old_map[0].length == mapWidth){
+        if(old_map != null && old_map.length === parseInt(mapHeight) && old_map[0].length === parseInt(mapWidth)){
             return [];
         }
         let datamap = [];
-        for(let i = 0; i < mapWidth; i++){
+        for(let i = 0; i < parseInt(mapHeight); i++){
             let row = []
-            for(let j = 0; j < mapHeight; j++){
+            for(let j = 0; j < parseInt(mapWidth); j++){
                 let grid_obj = {layers: []};
                 if(old_map && old_map[i] && old_map[i][j] != null){
                     row.push(old_map[i][j]);
@@ -317,8 +317,8 @@ const MapEditor = (props) => {
 
     useEffect(()=>{
          const canvas=canvasRef.current;
-         canvas.width= mapWidth * tileWidth;
-         canvas.height= mapHeight * tileHeight;
+         canvas.width= parseInt(mapWidth) * parseInt(tileWidth);
+         canvas.height= parseInt(mapHeight) * parseInt(tileHeight);
          const context= canvas.getContext("2d")
          context.lineCap="round"
          context.strokeStyle="Red"
@@ -326,18 +326,20 @@ const MapEditor = (props) => {
          contextRef.current=context;
          canvasRef.current=canvas;
          contextRef.current.fillStyle = "white";
-         contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
+         contextRef.current.fillRect(0, 0, parseInt(canvas.width), parseInt(canvas.height))
          drawBoxes();
          drawWholeMap();
          console.log("TOMATO THIS WHEN IS THIS USEEFFECT EXECUTING ?!?!?!?!?!?!!?!??!?!", dataMap);
          
-         let new_map = createDataMap(dataMap)
-         if(new_map.length > 0){
+         let new_map = createDataMap(dataMap);
+         console.log("New map length", new_map.length);
+         if(parseInt(new_map.length) > 0){
+            console.log("Its being calllllllllllled");
             editMap([...new_map])
          }
          console.log(`USE EFFECT HAS RUN !!!!!!! ${mapHeight} hihihihihihihi`);
 
-         },[mapWidth, mapHeight, clearCanvas, layerOrder, dataMap]);
+         },[mapWidth, mapHeight, tileWidth, tileHeight, clearCanvas, layerOrder, dataMap]);
          console.log(`MAP HEIGHT IS ${mapHeight} hihihihihihihi`);
 
     function loadImage(url) {

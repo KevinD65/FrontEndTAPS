@@ -31,8 +31,8 @@ const Asset = (props) => {
     let assetType = props.assetType
     console.log(asset)
 
-    let numLikes = 69;
-    let numComments = 3;
+    let numLikes = 0;
+    let numComments = 0;
 
     const [anchor,setAnchor]=useState(null);
     const [editBio, toggleBio]= useState(false);
@@ -108,18 +108,7 @@ const Asset = (props) => {
               > {/*The comments themselves will probably be made as separate components in the future 
               
                     ALSO THIS DATA IS HARDCODED FOR SAKE OF TESTING*/}
-                    
-                <MenuItem ><div className="asset-text">Commented by: Quandale Dingle</div></MenuItem>
-                <MenuItem > <div className="asset-text"> I am quite enamored by the quality of this map</div>
-                </MenuItem>
-                <Divider></Divider>
-                <MenuItem ><div className="asset-text">Commented by: Lol</div></MenuItem>
-                <MenuItem > <div className="asset-text"> I am quite enamored by the quality of this map as well</div>
-                </MenuItem>
-                <Divider></Divider>
-                <MenuItem ><div className="asset-text">Commented by: Joe</div></MenuItem>
-                <MenuItem > <div className="asset-text"> Mama</div>
-                </MenuItem>
+                
                 <Divider></Divider>
                 <MenuItem ><TextareaAutosize aria-label="empty textarea" placeholder="Add Comment" style={{ width: 200 }}/> 
                 </MenuItem>
