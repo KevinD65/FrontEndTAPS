@@ -40,10 +40,10 @@ const MapEditor = (props) => {
     }
   }, []);
 
-    const [mapWidth, setMapWidth]=useState(20)
-    const [mapHeight, setMapHeight]=useState(20)
-    const [tileWidth, setTileWidth]=useState(30)
-    const [tileHeight, setTileHeight]=useState(30)
+    const [mapWidth, setMapWidth]=useState(15)
+    const [mapHeight, setMapHeight]=useState(15)
+    const [tileWidth, setTileWidth]=useState(50)
+    const [tileHeight, setTileHeight]=useState(50)
 
     const [GIDTable, setTable] = useState([]);
     const canvasRef=useRef(null);
@@ -153,9 +153,9 @@ const MapEditor = (props) => {
             return [];
         }
         let datamap = [];
-        for(let i = 0; i < mapHeight; i++){
+        for(let i = 0; i < mapWidth; i++){
             let row = []
-            for(let j = 0; j < mapWidth; j++){
+            for(let j = 0; j < mapHeight; j++){
                 let grid_obj = {layers: []};
                 if(old_map && old_map[i] && old_map[i][j] != null){
                     row.push(old_map[i][j]);
@@ -476,7 +476,7 @@ const MapEditor = (props) => {
         
         
         let x =  Math.floor(offsetX / tileWidth);
-        let y = Math.floor(offsetY / tileHeight);
+        let y= Math.floor(offsetY / tileHeight);
         let new_arr = [...dataMap];
         let layers = new_arr[y][x].layers;
         let last_layer = layerOrder[layerOrder.length - 1];
@@ -714,6 +714,7 @@ const MapEditor = (props) => {
         bgcolor: 'background.paper',
         border: '2px solid #000',
         boxShadow: 24,
+        borderRadius:2,
         p: 4,
       };
 
@@ -729,14 +730,17 @@ const MapEditor = (props) => {
         <>
         <ReactRouterPrompt when={true}>
           {({ isActive, onConfirm, onCancel }) => (
-          <Modal open={isActive}>
+          <Modal open={isActive} sx={{borderRadius:"10px", }}>
+            
             <Box sx={style} >
             <p>Do you really want to leave?</p>
-            <button onClick={onCancel}>Cancel</button>
-            <button onClick={(event) => {
+            <Box sx={{ display:"flex"  }} >
+            <Button variant="contained" sx={{ marginLeft: "auto" }}onClick={onCancel} color="error">Cancel</Button>
+            <Button align= "right" variant="contained" sx={{ml:1}} color="success" onClick={(event) => {
               unlock();
               onConfirm(event);
-            }}>Ok</button>
+            }}>Ok</Button>
+            </Box>
             </Box>
         </Modal>
           )}
@@ -748,7 +752,7 @@ const MapEditor = (props) => {
         <Grid item  md={2}>
         <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} saveMapToDB = {saveMapToDB}></ToolbarLeft>
         </Grid>
-        <Grid item  md={8} sx={{pt:4, pl:15}}>
+        <Grid item className={"canvas-grid"} md={8} sx={{pt:4, pl:10}}>
             <Box>
             </Box>
             <Box>

@@ -25,6 +25,7 @@ const styles = {
 const drawerWidth = 240;
 const Sidemenu = (props) => {
   const [anchor,setAnchor]=useState(null);
+  const[importAnchor, setImportAnchor]= useState(null);
   const [color, changeColor] = useState('#fff');
   const colorUpdate = (color, event) => {
     props.updateBrushColorCallback(color);
@@ -52,6 +53,9 @@ const Sidemenu = (props) => {
     reader.readAsText(event.target.files[0]);
 }
 
+const handleImportPNG=(event)=> {
+ props.setImportPNG(true)
+}
 async function onReaderLoad (event) {
     console.log(event.target.result);
     var obj = JSON.parse(event.target.result);
@@ -84,6 +88,10 @@ async function onReaderLoad (event) {
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
   }
+  const openImportPopover=(e)=>{
+    setImportAnchor(e.currentTarget)
+  }
+
     return (
   <Drawer
     variant="permanent"
@@ -107,19 +115,25 @@ async function onReaderLoad (event) {
             <input
     onChange={handleImportJSON}
     style={{ display: "none" }}
-    id="contained-button-file"
+    id="contained-button-file-JSON"
     type="file"
   />
-  <label htmlFor="contained-button-file">
-    <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+  {/* <div
+    onChange={handleImportPNG}
+    
+    id="contained-button-file-PNG"
+    
+  /> */}
+  
+    <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  onClick={openImportPopover} >
     <Typography variant="h6" component="h2">Import</Typography>
     </Button>
-  </label>
+  
             <Menu
                 id="basic-menu"
-                open={Boolean(anchor)}
-                anchorEl={anchor}
-                onClose={()=>{setAnchor(null)}}
+                open={Boolean(importAnchor)}
+                anchorEl={importAnchor}
+                onClose={()=>{setImportAnchor(null)}}
                 PaperProps={{  
                   style: {  
                     width: 200,  
@@ -133,10 +147,13 @@ async function onReaderLoad (event) {
                 }}
                 
               >
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Open Map project</MenuItem>
+                <label htmlFor="contained-button-file-JSON">
+                <MenuItem onClick={()=>{setImportAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon> &nbsp; Import JSON</MenuItem>
+                </label>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; New Map</MenuItem>
-                
+                <label htmlFor="contained-button-file-PNG">
+                <MenuItem onClick={handleImportPNG}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp;Import PNG</MenuItem>
+                </label>
               </Menu>
               <Button variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }} onClick={openPopover}>
                 <Typography variant="h6" component="h2">Export</Typography>

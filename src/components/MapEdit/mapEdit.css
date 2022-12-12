@@ -30,7 +30,7 @@
 }
 .layers-table th, .map-table th,
 .layers-table td, .map-table td {
-    padding: 12px 15px;
+    
 }
 .layers-table {
     border-collapse: collapse;
@@ -46,6 +46,20 @@
   border-collapse: collapse;
   cursor:crosshair;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  position:relative;
+  /* width:400px;
+  height:300px; */
+  overflow:auto;
+  margin-right:260px;
+  margin-bottom: 40px;
+  
   
   
 }
+.canvas-grid{
+  
+  
+    
+  
+}
+

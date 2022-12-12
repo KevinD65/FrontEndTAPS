@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
+import {uploadImageToCloudinaryAPIMethod} from "../../client"
 import { Box, ToggleButtonGroup, TextField, Table,TableRow, TableBody, TableCell,TableContainer,TableHead,Checkbox, Typography, List, ListItem, ListItemText, ToggleButton} from "@mui/material";
 
 export default function JSONSaveModal(props) {
@@ -35,33 +36,58 @@ export default function JSONSaveModal(props) {
     }
     
     const makeOnePNG = async () => {
-      let x = 0;
-      let y = 0;
-      let savedrows = 1;
-      let savedcolumns = 1;
-      let columns = 1;
+      let tileWidthI = Number(tileWidth);
+        let tileHeightI = Number(tileHeight);
+        
+        canvasRef.current.width = tileWidth * 4; 
+        let rowCount = Math.floor(props.tileList.length * tileWidth / canvasRef.current.width) + 1;
+        canvasRef.current.height = rowCount * tileHeight;
+        let colCount = Math.floor(canvasRef.current.width / tileWidth);
+
         let ctx = canvasRef.current.getContext("2d");
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        
+        let x = 0;
+        let y = 0;
+        let colCounter = 0;
         for(let i = 0; i < props.tileList.length; i += 1){
           let img = await loadImage(props.tileList[i]);
-          ctx.drawImage(img, x, y, tileWidth, tileHeight);
-          if(x >= 160){
-              savedrows += 1;
-              x = 0;
-              columns = 1;
-              y = y + tileHeight;
+          ctx.drawImage(img, x, y, tileWidthI, tileHeightI);
+          x = x + tileWidthI;
+          colCounter = colCounter + 1;
+          if(colCounter === colCount){
+            x = 0;
+            colCounter = 0;
+            y = y + tileHeightI;
           }
-          else{
-              savedcolumns = savedcolumns > columns ? savedcolumns : columns;
-              x = x + tileWidth;
-              columns += 1;
-          }
-      }
-        let uri = canvasRef.current.toDataURL();
-        return uri;
+        }
+        console.log("Data joined ", canvasRef.current.toDataURL())
+        // let uri = await handleImageSelected(canvasRef.current.toDataURL());
+        // console.log("HEEE", uri);
+        return canvasRef.current.toDataURL()
     }
+
+
+    const handleImageSelected = async (image) => {
+      console.log("New File Selected");
+          const formData = new FormData();
+          const unsignedUploadPreset = 'ngrdnw4p'
+          formData.append('file', image);
+          formData.append('upload_preset', unsignedUploadPreset);
+  
+          console.log("Cloudinary upload");
+          let url = await uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+              //console.log("Upload success");
+              return response.secure_url;
+              
+          });
+          return url;
+      
+  }
+
     const makeJSON = async() => {
         let uri = await makeOnePNG();
+        console.log("here we go again",uri)
         setDownload(uri);
     }
     const style = {
@@ -81,6 +107,7 @@ export default function JSONSaveModal(props) {
   onClose={props.onClose}
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
+  sx={{overflowY: "scroll"}}
 >
   <Box sx={style} >
   <Typography sx={{background:"#4E6C50", pr:2, pl:2, pt:1 ,pb:1, borderRadius:0, color:"white",align:"center"}}> Export PNG</Typography>
@@ -103,8 +130,21 @@ export default function JSONSaveModal(props) {
         {<a href={download} download={name + ".png"}>Download</a>} */}
 
         <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Preview</Button>
+        <Box
+      sx={{
+          mb: 2,
+          display: "flex",
+          flexDirection: "column",
+          height: 200,
+          width: 200,
+          overflow: "hidden",
+          overflowY: "scroll",
+         // justifyContent="flex-end" # DO NOT USE THIS WITH 'scroll'
+        }}
+    >
         <canvas ref={canvasRef}/>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".png"}>Download</a>}</Button>
+        </Box>
+        {download && <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>  {<a href={download} id="download-link" download={name + ".png"}>Download</a>}</Button>}
   
   </Box>
 </Modal>

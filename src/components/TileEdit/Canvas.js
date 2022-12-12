@@ -145,8 +145,8 @@ const saveImageToCloud = async (event) => {
 };
   
   return (
-    <>
-    <Box>
+    <Box id="canvas-tile">
+    <Box >
    
    {/* <Button onClick={setToErase}>Erase</Button>
    <Button onClick={setToDraw}>Draw</Button> */}
@@ -164,7 +164,7 @@ const saveImageToCloud = async (event) => {
     >
    </canvas>
    
-   </>
+   </Box>
   );
 };
 export default Canvas

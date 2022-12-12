@@ -3,7 +3,8 @@ import { Box,List, Button, TextField, Table,TableRow, TableBody, TableCell,Table
 import { v4 as uuidv4 } from 'uuid';
 import "./mapEdit.css"
 import LayerEntry from "./LayerEntry";
-
+import ApprovalIcon from '@mui/icons-material/Approval';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 
   
 export default function LayersEdit(props) {
@@ -56,12 +57,21 @@ export default function LayersEdit(props) {
 
 <table class="layers-table">
     <thead>
-        <tr>
-            <th>Tools</th>
-            <th></th>
+        <tr >
+            
+                <Box sx={{ display: 'flex',justifyContent: 'space-between', color:"white" ,backgroundColor:"#4E6C50" ,fontWeight:700,pl:1,mr:1 ,pt:1,}}>
+                <Typography sx={{pt:1, pb:2, ml:1}}> Layers </Typography>
+                <Button onClick={addLayer} aria-label ="import-button" variant="h6" component="h2" sx={{color:"white", fontSize:15, m:0 , p:0}} >
+        <Typography variant="h6" component="h2">+</Typography>
+    </Button>
+    </Box>
+    
+
+            
+            
         </tr>
     </thead>
-    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <Box sx={{ width: '100%', maxWidth: 360,  }}>
         <List>
             {layerOrder.map((layer, index) => {
                 return <LayerEntry key={layer.id} id={layer.id} name={layer.name} index={index} 
@@ -73,9 +83,9 @@ export default function LayersEdit(props) {
     </Box>
     </table>
     
-    <Button onClick={addLayer} aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}>
+    {/* <Button onClick={addLayer} aria-label ="import-button"variant='contained' sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}>
         <Typography variant="h6" component="h2">Add Layer</Typography>
-    </Button>
+    </Button> */}
     
     <table class="layers-table">
     <thead>
@@ -84,7 +94,7 @@ export default function LayersEdit(props) {
             <th></th>
         </tr>
     </thead>
-    <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <Box sx={{ width: '100%', maxWidth: 360,  }}>
         <List>
             <ListItem>
             <ToggleButtonGroup
@@ -92,9 +102,11 @@ export default function LayersEdit(props) {
                 exclusive
                 onChange={setErase}
                 color="success"
+                sx={{bgcolor: 'background.paper'}}
+                
             >
-                <ToggleButton value={false}>Draw</ToggleButton>
-                <ToggleButton value={true}>Erase</ToggleButton>
+                <ToggleButton value={false} >Draw <ApprovalIcon></ApprovalIcon></ToggleButton>
+                <ToggleButton value={true}>Erase <AutoFixHighIcon></AutoFixHighIcon></ToggleButton>
                 
             </ToggleButtonGroup>
             </ListItem>
