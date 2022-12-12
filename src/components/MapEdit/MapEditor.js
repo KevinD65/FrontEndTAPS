@@ -17,7 +17,7 @@ import {uploadImageToCloudinaryAPIMethod} from "../../client";
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
 
 import PNGModal from "./ImportPNG";
-import { GET_MAP, GET_TILESETS } from "../../graphql/queries/MapEditorQueries";
+import { GET_MAP, GET_TILESETS } from "../../graphql/queries/mapEditorQueries";
 import { UPDATE_MAP } from "../../graphql/mutations/mapEditorMutations";
 import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
 
@@ -96,6 +96,7 @@ const MapEditor = (props) => {
 
           let savedMapData = JSON.parse(data.getMap.mapData);
           if(savedMapData !== null){
+              console.log("THIS SETTING MAPDATA", savedMapData);
             editMap(savedMapData);
           }
 
@@ -104,6 +105,17 @@ const MapEditor = (props) => {
             editOrder(savedLayerOrder);
           }
 
+          let savedMapHeight = JSON.parse(data.getMap.mapHeight);
+          if(savedMapHeight !== null){
+            setMapHeight(savedMapHeight);
+          }
+
+          let savedMapWidth = JSON.parse(data.getMap.mapWidth);
+          if(savedMapWidth !== null){
+            setMapWidth(savedMapWidth);
+          }
+
+          console.log("TOMATO POTATO");
           console.log("THIS IS MY SAVED MAP DATA: ", savedMapData);
           console.log("THIS IS MY SAVED TILELIST DATA: ", savedTileListData);
           console.log("THIS IS MY SAVED TILESET DATA: ", savedTilesetData);
@@ -126,6 +138,9 @@ const MapEditor = (props) => {
      * Creates an empty dataMap using the dimensions of the map
      */
     const createDataMap = (old_map) => {
+        if(old_map != null && old_map.length == mapHeight && old_map[0].length == mapWidth){
+            return [];
+        }
         let datamap = [];
         for(let i = 0; i < mapHeight; i++){
             let row = []
@@ -164,14 +179,14 @@ const MapEditor = (props) => {
     const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
     const[newDataMap, setNewDataMap]=useState([])
 
-    
+    /*
     React.useEffect(() => {
         console.log("THIS USEEFFECT HAS RUN!!!");
         if(contextRef.current !== null){
             console.log("WE ARE NOW INSIDE THIS USEEFFECT!!!");
             drawWholeMap();
         }
-    }, [dataMap]);
+    }, [dataMap]);*/
 
     const setOrder = (new_arr) => {
         editOrder(new_arr);
@@ -321,34 +336,38 @@ const MapEditor = (props) => {
          contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
          drawBoxes();
          drawWholeMap();
+         console.log("TOMATO THIS WHEN IS THIS USEEFFECT EXECUTING ?!?!?!?!?!?!!?!??!?!", dataMap);
+         
          let new_map = createDataMap(dataMap)
-         editMap([...new_map])
+         if(new_map.length > 0){
+            editMap([...new_map])
+         }
 
          console.log(`USE EFFECT HAS RUN !!!!!!! ${mapHeight} hihihihihihihi`);
 
-         },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+         },[mapWidth, mapHeight, clearCanvas, layerOrder, dataMap]);
          console.log(`MAP HEIGHT IS ${mapHeight} hihihihihihihi`);
 
-         function loadImage(url) {
-            return new Promise((fulfill, reject) => {
-              let imageObj = new Image();
-              imageObj.onload = () => fulfill(imageObj);
-              imageObj.setAttribute('crossOrigin', 'anonymous');
-              imageObj.src = url;
-            });
-          }
+    function loadImage(url) {
+    return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+    });
+    }
 
-    const drawBox = async(layers, x, y) => {
+    /*
     useEffect(() => {
         if(contextRef.current != null){
+            console.log("TOMATO THIS SANITY CHECK ", dataMap);
             drawWholeMap();
         }
-    }, [dataMap])
+    }, [dataMap])*/
 
-
-    const drawBox = (layers, x, y) => {
+    const drawBox = async(layers, x, y) => {
         if(x == 0 && y == 0){
-            console.log("layers", layers);
+            console.log("THIS INSIDE DRAWBOX", dataMap);
         }
         contextRef.current.clearRect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
 
@@ -363,8 +382,10 @@ const MapEditor = (props) => {
             }
         }
 
+        contextRef.current.beginPath();
         contextRef.current.rect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
         contextRef.current.stroke();
+        contextRef.current.closePath();
     }
 
     //DANGEROUS FUNCTION: Use only as last resort
@@ -457,11 +478,12 @@ const MapEditor = (props) => {
         new_arr[x][y].layers = new_layers;
         
         drawBox(new_layers, x, y);
-        editMap(new_arr); //update the dataMap
+        //editMap(new_arr); //update the dataMap
 
+        /*
         console.log("THIS IS MY DATA MAP (PLACE TILE): ", new_arr);
         console.log("THESE ARE THE TILESETS FOR MY DATAMAP: ", tileList);
-        editMap(new_arr);
+        editMap(new_arr);*/
     }
     }
 
@@ -504,7 +526,7 @@ const MapEditor = (props) => {
         console.log("NEW LAYERS: ", new_layers);
         new_arr[y][x].layers = new_layers;
         drawBox(new_layers, x, y);
-        editMap(new_arr);
+        //editMap(new_arr);
     }
 
     const populateDataMap = (map_obj, imported_tiles) => {
@@ -693,7 +715,7 @@ const MapEditor = (props) => {
 
         let updatedMap = await updateMap({ variables: { 
             id: props.map, 
-            input: { mapData: JSON.stringify(dataMap), importedTileList: JSON.stringify(importedTileList), tilesets: JSON.stringify(tileListCloudinary), layerOrder: JSON.stringify(layerOrder), mapHeight: mapHeight, mapWidth: mapWidth}
+            input: { mapData: JSON.stringify(dataMap), importedTileList: JSON.stringify(importedTileList), tilesets: JSON.stringify(tileListCloudinary), layerOrder: JSON.stringify(layerOrder), mapHeight: parseInt(mapHeight), mapWidth: parseInt(mapWidth)}
         }});
     }
     

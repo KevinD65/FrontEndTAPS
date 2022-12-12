@@ -27,6 +27,7 @@ export default function MapEditNav({mapWidth, mapHeight, setMapHeight,setMapWidt
 
 
     const doneEditingValue=(e)=>{
+        
         changingWidth?setMapWidth(e): setMapHeight(e)
         
         
