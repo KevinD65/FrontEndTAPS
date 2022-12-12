@@ -64,7 +64,7 @@ const ToolBarLeft = (props) => {
 
 
          {/* List of sidebar components */}
-    {[{name:'All', icon:<InboxIcon/>}, {name:'Maps', icon:<MapOutlinedIcon/>}, {name:'Tiles', icon:<GridViewOutlinedIcon/>}, {name:'Folders', icon:<FolderOpenIcon/>}, ].map((text, index) => (
+    {[{name:'All', icon:<InboxIcon/>}, {name:'Maps', icon:<MapOutlinedIcon/>}, {name:'Tiles', icon:<GridViewOutlinedIcon/>} ].map((text, index) => (
         <ListItem key={text.name} disablePadding>
           <ListItemButton onClick={() => handleTagFilterChange(text.name)}>
             <ListItemIcon>
@@ -83,7 +83,7 @@ const ToolBarLeft = (props) => {
 
 <Divider />
 
-{[{name:'Characters', icon:<InboxIcon/>}, {name:'Texture', icon:<MapOutlinedIcon/>}, {name:'UI', icon:<GridViewOutlinedIcon/>}, {name:'Icons', icon:<StarBorderIcon/>}, {name:'Background', icon:<FolderSharedOutlinedIcon/>},{name:'Sprites', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
+{/* {[{name:'Characters', icon:<InboxIcon/>}, {name:'Texture', icon:<MapOutlinedIcon/>}, {name:'UI', icon:<GridViewOutlinedIcon/>}, {name:'Icons', icon:<StarBorderIcon/>}, {name:'Background', icon:<FolderSharedOutlinedIcon/>},{name:'Sprites', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
         <ListItem key={text.name} disablePadding >
           <ListItemButton onClick={() => handleTagFilterChange(text.name)}>
             <ListItemIcon>
@@ -96,7 +96,7 @@ const ToolBarLeft = (props) => {
           
         </ListItem>
         
-      ))}
+      ))} */}
         <Divider />
     </List>
     

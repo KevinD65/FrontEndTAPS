@@ -88,7 +88,6 @@ useEffect(() => {
             updateRecentSearches(recentSearchesCopy);
         }
         //console.log(recentSearches);
-        alert("SEARCHING FOR: " + input);
         //execute query
     }
 

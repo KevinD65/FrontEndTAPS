@@ -100,7 +100,7 @@ const Sidemenu = (props) => {
     </Box>
     <Divider />
          {/* List of sidebar components */}
-    {[{name:'All', icon:<InboxIcon/>}, {name:'Maps', icon:<MapOutlinedIcon/>}, {name:'Tiles', icon:<GridViewOutlinedIcon/>}, {name:'Starred', icon:<StarBorderIcon/>}, {name:'Shared with me', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
+    {/* {[{name:'All', icon:<InboxIcon/>}, {name:'Maps', icon:<MapOutlinedIcon/>}, {name:'Tiles', icon:<GridViewOutlinedIcon/>}, {name:'Starred', icon:<StarBorderIcon/>}, {name:'Shared with me', icon:<FolderSharedOutlinedIcon/>}].map((text, index) => (
         <ListItem key={text.name} disablePadding>
           <ListItemButton>
             <ListItemIcon>
@@ -113,7 +113,7 @@ const Sidemenu = (props) => {
           
         </ListItem>
         
-      ))}
+      ))} */}
         <Divider />
     </List>
     
