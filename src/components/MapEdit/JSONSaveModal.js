@@ -193,10 +193,8 @@ export default function JSONSaveModal(props) {
             <Typography variant="body1">{"Tile Height: " + props.tileHeight} </Typography>
             </ListItem>
         </List>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Confirm Properties</Button>
-        <canvas ref={canvasRef}/>
-        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }}>  {<a href={download} id="download-link" download={name + ".json"}>Download</a>}</Button>
-  </Box>
+        <Button variant="contained" sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50"  ,color:"white" }} onClick={makeJSON}>Download</Button>
+        </Box>
 </Modal>
   )
 }

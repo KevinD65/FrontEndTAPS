@@ -1,7 +1,7 @@
 import React from "react";
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
-import { Toolbar,Box } from "@mui/material";
+import { Toolbar,Box, Typography } from "@mui/material";
 import { useState } from 'react';
 import ToolbarLeft from "./ToolBarLeft"
 import ToolbarRight from "./ToolbarRight"
@@ -11,6 +11,7 @@ import Canvas from "./Canvas";
 import JSONSaveModal from "./JSONSaveModal";
 import PNGSaveModal from "./PNGSaveModal";
 import SaveModal from "./SaveModal";
+import {Button} from "@mui/material";
 import { SAVE_TILESET, GET_TILESET } from "../../graphql/queries/TileEditorQueries";
 import { useMutation, useQuery } from '@apollo/client';
 import ReactRouterPrompt from "react-router-prompt";
@@ -19,6 +20,7 @@ import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
 import { ADD_COLLABORATOR_TILE,GET_COLLABORATORS} from "../../graphql/queries/collaboratorQueries";
+import PNGModal from "./ImportPNG";
 
 const TileEditor = (props) => {
   let currentUser = props.authenticatedUser;
@@ -37,6 +39,7 @@ const TileEditor = (props) => {
   }, []);  
 
     const[tileList, setTileList]=useState([])
+    const [importedTileList, editImportedTileList] = useState([]);
     const canvasRef = useRef(null);
     const[base64,setBase64]=useState("")
     const [drawing, setDrawing] = useState();
@@ -51,6 +54,7 @@ const TileEditor = (props) => {
     const [save, toggleSave] = useState(false);
     const [predraw, setPredraw] = useState("");
     const [collabList, setCollabList]=useState([])
+    const [importPNG, setImportPNG] = useState(false);
    
     const drawAgain = (data) => {
       const new_data = new String(data);
@@ -106,6 +110,7 @@ const TileEditor = (props) => {
 
 
     const style = {
+
       position: 'absolute',
       top: '50%',
       left: '50%',
@@ -114,6 +119,7 @@ const TileEditor = (props) => {
       bgcolor: 'background.paper',
       border: '2px solid #000',
       boxShadow: 24,
+      borderRadius:2,
       p: 4,
     };
 
@@ -140,18 +146,102 @@ const TileEditor = (props) => {
       
     }
 
+    const importTileset = (imported_tiles, map_obj) => {
+      let onlyTiles= imported_tiles.tiles.map((tile)=>{
+            return tile.data
+      })
+      let new_array=[...tileList, ...onlyTiles]
+      console.log("imported_tiles buhaha",new_array)
+       console.log("our tiles", tileList)
+      // let tilesetName = imported_tiles.TSName;
+      // let tileCount = imported_tiles.numTiles;
+      // let tileheight = imported_tiles.tileHeight;
+      // let tilewidth = imported_tiles.tileWidth;
+      // let export_ts = imported_tiles.export_ts;
+      setTileList(oldArray => [...oldArray, ...onlyTiles]);
+
+      // if(tileList.length > 0){
+      //     let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
+           
+      //     export_ts.firstgid = startingGID;
+      //     //POPULATES GID TABLE
+          
+      //     for(let i = 0; i < imported_tiles.tiles; i++){
+      //         console.log("STARTING GID", startingGID)
+      //         imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
+      //     }
+
+          //POPULATE DATAMAP HERE
+          let orderArray;
+          // if(map_obj !== null){
+          //     let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+          //     orderArray = layerOrderArray;
+              
+          //     editMap([...populatedDataMap]);
+
+          //     setTileWidth(map_obj.tilewidth);
+          //     setTileHeight(map_obj.tileheight);
+          //     setMapWidth(map_obj.width);
+          //     setMapHeight(map_obj.height);
+
+          //     setOrder([...layerOrderArray]);
+          // }
+
+          // editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount, export_ts}]);
+          
+
+          // setTileWidth(map_obj.tilewidth);
+          // setTileHeight(map_obj.tileheight);
+          // setMapWidth(map_obj.width);
+          // setMapHeight(map_obj.height);
+          
+          //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+      // }
+      // else{
+      //     //POPULATE DATAMAP HERE
+      //     // let orderArray;
+      //     // if(map_obj !== null){
+      //     //     let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+      //     //     orderArray = layerOrderArray;
+
+      //     //     editMap([...populatedDataMap]);
+
+      //     //     setTileWidth(map_obj.tilewidth);
+      //     //     setTileHeight(map_obj.tileheight);
+      //     //     setMapWidth(map_obj.width);
+      //     //     setMapHeight(map_obj.height);
+
+      //     //     setOrder([...layerOrderArray]);
+      //     // }
+      //     // console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
+      //     setTileList([imported_tiles]);
+      //     editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount, export_ts}]);
+
+      //     console.log("CHANGING DIMENSIONS!!!!!");
+      //     //setTileWidth(map_obj.tilewidth);
+      //     //setTileHeight(map_obj.tileheight);
+      //     //setMapWidth(map_obj.width);
+      //     //setMapHeight(map_obj.height);
+      // }
+  }
+  
+
+
+
     return (
         <>
         <ReactRouterPrompt when={true}>
           {({ isActive, onConfirm, onCancel }) => (
-          <Modal open={isActive}>
+          <Modal open={isActive} sx={{borderRadius:"10px", }}>
             <Box sx={style} >
-            <p>Do you really want to leave?</p>
-            <button onClick={onCancel}>Cancel</button>
-            <button onClick={(event) => {
+            <Typography sx={{fontSize:"1.2rem", fontWeight:500, mb:3}}>Do you really want to leave?</Typography>
+            <Box sx={{ display:"flex"  }} >
+            <Button variant="contained" sx={{ marginLeft: "auto" }}onClick={onCancel} color="error">Cancel</Button>
+            <Button align= "right" variant="contained" sx={{ml:1}} color="success" onClick={(event) => {
               unlock();
               onConfirm(event);
-            }}>Ok</button>
+            }}>Ok</Button>
+            </Box>
             </Box>
         </Modal>
           )}
@@ -169,6 +259,7 @@ const TileEditor = (props) => {
                 turnOnPNGMod={() => togglePNG(true)}
                 turnOnSaveMod={() => toggleSave(true)}
                 handleImport={handleImport}
+                setImportPNG={setImportPNG}
                 />
             </Grid>
             
@@ -186,8 +277,10 @@ const TileEditor = (props) => {
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} tileList={tileList} />
         <PNGSaveModal open={savePNG} onClose={() => togglePNG(false)} tileList={tileList} />
+        
         <SaveModal open={save} onClose={() => toggleSave(false)} tileList={tileList} 
         tilesetId={props.tileset} saveTileset={saveTileset}/>
+        <PNGModal open={importPNG} onClose={() => setImportPNG(false)} importTileset={importTileset}/>
         </>
     )
 }

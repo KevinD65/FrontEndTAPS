@@ -9,7 +9,8 @@ import {UPDATE_USER_INFO, GET_USER} from '../../graphql/queries/profileScreenQM'
 import TextField from '@mui/material/TextField';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
-
+import { Avatar,Typography } from "@mui/material";
+import { deepOrange} from '@mui/material/colors';
 const UserProfile = (props) => {
 
     //props contains current User object
@@ -88,7 +89,7 @@ const UserProfile = (props) => {
             <>
                 <div id='userprofile-bio-panel'>
                     {!get_user_loading && !get_user_error && <div id='bio-container'>
-                        <img id='profile-pic' src={DogeLoaf}></img>
+                    <Avatar sx={{ml:5, width: 200, height: 200 , backgroundColor:deepOrange[500]}}><Typography sx={{fontSize:100, }}>{user_data.getUser.name[0]}</Typography></Avatar>
                         <div id='bio-name'>{user_data.getUser.name}</div>
                         <div id='bio-username'>{user_data.getUser.username}</div>
                         {!editBio ? 

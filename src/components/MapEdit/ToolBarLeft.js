@@ -73,6 +73,11 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
 
     return (
   <Drawer
+  PaperProps={{
+    sx: {
+      backgroundColor: "#F8EDE3"
+    }
+  }}
     variant="permanent"
     sx={{
       width: drawerWidth,

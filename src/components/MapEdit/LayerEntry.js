@@ -9,8 +9,8 @@ export default function (props) {
         props.changeNameCallback(props.index, event.target.value);
     }
   return (
-    <Box sx={{display:'flex' }}>
-        <TextField variant="outlined"  size="small" defaultValue={props.name} onBlur={changeName}/>
+    <Box sx={{display:'flex' }} >
+        <TextField sx={{bgcolor: 'background.paper'}}variant="outlined" size="small" defaultValue={props.name} onBlur={changeName}/>
         <KeyboardArrowUpIcon onClick={(() => props.swapUp(props.index))}/>
         <KeyboardArrowDownIcon onClick={(() => props.swapDown(props.index))}/>
         <DeleteIcon onClick={() => props.deleteLayer(props.id)}/>

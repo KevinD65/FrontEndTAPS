@@ -11,6 +11,7 @@ export default function SaveModal(props) {
     const [tileWidthInput, changeWidth] = React.useState(50);
     const [tileHeightInput, changeHeight] = React.useState(50);
     const [download, setDownload] = React.useState({});
+    const [clicked, setClicked]= React.useState(false);
 
     const handleKeyDown = (e, field) => {
         if (e.key === 'Enter'){
@@ -122,10 +123,13 @@ export default function SaveModal(props) {
         };
         console.log(object);
         setDownload(object);
+        setClicked(true);
+        
         
     }
 
     const saveTile = async () => {
+    
         console.log("Download is", download);
         let res = await props.saveTileset({
             variables: {
@@ -134,6 +138,7 @@ export default function SaveModal(props) {
             }
         });
         console.log("Saved succesfully", res);
+        setClicked(false)
     }
     const style = {
         position: 'absolute',
@@ -170,7 +175,7 @@ export default function SaveModal(props) {
         </List>
         <Button onClick={makeJSON}>Preview</Button>
         <canvas ref={canvasRef}/>
-        <Button onClick={saveTile}>Save</Button>
+        {clicked &&<Button onClick={saveTile}>Save</Button>}
   </Box>
 </Modal>
   )

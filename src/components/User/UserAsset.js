@@ -211,6 +211,8 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+  borderRadius:2,
+  
 };
 
   return (
@@ -218,7 +220,7 @@ const style = {
     <Modal open={lockModal}>
             <Box sx={style} >
             <p>Asset is currently being edited</p>
-            <button onClick={() => showLock(false)}>Ok</button>
+            <Button color="success" variant="contained"sx={{ml:"auto", }} onClick={() => showLock(false)}>Ok</Button>
             </Box>
         </Modal>
 <Box sx={{ display: 'flex' ,backgroundColor:"F0EBE3"}}>
