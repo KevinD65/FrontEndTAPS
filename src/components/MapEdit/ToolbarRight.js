@@ -92,7 +92,7 @@ const Sidemenu = (props) => {
         
         </Typography>
         <label htmlFor="contained-button-file" sx={{color:"white" ,backgroundColor:"#4E6C50"}}>
-          <Button  component="span"    >
+          <Button  component="span"  onClick={() => {props.togglePNG(true)}}  >
           <Typography variant="h6" component="h2" sx={{color:"white"}}>+</Typography>
           </Button>
         </label>
@@ -102,8 +102,12 @@ const Sidemenu = (props) => {
             sx={{ border: 1 }}
             >
           
-        <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/>
-        
+        {/* <input onChange={handleImportJSON} style={{ display: "none" }} id="contained-button-file" type="file"/> */}
+        {/* <label htmlFor="contained-button-file">
+          <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  onClick={() => {props.togglePNG(true)}}>
+          <Typography variant="h6" component="h2">Import</Typography>
+          </Button>
+        </label> */}
         <TilesetMap changeSelect = {props.changeSelect} tiles={props.tiles} importedTileList = {props.importedTileList}/>
         </Grid>
     </List>

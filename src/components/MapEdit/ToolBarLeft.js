@@ -17,7 +17,7 @@ import { parseTilesets } from '../helpful_functions/helpful_function_MapImport';
 
 
 const drawerWidth = 240;
-const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap }) => {
+const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth, tileHeight, tileWidth, setTileHeight, setTileWidth, transactionStack, importMap, saveMapToDB}) => {
   const [anchor,setAnchor]=useState(null)
   const openPopover=(e)=>{
     setAnchor(e.currentTarget)
@@ -66,6 +66,11 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
     }
   }
 
+  const saveMapDB = () => {
+    setAnchor(false);
+    saveMapToDB();
+  }
+
     return (
   <Drawer
   PaperProps={{
@@ -89,9 +94,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
             {/* Button for the  add menu */}
             <input onChange={handleImportMap} style={{ display: "none" }} id="contained-button-file-mapImport" type="file"/>
             <label htmlFor="contained-button-file-mapImport">
-              <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
-              <Typography variant="h6" component="h2">Import</Typography>
-              </Button>
+              
             </label>
             
             <Menu
@@ -143,7 +146,7 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
                 <Divider></Divider>
                 <MenuItem onClick={() => {saveJSON()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save As</MenuItem>
                 <Divider></Divider>
-                <MenuItem onClick={()=>{setAnchor(false)}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
+                <MenuItem onClick={()=>{/*setAnchor(false)*/saveMapDB()}}> <MapOutlinedIcon></MapOutlinedIcon>&nbsp; Save</MenuItem>
                 
               </Menu>
       
@@ -155,14 +158,6 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
          <MapEditNav mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth}  />
         <Divider />
     </List>
-
-    <Divider>
-      <Undo onClick = {() => handleUndoRedo("undo")}/>
-      <Redo onClick = {() => handleUndoRedo("redo")}/>
-    </Divider>
-    
-    
-    
   </Box>
   </Drawer>
             
@@ -173,6 +168,12 @@ const Sidemenu = ({turnOnJSONMod, mapHeight, mapWidth ,setMapHeight, setMapWidth
 }
 
 export default Sidemenu
+
+/**
+ * <Button variant="contained"  component="span"  sx={{marginTop:3, marginBottom:2, pr:4, pl:4, backgroundColor:"#4E6C50" }}  >
+              <Typography variant="h6" component="h2">Import</Typography>
+              </Button>
+ */
 
 
 

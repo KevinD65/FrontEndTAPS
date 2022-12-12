@@ -10,13 +10,17 @@ import { TOGGLE_LOCK } from '../../graphql/mutations/locking';
 import ReactRouterPrompt from "react-router-prompt";
 import { useMutation, useQuery } from '@apollo/client';
 import JSONSaveModal from "./JSONSaveModal";
-import { GET_TILESETS } from '../../graphql/queries/mapEditorQueries';
 import Cookies from 'universal-cookie';
 import {useLocation} from 'react-router-dom';
+import {uploadImageToCloudinaryAPIMethod} from "../../client";
 
 import { loadTSMapEditor } from '../helpful_functions/helpful_function_ME';
-import { GET_MAP } from "../../graphql/queries/mapEditorQueries";
+
+import PNGModal from "./ImportPNG";
+import { GET_MAP, GET_TILESETS } from "../../graphql/queries/mapEditorQueries";
+import { UPDATE_MAP } from "../../graphql/mutations/mapEditorMutations";
 import { ADD_COLLABORATOR_MAP } from "../../graphql/queries/collaboratorQueries";
+
 
 
 const MapEditor = (props) => {
@@ -48,6 +52,7 @@ const MapEditor = (props) => {
     const [isDrawing, setIsDrawing]= useState(false);
 
     const [saveJSON, toggleJSON] =useState(false);
+    const [importPNG, togglePNG] = useState(false);
     const [clearCanvas, setClearCanvas]=useState(false);
     const [tileList, setTileList] = useState([]); //used for keeping track of the imported tilesets for the current instance of the map editor
     const [importedTileList, editImportedTileList] = useState([]); //used for keeping track of the names of each imported Tileset to provide mappings between names and starting GIDs
@@ -75,11 +80,61 @@ const MapEditor = (props) => {
 
       React.useEffect(() => {
         if(data) {
+            console.log(data);
             
           setCollabList([...  data.getMap.collabolators])
+
+          let savedTileListData = JSON.parse(data.getMap.importedTileList);
+          if(savedTileListData !== null){
+            editImportedTileList(savedTileListData);
+          }
+
+          let savedTilesetData = JSON.parse(data.getMap.tilesets);
+          if(savedTilesetData !== null){
+            setTileList(savedTilesetData);
+          }
+
+          let savedMapData = JSON.parse(data.getMap.mapData);
+          if(savedMapData !== null){
+              console.log("THIS SETTING MAPDATA", savedMapData);
+            editMap(savedMapData);
+          }
+
+          let savedLayerOrder = JSON.parse(data.getMap.layerOrder);
+          if(savedLayerOrder !== null){
+            editOrder(savedLayerOrder);
+          }
+
+          let savedMapHeight = JSON.parse(data.getMap.mapHeight);
+          if(savedMapHeight !== null){
+            setMapHeight(savedMapHeight);
+          }
+
+          let savedMapWidth = JSON.parse(data.getMap.mapWidth);
+          if(savedMapWidth !== null){
+            setMapWidth(savedMapWidth);
+          }
+
+          let savedTileHeight = JSON.parse(data.getMap.tileheight);
+          if(savedTileHeight !== null){
+            setTileHeight(savedTileHeight);
+          }
+
+          let savedTileWidth = JSON.parse(data.getMap.tilewidth);
+          if(savedTileWidth !== null){
+            setTileWidth(savedTileWidth);
+          }
+
+          console.log("TOMATO POTATO");
+          console.log("THIS IS MY SAVED MAP DATA: ", savedMapData);
+          console.log("THIS IS MY SAVED TILELIST DATA: ", savedTileListData);
+          console.log("THIS IS MY SAVED TILESET DATA: ", savedTilesetData);
+          console.log("THIS IS MY SAVED LAYERORDER DATA: ", savedLayerOrder);
         }
-    }, [data])
-      const [addCollaborator] = useMutation(ADD_COLLABORATOR_MAP, refetchTileset);
+    }, [data])  
+    
+    const [addCollaborator] = useMutation(ADD_COLLABORATOR_MAP, refetchTileset);
+    const [updateMap] = useMutation(UPDATE_MAP, refetchTileset);
 
     //GET_TILESETS QUERY
     const { loading: get_tilesets_loading, error: get_tilesets_error, data: tilesetData, refetch: refetchUserTilesets } = useQuery(GET_TILESETS, {
@@ -92,13 +147,21 @@ const MapEditor = (props) => {
     /**
      * Creates an empty dataMap using the dimensions of the map
      */
-    const createDataMap = () => {
+    const createDataMap = (old_map) => {
+        if(old_map != null && old_map.length == mapHeight && old_map[0].length == mapWidth){
+            return [];
+        }
         let datamap = [];
         for(let i = 0; i < mapWidth; i++){
             let row = []
             for(let j = 0; j < mapHeight; j++){
                 let grid_obj = {layers: []};
-                row.push(grid_obj);
+                if(old_map && old_map[i] && old_map[i][j] != null){
+                    row.push(old_map[i][j]);
+                }
+                else{
+                    row.push(grid_obj);
+                }
             }
             datamap.push(row);
         }
@@ -121,10 +184,19 @@ const MapEditor = (props) => {
         return datamap;
     }
 
-    const [dataMap, editMap] = useState(createDataMap());
+    const [dataMap, editMap] = useState(() => createDataMap(null));
     const [selectedTile, changeSelect] = useState({gid: -1, dataURL: ""});
     const [layerOrder, editOrder] = useState([{id: uuidv4(), name: "Layer 1"}]);
     const[newDataMap, setNewDataMap]=useState([])
+
+    /*
+    React.useEffect(() => {
+        console.log("THIS USEEFFECT HAS RUN!!!");
+        if(contextRef.current !== null){
+            console.log("WE ARE NOW INSIDE THIS USEEFFECT!!!");
+            drawWholeMap();
+        }
+    }, [dataMap]);*/
 
     const setOrder = (new_arr) => {
         editOrder(new_arr);
@@ -260,92 +332,80 @@ const MapEditor = (props) => {
         contextRef.current.stroke();
     }
 
-    // useEffect(()=>{
-    //      const canvas=canvasRef.current;
-    //      canvas.width= mapWidth * tileWidth;
-    //      canvas.height= mapHeight * tileHeight;
-    //      const context= canvas.getContext("2d")
-    //      context.lineCap="round"
-    //      context.strokeStyle="Red"
-    //      context.lineWidth=2;
-    //      contextRef.current=context;
-    //      canvasRef.current=canvas;
-    //      contextRef.current.fillStyle = "white";
-    //      contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
-         
-         
-         
-    //      let a= createDataMap();
-    //      console.log("this is a" ,a)
-    //      setNewDataMap([...a]);
-    //      editMap([...a]);
-    //      drawBoxes();
-    //      console.log("this is dataMap" ,dataMap)
-        
-    //      console.log("USE EFFECT HAS RUN !!!!!!!");
-
-    //      },[mapWidth, mapHeight, clearCanvas, layerOrder]);
-
-
-    //     //  useEffect(()=>{
-           
-            
-    //     //      editMap([...newDataMap])
-    //     //      console.log(newDataMap)
-    //     //      //drawWholeMapCustom(newDataMap, layerOrder);
-    //     //      drawBoxes();
-
-    //     // },[newDataMap]);
-
     useEffect(()=>{
-        const canvas=canvasRef.current;
-        canvas.width= mapWidth * tileWidth;
-        canvas.height= mapHeight * tileHeight;
-        const context= canvas.getContext("2d")
-        context.lineCap="round"
-        context.strokeStyle="Red"
-        context.lineWidth=2;
-        contextRef.current=context;
-        canvasRef.current=canvas;
-        contextRef.current.fillStyle = "white";
-        contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
-        // let a= createDataMap();
-        // console.log("this is a" ,a)
-        // editMap([...a]);
-        drawBoxes();
-        drawWholeMap();
-        
-        console.log("USE EFFECT HAS RUN !!!!!!!");
-        },[mapWidth, mapHeight, clearCanvas, layerOrder]);
+         const canvas=canvasRef.current;
+         canvas.width= mapWidth * tileWidth;
+         canvas.height= mapHeight * tileHeight;
+         const context= canvas.getContext("2d")
+         context.lineCap="round"
+         context.strokeStyle="Red"
+         context.lineWidth=2;
+         contextRef.current=context;
+         canvasRef.current=canvas;
+         contextRef.current.fillStyle = "white";
+         contextRef.current.fillRect(0, 0, canvas.width, canvas.height)
+         drawBoxes();
+         drawWholeMap();
+         console.log("TOMATO THIS WHEN IS THIS USEEFFECT EXECUTING ?!?!?!?!?!?!!?!??!?!", dataMap);
+         
+         let new_map = createDataMap(dataMap)
+         if(new_map.length > 0){
+            editMap([...new_map])
+         }
 
+         console.log(`USE EFFECT HAS RUN !!!!!!! ${mapHeight} hihihihihihihi`);
 
-    const drawBox = (layers, x, y) => {
+         },[mapWidth, mapHeight, clearCanvas, layerOrder, dataMap]);
+         console.log(`MAP HEIGHT IS ${mapHeight} hihihihihihihi`);
+
+    function loadImage(url) {
+    return new Promise((fulfill, reject) => {
+        let imageObj = new Image();
+        imageObj.onload = () => fulfill(imageObj);
+        imageObj.setAttribute('crossOrigin', 'anonymous');
+        imageObj.src = url;
+    });
+    }
+
+    /*
+    useEffect(() => {
+        if(contextRef.current != null){
+            console.log("TOMATO THIS SANITY CHECK ", dataMap);
+            drawWholeMap();
+        }
+    }, [dataMap])*/
+
+    const drawBox = async(layers, x, y) => {
         if(x == 0 && y == 0){
-            console.log("layers", layers);
+            console.log("THIS INSIDE DRAWBOX", dataMap);
         }
         contextRef.current.clearRect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
-        contextRef.current.rect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
-        contextRef.current.stroke();
 
         for(let i = 0; i < layerOrder.length; i++){
             let image_data = layers.find(x => x.layer_id === layerOrder[i].id);
             if(image_data){
-                let img = new Image;
-                img.src = image_data.data;
+                //console.log("THIS DRAWING BOX!!!", x, y);
+                let img = await loadImage(image_data.data);
                 contextRef.current.drawImage(img, x * tileWidth, y * tileHeight);
             }
             else{
             }
-            
         }
+
+        contextRef.current.beginPath();
+        contextRef.current.rect(x * tileWidth,  y * tileHeight, tileWidth, tileHeight);
+        contextRef.current.stroke();
+        contextRef.current.closePath();
     }
 
     //DANGEROUS FUNCTION: Use only as last resort
     const drawWholeMap = () =>{
-        console.log("At draw whole map", dataMap);
+        console.log("THIS At draw whole map", dataMap);
+        console.log("THIS At draw whole map LAYER ORDER", layerOrder);
+
         for(let i = 0; i < dataMap.length; i += 1){
             for(let j = 0; j < dataMap[i].length; j += 1){
-                drawBox(dataMap[i][j].layers, i, j);
+                drawBox(dataMap[i][j].layers, j, i);
             }
         }
     }
@@ -405,10 +465,10 @@ const MapEditor = (props) => {
         let layers = new_arr[x][y].layers;
         let last_layer = layerOrder[layerOrder.length - 1];
         let new_layers =  JSON.parse(JSON.stringify(layers));
-        console.log("Before", layers)
+        //console.log("Before", layers)
         if(selectedTile.gid > 0){
             let {gid, data} = selectedTile;
-            console.log("adhjkahiqwahdu9q298-q98asodnmlkq2neoih2897ydhasndiaheiud2hipudh89qpuhdiuawnbdiujw", gid, data);
+            //console.log("adhjkahiqwahdu9q298-q98asodnmlkq2neoih2897ydhasndiaheiud2hipudh89qpuhdiuawnbdiujw", gid, data);
             let index = new_layers.findIndex(x => x.layer_id === last_layer.id);
             if(index == -1){
                 new_layers.push({layer_id: last_layer.id, gid: gid, data: data});
@@ -426,8 +486,14 @@ const MapEditor = (props) => {
         }
         console.log("NEW LAYERS: ", new_layers);
         new_arr[x][y].layers = new_layers;
+        
         drawBox(new_layers, x, y);
-        editMap(new_arr);
+        //editMap(new_arr); //update the dataMap
+
+        /*
+        console.log("THIS IS MY DATA MAP (PLACE TILE): ", new_arr);
+        console.log("THESE ARE THE TILESETS FOR MY DATAMAP: ", tileList);
+        editMap(new_arr);*/
     }
     }
 
@@ -445,14 +511,7 @@ const MapEditor = (props) => {
         let x =  Math.floor(offsetX / tileWidth);
         let y= Math.floor(offsetY / tileHeight);
         let new_arr = [...dataMap];
-        
-        console.log("new_arr",new_arr);
-        console.log("x, y",x, y)
-        console.log(new_arr[x])
-        
-        let layers = new_arr[x][y].layers;
-        console.log("please layers 1", layers)
-       
+        let layers = new_arr[y][x].layers;
         let last_layer = layerOrder[layerOrder.length - 1];
         let new_layers =  JSON.parse(JSON.stringify(layers));
         console.log("Before", layers)
@@ -475,10 +534,9 @@ const MapEditor = (props) => {
             }
         }
         console.log("NEW LAYERS: ", new_layers);
-        new_arr[x][y].layers = new_layers;
+        new_arr[y][x].layers = new_layers;
         drawBox(new_layers, x, y);
-        editMap(new_arr);
-        
+        //editMap(new_arr);
     }
 
     const populateDataMap = (map_obj, imported_tiles) => {
@@ -488,15 +546,17 @@ const MapEditor = (props) => {
 
         let mapLayers = map_obj.layers;
         let layerName, layer_id, layer_obj;
+        let layerOrderArray = [];
         for(let layers = 0; layers < mapLayers.length; layers++){
             layer_obj = mapLayers[layers];
             layerName = layer_obj.name;
             layer_id = uuidv4();
+            layerOrderArray.push({id: layer_id, name: layerName});
             let layerDataCounter = 0;
             for(let row = 0; row < dataMap.length; row++){
                 for(let col = 0; col < dataMap[row].length; col++){
                     let gid = layer_obj.data[layerDataCounter];
-                    let data = imported_tiles.tiles.find(x => x.gid === gid); //wicked slow
+                    let data = imported_tiles.tiles.find(x => x.gid === gid).data; //wicked slow
                     dataMap[row][col].layers.push({layer_id: layer_id, gid: gid, data: data});
                     layerDataCounter++;
                 }
@@ -504,8 +564,8 @@ const MapEditor = (props) => {
         }
 
         console.log("THIS IS MY POPULATED DATAMAP: ", dataMap);
-
-        return dataMap;
+        let populatedDataMap = dataMap;
+        return {populatedDataMap, layerOrderArray};
     }
 
     /**
@@ -516,48 +576,64 @@ const MapEditor = (props) => {
         let tileCount = imported_tiles.numTiles;
         let tileheight = imported_tiles.tileHeight;
         let tilewidth = imported_tiles.tileWidth;
-
-        console.log(tilesetName);
-        console.log(imported_tiles);
-        console.log("WHAT IS MY MAP OBJ: ", map_obj);
+        let export_ts = imported_tiles.export_ts;
 
         if(tileList.length > 0){
             let startingGID = importedTileList[importedTileList.length - 1].tileCount + importedTileList[importedTileList.length - 1].startingGID;
-            console.log("MYIMPORTEDTILES", imported_tiles.tiles)     
-            
+             
+            export_ts.firstgid = startingGID;
             //POPULATES GID TABLE
             
             for(let i = 0; i < imported_tiles.tiles; i++){
                 console.log("STARTING GID", startingGID)
                 imported_tiles.tiles[i].gid = imported_tiles.tiles[i].gid + startingGID - 1;
             }
-            console.log(imported_tiles.tiles);
 
             //POPULATE DATAMAP HERE
+            let orderArray;
             if(map_obj !== null){
-                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+                orderArray = layerOrderArray;
+                
                 editMap([...populatedDataMap]);
+
+                setTileWidth(map_obj.tilewidth);
+                setTileHeight(map_obj.tileheight);
+                setMapWidth(map_obj.width);
+                setMapHeight(map_obj.height);
+
+                setOrder([...layerOrderArray]);
             }
 
-            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
+            editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount, export_ts}]);
             setTileList(oldArray => [...oldArray, imported_tiles]);
 
-            setTileWidth(map_obj.tilewidth);
-            setTileHeight(map_obj.tileheight);
-            setMapWidth(map_obj.width);
-            setMapHeight(map_obj.height);
+            // setTileWidth(map_obj.tilewidth);
+            // setTileHeight(map_obj.tileheight);
+            // setMapWidth(map_obj.width);
+            // setMapHeight(map_obj.height);
             
             //editImportedTileList(oldTilelistArray => [...oldTilelistArray, {tilesetName, startingGID, tileheight, tilewidth, tileCount}]);
         }
         else{
             //POPULATE DATAMAP HERE
+            let orderArray;
             if(map_obj !== null){
-                let populatedDataMap = populateDataMap(map_obj, imported_tiles);
+                let { populatedDataMap, layerOrderArray} = populateDataMap(map_obj, imported_tiles);
+                orderArray = layerOrderArray;
+
                 editMap([...populatedDataMap]);
+
+                setTileWidth(map_obj.tilewidth);
+                setTileHeight(map_obj.tileheight);
+                setMapWidth(map_obj.width);
+                setMapHeight(map_obj.height);
+
+                setOrder([...layerOrderArray]);
             }
             console.log("ADDING TS TO IMPORTED TILESET LIST!!!");
             setTileList([imported_tiles]);
-            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount}]);
+            editImportedTileList([{tilesetName, startingGID: 1, tileheight, tilewidth, tileCount, export_ts}]);
 
             console.log("CHANGING DIMENSIONS!!!!!");
             //setTileWidth(map_obj.tilewidth);
@@ -614,6 +690,45 @@ const MapEditor = (props) => {
                 tileWidth: tilesetData.getOwnerTilesets[mapTileset].tilewidth, numTiles: tilesetData.getOwnerTilesets[mapTileset].tilecount}, map_obj);
                 
         }
+
+        setMapHeight(10);
+    }
+
+    const handleImageSelected = async (image) => {
+        console.log("New File Selected");
+            const formData = new FormData();
+            const unsignedUploadPreset = 'ngrdnw4p'
+            formData.append('file', image);
+            formData.append('upload_preset', unsignedUploadPreset);
+    
+            console.log("Cloudinary upload");
+            let url = await uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+                //console.log("Upload success");
+                return response.secure_url;
+                
+            });
+            return url;
+    }
+
+    const saveMapToDB = async() => {
+        console.log(tileList);
+        let accessDataURLS;
+        let tileListCloudinary = JSON.parse(JSON.stringify(tileList));
+        for(let tileset = 0; tileset < tileListCloudinary.length; tileset++){
+            accessDataURLS = tileListCloudinary[tileset].export_ts.image;
+            let cloudinaryLink = await handleImageSelected(accessDataURLS) //convert to cloudinary link
+            tileListCloudinary[tileset].export_ts.image = cloudinaryLink;
+            console.log("CLOUDINARY LINK: ", cloudinaryLink);
+        }
+
+        console.log(tileListCloudinary);
+
+        let updatedMap = await updateMap({ variables: { 
+            id: props.map, 
+            input: { mapData: JSON.stringify(dataMap), importedTileList: JSON.stringify(importedTileList), tilesets: JSON.stringify(tileListCloudinary), 
+                layerOrder: JSON.stringify(layerOrder), mapHeight: parseInt(mapHeight), mapWidth: parseInt(mapWidth), tileheight: parseInt(tileHeight), 
+                tilewidth: parseInt(tileWidth)}
+        }});
     }
     
     const [toggleLock] = useMutation(TOGGLE_LOCK);
@@ -649,6 +764,7 @@ const MapEditor = (props) => {
 
     useEffect(() => {
         console.log("USEEFFECT SELECTED TILE" , selectedTile);
+        console.log("DM: ", dataMap);
     })
     
     const turnOnJSONMod = () => {
@@ -679,7 +795,7 @@ const MapEditor = (props) => {
         direction='row'
         >
         <Grid item  md={2}>
-        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} ></ToolbarLeft>
+        <ToolbarLeft turnOnJSONMod={turnOnJSONMod} transactionStack = {props.transactionStack} mapHeight={mapHeight} mapWidth={mapWidth} setMapHeight={setMapHeight} setMapWidth={setMapWidth} tileHeight={tileHeight} tileWidth={tileWidth} setTileHeight={setTileHeight} setTileWidth={setTileWidth} importMap = {importMap} saveMapToDB = {saveMapToDB}></ToolbarLeft>
         </Grid>
         <Grid item className={"canvas-grid"} md={8} sx={{pt:4, pl:10}}>
             <Box>
@@ -702,7 +818,8 @@ const MapEditor = (props) => {
 
         <ToolbarRight importTileset={importTileset} importedTileList = {importedTileList} tiles = {/*GIDTable*/tileList} select ={(tile) => {
             changeSelect(prev => (tile));
-        }}  changeSelect={changeTile} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
+
+        }} changeSelect={changeTile} togglePNG={togglePNG} setErase={setErase} layerOrder={layerOrder} setOrderCallback={setOrder}  map={props.map}currentUser={currentUser} collaborators={collabList} addCollaborator={addCollaborator}></ToolbarRight>
 
 
         </Grid>
@@ -710,7 +827,9 @@ const MapEditor = (props) => {
         </Box>
         <JSONSaveModal open={saveJSON} onClose={() => toggleJSON(false)} layerOrder={layerOrder} tileWidth={tileWidth} tileHeight={tileHeight}
         dataMap={dataMap} mapWidth={mapWidth} mapHeight={mapHeight} importedTileList={importedTileList}/>
+        <PNGModal open={importPNG} onClose={() => togglePNG(false)} importTileset={importTileset}/>
         </>
+        
     )
 }
 
