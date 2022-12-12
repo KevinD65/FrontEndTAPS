@@ -287,11 +287,6 @@ const style = {
               })}
   
     </Grid>
-
-    <Typography variant="h6" sx={{mt:4, ml:4, fontWeight:700}}>Folders <hr/></Typography>
-    <Grid container   >
-    </Grid>
-    <FolderDisplay currentfolder={currentfolderPath.at(-1)} refetchFolders={refetchFolders}/>
   </Grid>
       
 </Box>
