@@ -1,1 +1,1 @@
-Frontend code for TAPS (Tileset and map editing application) fullstack project
+Frontend code for TAPS (Tileset and map editing application) fullstack group project.
